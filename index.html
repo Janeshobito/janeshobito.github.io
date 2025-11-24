@@ -1,61 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deadpath Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pop / Morph Card Animation UI</title>
+  <style>
+    :root {
+      --bg: #1a1a1a;
+      --card-bg: #2c2c2c;
+      --accent: #e63946;
+      --text: #f5f5f5;
+      --shadow: rgba(0,0,0,0.8);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transform-origin: center center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 10px var(--shadow);
+    }
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px var(--shadow);
+    }
+    .card img {
+      width: 100%;
+      display: block;
+    }
+    .card .info {
+      padding: 12px;
+    }
+    .card .info h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .card .info p {
+      margin: 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    /* Modal / Pop */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-bg.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px var(--shadow);
+      transform: scale(0.6);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 90%;
+      max-height: 90%;
+      position: relative;
+    }
+    .modal-bg.active .modal {
+      transform: scale(1);
+    }
+    .modal img {
+      width: 100%;
+      display: block;
+    }
+    .modal .content {
+      padding: 20px;
+    }
+    .modal .content h3 {
+      margin-top: 0;
+      color: var(--text);
+    }
+    .modal .content p {
+      color: #ccc;
+    }
+    .modal .close-btn {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transform: scale(1);
+      transition: transform 0.2s;
+    }
+    .modal .close-btn:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 <body>
-  <canvas id="bg"></canvas>
-  <header>
-    <nav>
-      <div class="logo">DARKPATH</div>
-      <div class="nav-links">
-        <a href="index.html">HOME</a>
-        <a href="about.html">ABOUT</a>
-        <a href="projects.html">PROJECTS</a>
-        <a href="novels.html">NOVELS</a>
-        <a href="contact.html">CONTACT</a>
-      </div>
-    </nav>
-  </header>
 
-  <main>
-    <div class="panel hero">
-      <h1>JANESH <span>WARAN</span> R</h1>
-      <p>Game Developer • 3D Artist • Dark Fantasy Author • Game Designer<br>
-      <strong>Pen Name: DARKPATH</strong></p>
-      <div class="social-icons">
-        <a href="https://www.artstation.com/janeshobito283" target="_blank"><i class="fab fa-artstation"></i></a>
-        <a href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin"></i></a>
-        <a href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
-        <a href="mailto:janeshwaranboito283@gmail.com"><i class="fas fa-envelope"></i></a>
-      </div>
+  <div class="grid" id="grid">
+    <div class="card" data-img="https://via.placeholder.com/400x300" data-title="Pin A" data-desc="Detail for pin A">
+      <img src="https://via.placeholder.com/400x300" alt="">
+      <div class="info"><h3>Pin A</h3><p>Some description A.</p></div>
     </div>
-
-    <div class="grid">
-      <div class="card" data-title="Project 1" data-desc="My first project" data-img="https://via.placeholder.com/400x300">
-        <img src="https://via.placeholder.com/400x300" alt="">
-        <div class="info"><h3>Project 1</h3><p>My first project</p></div>
-      </div>
-      <div class="card" data-title="Project 2" data-desc="My second project" data-img="https://via.placeholder.com/400x500">
-        <img src="https://via.placeholder.com/400x500" alt="">
-        <div class="info"><h3>Project 2</h3><p>My second project</p></div>
-      </div>
+    <div class="card" data-img="https://via.placeholder.com/400x500" data-title="Pin B" data-desc="Detail for pin B">
+      <img src="https://via.placeholder.com/400x500" alt="">
+      <div class="info"><h3>Pin B</h3><p>Some description B.</p></div>
     </div>
-  </main>
-
-  <div class="modal-bg" id="modal-bg">
-    <div class="modal">
-      <img id="modal-img" src="" alt="">
-      <h3 id="modal-title"></h3>
-      <p id="modal-desc"></p>
+    <div class="card" data-img="https://via.placeholder.com/400x400" data-title="Pin C" data-desc="Detail for pin C">
+      <img src="https://via.placeholder.com/400x400" alt="">
+      <div class="info"><h3>Pin C</h3><p>Some description C.</p></div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal" id="modal">
+      <button class="close-btn" id="closeBtn">Close</button>
+      <img id="modal-img" src="" alt="">
+      <div class="content">
+        <h3 id="modal-title"></h3>
+        <p id="modal-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const modalBg = document.getElementById('modal-bg');
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const closeBtn = document.getElementById('closeBtn');
+
+    cards.forEach(card => {
+      card.addEventListener('click', e => {
+        // Get data
+        const img = card.dataset.img;
+        const title = card.dataset.title;
+        const desc = card.dataset.desc;
+
+        // Set modal content
+        modalImg.src = img;
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+
+        // Show modal
+        modalBg.classList.add('active');
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modalBg.classList.remove('active');
+    });
+
+    modalBg.addEventListener('click', e => {
+      if (e.target === modalBg) {
+        modalBg.classList.remove('active');
+      }
+    });
+  </script>
 </body>
 </html>
