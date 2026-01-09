@@ -25,7 +25,7 @@
     /* Hero */
     .hero{height:100vh;position:relative;overflow:hidden}
     .hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.65}
-    .hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 20px;z-index:3}
+    .hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 20px}
     .meta{font-size:18px;letter-spacing:5px;font-weight:600;color:#ccc;opacity:0;animation:fadeIn 1s ease-out 1s forwards}
     .title-big{font-family:Anton,sans-serif;font-size:clamp(80px,12vw,180px);line-height:0.88;letter-spacing:4px;
       background:linear-gradient(90deg,#fff,#e53935,#8b5cf6,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -33,57 +33,6 @@
     .title-big span{font-size:0.45em;position:relative;top:24px;left:8px;opacity:0.9}
     @keyframes fadeIn{to{opacity:1}}
     @keyframes titleRise{to{opacity:1;transform:translateY(0)}}
-
-    /* === 3D Rotating Carousel === */
-    .banner{
-      position:absolute;
-      width:100%;
-      height:100%;
-      top:0;
-      left:0;
-      z-index:2;
-    }
-    .banner .slider{
-      position:absolute;
-      width:260px;
-      height:340px;
-      top:18%;
-      left:50%;
-      transform:translateX(-50%);
-      transform-style:preserve-3d;
-      perspective:1400px;
-      animation:autoRun 30s linear infinite;
-    }
-    @keyframes autoRun{
-      from{transform:translateX(-50%) rotateX(-18deg) rotateY(0deg);}
-      to{transform:translateX(-50%) rotateX(-18deg) rotateY(360deg);}
-    }
-    .banner .slider .item{
-      position:absolute;
-      inset:0;
-      transform:rotateY(calc((var(--position)-1)*(360/var(--quantity))*1deg)) translateZ(580px);
-    }
-    .banner .slider .item img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      border-radius:12px;
-      box-shadow:0 20px 40px rgba(0,0,0,0.8);
-      transition:transform .4s;
-    }
-    .banner .slider .item img:hover{
-      transform:scale(1.1);
-    }
-
-    @media (max-width:1023px){
-      .banner .slider{width:200px;height:260px;}
-      .banner .slider .item{transform:rotateY(calc((var(--position)-1)*(360/var(--quantity))*1deg)) translateZ(380px);}
-    }
-    @media (max-width:767px){
-      .banner .slider{width:140px;height:200px;top:12%;}
-      .banner .slider .item{transform:rotateY(calc((var(--position)-1)*(360/var(--quantity))*1deg)) translateZ(260px);}
-    }
-
     /* Nav */
     .nav{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:18px;padding:16px 36px;
       background:rgba(10,10,11,0.94);border-radius:60px;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(24px);
@@ -91,8 +40,7 @@
     .nav:hover{transform:translateX(-50%) translateY(-10px) scale(1.05)}
     .pill{color:#ccc;text-decoration:none;padding:10px 24px;border-radius:40px;font-size:15px;font-weight:600;transition:all .4s}
     .pill:hover{color:#fff;background:rgba(229,57,53,0.15);border:1px solid var(--accent)}
-
-    /* Sections (unchanged from your original) */
+    /* Sections */
     section{padding:160px 20px;max-width:1400px;margin:auto;text-align:center;position:relative}
     h2{font-family:Anton;font-size:clamp(50px,8vw,90px);margin-bottom:70px;
       background:linear-gradient(120deg,#e53935,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -128,27 +76,9 @@
   <div id="trail"></div>
   <div class="blobs"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
 
-  <!-- Hero with 3D Carousel -->
+  <!-- Hero -->
   <section class="hero">
     <video autoplay loop muted playsinline src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/video0001-0300.mp4"></video>
-
-    <!-- 3D Rotating Carousel -->
-    <div class="banner">
-      <div class="slider" style="--quantity: 10">
-        <!-- Replace these image URLs with your own 10 portfolio renders/artworks -->
-        <div class="item" style="--position: 1"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render1.jpg" alt="Artwork 1"></div>
-        <div class="item" style="--position: 2"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render2.jpg" alt="Artwork 2"></div>
-        <div class="item" style="--position: 3"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render3.jpg" alt="Artwork 3"></div>
-        <div class="item" style="--position: 4"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render4.jpg" alt="Artwork 4"></div>
-        <div class="item" style="--position: 5"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render5.jpg" alt="Artwork 5"></div>
-        <div class="item" style="--position: 6"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render6.jpg" alt="Artwork 6"></div>
-        <div class="item" style="--position: 7"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render7.jpg" alt="Artwork 7"></div>
-        <div class="item" style="--position: 8"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render8.jpg" alt="Artwork 8"></div>
-        <div class="item" style="--position: 9"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render9.jpg" alt="Artwork 9"></div>
-        <div class="item" style="--position: 10"><img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/render10.jpg" alt="Artwork 10"></div>
-      </div>
-    </div>
-
     <div class="hero-content">
       <div class="meta">Gamedesigner • Narrative Designer • 3D Artist • Webnovel Author</div>
       <h1 class="title-big">JANESHWARAN<span>R</span></h1>
@@ -166,7 +96,6 @@
     <a href="#contact" class="pill">CONTACT</a>
   </nav>
 
-  <!-- The rest of your sections remain exactly the same -->
   <!-- ABOUT ME -->
   <section id="about" style="position:relative;overflow:hidden;background:var(--bg);">
     <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.52;z-index:0;" src="https://files.catbox.moe/aky7yi.mp4"></video>
@@ -224,9 +153,11 @@
     </div>
   </section>
 
-  <!-- NOVELS -->
+  <!-- NOVELS - LATEST BACKGROUND -->
   <section style="position:relative;overflow:hidden;background:var(--bg);">
-    <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.50;z-index:0;" src="https://files.catbox.moe/sl8158.mp4"></video>
+    <video autoplay loop muted playsinline 
+           style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.50;z-index:0;" 
+           src="https://files.catbox.moe/sl8158.mp4"></video>
     <div style="position:absolute;inset:0;background:rgba(10,10,11,0.82);z-index:1;"></div>
     <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(139,92,246,0.15) 0%, var(--bg) 100%);z-index:1;"></div>
     <div style="position:relative;z-index:2;">
@@ -276,7 +207,7 @@
       requestAnimationFrame(animate);
     }
     animate();
-    document.querySelectorAll('a, .big-btn, img, .item').forEach(el => {
+    document.querySelectorAll('a, .big-btn, img').forEach(el => {
       el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
