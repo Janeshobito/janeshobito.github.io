@@ -1,61 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Projects — Janeshwaran R</title>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    :root{--bg:#0a0a0b;--accent:#e53935;--glow:rgba(229,57,53,0.4)}
-    *{margin:0;padding:0;box-sizing:border-box}
-    html,body{height:100%;background:#000;color:#fff;font-family:Montserrat,sans-serif;overflow-x:hidden}
-    html{scroll-behavior:smooth}
-
-    /* FULL-SCREEN CAMPFIRE VIDEO BACKGROUND */
-    #video-bg{
-      position:fixed;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;
-      transform:translateX(-50%) translateY(-50%);object-fit:cover;z-index:-2;
-    }
-    #video-overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,0.32);z-index:-1;
-    }
-    .blobs{position:fixed;inset:0;overflow:hidden;z-index:0}
-    .blob{position:absolute;border-radius:50%;filter:blur(130px);opacity:0.25;animation:drift 30s infinite linear}
-    .blob:nth-child(1){width:800px;height:800px;background:#e53935;top:-20%;left:-15%}
-    .blob:nth-child(2){width:600px;height:600px;background:#8b5cf6;bottom:-10%;right:-10%}
-    .blob:nth-child(3){width:700px;height:700px;background:#00e5ff;top:40%;left:30%}
-    @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(200px,180px) rotate(180deg)}}
-
-    /* Cursor & rest of your styles */
-    #cursor{position:fixed;width:36px;height:36px;border:2px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:.12s;backdrop-filter:invert(1);mix-blend-mode:difference}
-    #cursor.hover{transform:translate(-50%,-50%) scale(2.2);background:var(--accent)}
-    #trail{position:fixed;width:10px;height:10px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9998;opacity:0.6}
-    .nav{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:16px;padding:12px 30px;background:rgba(10,10,11,0.9);border-radius:50px;border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(20px)}
-    .pill{color:#bbb;text-decoration:none;padding:8px 18px;border-radius:30px;font-size:14px;transition:0.4s}
-    .pill:hover{color:#fff;background:rgba(255,255,255,0.1)}
-    .section-title{font-family:Anton;font-size:58px;text-align:center;margin:120px 0 80px;color:var(--accent);letter-spacing:2px}
-    .section-subtitle{font-size:20px;color:#aaa;text-align:center;margin-bottom:60px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:40px;max-width:1400px;margin:auto;padding:0 20px 100px}
-    .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;transition:0.6s;backdrop-filter:blur(10px)}
-    .card:hover{transform:translateY(-20px) scale(1.04);box-shadow:0 40px 100px var(--glow)}
-    .card img{width:100%;height:320px;object-fit:cover;transition:0.6s}
-    .card:hover img{transform:scale(1.1)}
-    .card h3{font-family:Anton;font-size:28px;margin:16px 20px}
-    .card p{color:#ccc;margin:0 20px 20px;font-size:15px;line-height:1.6}
-    .btn{display:block;margin:20px auto;width:85%;padding:14px;background:var(--accent);color:#fff;border-radius:50px;font-weight:700;text-decoration:none;text-align:center;transition:0.4s}
-    .btn:hover{background:#c62828;transform:scale(1.05)}
-    .fade-in{opacity:0;transform:translateY(60px);transition:1.2s}.fade-in.show{opacity:1;transform:none}
-  </style>
-</head>
 <body>
-
   <!-- YOUR FINAL WORKING VIDEO -->
   <video id="video-bg" autoplay muted loop playsinline preload="auto">
     <source src="https://files.catbox.moe/y5phz1.mp4" type="video/mp4">
   </video>
   <div id="video-overlay"></div>
-
   <div id="cursor"></div>
   <div id="trail"></div>
   <div class="blobs"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
@@ -77,14 +25,19 @@
         <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
         <h3>THE LAST CHOICE</h3>
         <p>Dark narrative-driven adventure where every decision echoes forever.</p>
-        <a href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" class="btn">PLAY ON ITCH.IO</a>
+        <div style="display:flex; gap:12px; justify-content:center; margin:20px 0;">
+          <a href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" class="btn">PLAY ON ITCH.IO</a>
+          <button class="btn" onclick="openBeatSheetModal()">NARRATIVE BEAT SHEET</button>
+        </div>
       </div>
+
       <div class="card" data-tilt>
         <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
         <h3>DREAM</h3>
         <p>Surreal psychological horror platformer.</p>
         <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
       </div>
+
       <div class="card" data-tilt>
         <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
         <h3>ROCKET THRUSTER LANDING</h3>
@@ -94,7 +47,7 @@
     </div>
   </div>
 
-  <!-- SECTION 2: GAME BREAKDOWNS -->
+  <!-- SECTION 2: GAME BREAKDOWNS (unchanged) -->
   <div class="fade-in">
     <h2 class="section-title">GAME BREAKDOWNS</h2>
     <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
@@ -114,6 +67,106 @@
     </div>
   </div>
 
+  <!-- MODAL for Beat Sheet -->
+  <div id="beatSheetModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeBeatSheetModal()">&times;</span>
+      <h2 style="font-family:Anton; color:var(--accent); text-align:center; margin:0 0 30px;">THE LAST CHOICE<br>Narrative Beat Sheet</h2>
+      
+      <div style="overflow-x:auto; max-height:70vh;">
+        <table style="width:100%; border-collapse:collapse; font-size:14px; color:#ddd; background:rgba(0,0,0,0.5);">
+          <thead>
+            <tr style="background:rgba(229,57,53,0.3);">
+              <th style="padding:12px; border:1px solid #444;">Passage / Scene</th>
+              <th style="padding:12px; border:1px solid #444;">Character</th>
+              <th style="padding:12px; border:1px solid #444;">Dialogue / Action</th>
+              <th style="padding:12px; border:1px solid #444;">Emotion / Tone</th>
+              <th style="padding:12px; border:1px solid #444;">SFX / Visual Cue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:10px; border:1px solid #444;">Start / AnswerCall</td><td>Ruby</td><td>"David! Where are you? We need to talk urgently..."</td><td>Panicked, Breathless</td><td>Phone ringing, muffled city noise</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">AnswerCall</td><td>David</td><td>"I am at New York City, 'Main Street'."</td><td>Calm, Casual</td><td>High-angle shot of NYC traffic</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">AnswerCall</td><td>Ruby</td><td>"David, while coming, buy some chicken and come to cook for dinner."</td><td>Domestic, Hurried</td><td>Sound of wind on the phone line</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Enter Store</td><td>Cashier</td><td>"That will be $5.99. Cash or card?"</td><td>Monotonous, Bored</td><td>Scanned beep, hum of fridge</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Pick up Phone</td><td>Narrator</td><td>(David crosses the threshold... a wet, chewing sound slices the air.)</td><td>Dread, Suspense</td><td>Heavy heartbeat, squelching sound</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Check the Room</td><td>David</td><td>"Ruby...?" (Thinking: Move. Just move...)</td><td>Paralyzed Terror</td><td>Flash of fluorescent lights flicking on</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Baseball Bat</td><td>Werewolf</td><td>[Deep, guttural snarl/growl]</td><td>Primal Fury</td><td>Claws clicking on tile floor</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">FightWerewolfBat</td><td>David</td><td>"I am sorry, Ruby... I couldn't find you..."</td><td>Defeated, Grief</td><td>Slow-motion fade to black</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal, God-complex</td><td>—</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Where am I</td><td>David</td><td>"Who am I? Interesting question, child. In human terms... I look like a dumb..."</td><td>Ethereal, God-Rage</td><td>Blinding white light, echo in bright sky</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">What Mistake</td><td>God</td><td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td><td>Amused, Cruel</td><td>Sound of thunder, Soft chuckle, magical shimmering</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Be the Hero</td><td>God</td><td>"Now, you must level up and climb the Tower."</td><td>Commanding, Stoic</td><td>Digital "Ping" of a UI screen appearing</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">DodgeWolfJustice</td><td>David</td><td>"Come at me, motherfuckers. I'm David. I'm gonna survive this world no matter..."</td><td>Grit, Determined, Shock</td><td>Sound of heavy shovel hitting metal, splatter SFX</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">Execute</td><td>Man 1</td><td>"AH! MY HAND! AHHHHHH!"</td><td>Agony, Shock</td><td>Heavy SFX, splatter</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">WhatsYourName</td><td>Linda</td><td>"M-My... my parents... they're gone... they died..."</td><td>Heartbroken, Fragile</td><td>Sound of soft sobbing</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">WhatsYourName</td><td>David (Thinking)</td><td>(Thinking: Ruby... I couldn't protect you then. But maybe... I can protect her.)</td><td>Reflective, Protective</td><td>Visual: Flashback blur overlay</td></tr>
+            <tr><td style="padding:10px; border:1px solid #444;">UseNewSkills</td><td>David</td><td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td><td>Darkly Confident</td><td>Shadowy aura visual effect</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Styles -->
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .modal-content {
+      background: rgba(20,20,25,0.92);
+      border: 1px solid rgba(229,57,53,0.4);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 1100px;
+      max-height: 85vh;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(229,57,53,0.35);
+      animation: fadeInModal 0.4s ease;
+    }
+    @keyframes fadeInModal {
+      from { opacity:0; transform:scale(0.92); }
+      to   { opacity:1; transform:scale(1);   }
+    }
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      color: #aaa;
+      font-size: 36px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .close:hover { color: var(--accent); }
+  </style>
+
+  <!-- Modal JS -->
+  <script>
+    function openBeatSheetModal() {
+      document.getElementById("beatSheetModal").style.display = "flex";
+    }
+    function closeBeatSheetModal() {
+      document.getElementById("beatSheetModal").style.display = "none";
+    }
+    // Close when clicking outside content
+    window.onclick = function(event) {
+      const modal = document.getElementById("beatSheetModal");
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Your existing cursor / tilt / fade-in script remains here -->
   <script>
     const cursor=document.getElementById('cursor'),trail=document.getElementById('trail');
     let mx=0,my=0,cx=0,cy=0;
@@ -123,11 +176,9 @@
       trail.style.left=mx+'px';trail.style.top=my+'px';
       requestAnimationFrame(animate)}
     animate();
-
     document.querySelectorAll('a,.btn,.card').forEach(el=>{
       el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));
       el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'))});
-
     document.querySelectorAll('[data-tilt]').forEach(card=>{
       card.addEventListener('mousemove',e=>{
         const rect=card.getBoundingClientRect();
@@ -135,9 +186,7 @@
         const rotY=(x-rect.width/2)/12,rotX=(rect.height/2-y)/12;
         card.style.transform=`perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.05)`});
       card.addEventListener('mouseleave',()=>card.style.transform='perspective(1200px) rotateX(0) rotateY(0) scale(1)')});
-
     const observer=new IntersectionObserver(e=>e.forEach(en=>en.isIntersecting&&en.target.classList.add('show')),{threshold:0.15});
     document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
   </script>
 </body>
-</html>
