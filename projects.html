@@ -18,293 +18,315 @@
     }
 
     * { margin:0; padding:0; box-sizing:border-box; }
+
     html, body {
-      height:100%;
-      background:#000;
-      color:#fff;
-      font-family:Montserrat,sans-serif;
-      overflow-x:hidden;
+      height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: Montserrat, sans-serif;
+      overflow-y: auto;          /* ← Fixed: allow vertical scrolling */
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
     }
-    html { scroll-behavior:smooth; }
+    html { scroll-behavior: smooth; }
+
+    /* Background layers - prevent them from blocking interaction */
+    #video-bg,
+    #video-overlay,
+    .blobs,
+    #cursor,
+    #trail {
+      pointer-events: none;      /* ← Key fix: mouse/touch passes through */
+    }
 
     /* ── Background Video ── */
     #video-bg {
-      position:fixed;
-      top:50%; left:50%;
-      min-width:100%; min-height:100%;
-      width:auto; height:auto;
-      transform:translateX(-50%) translateY(-50%);
-      object-fit:cover;
-      z-index:-2;
+      position: fixed;
+      top: 50%; left: 50%;
+      min-width: 100%; min-height: 100%;
+      width: auto; height: auto;
+      transform: translateX(-50%) translateY(-50%);
+      object-fit: cover;
+      z-index: -2;
     }
     #video-overlay {
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.32);
-      z-index:-1;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.32);
+      z-index: -1;
     }
 
     /* ── Animated Blobs ── */
-    .blobs { position:fixed; inset:0; overflow:hidden; z-index:0; }
+    .blobs { position: fixed; inset: 0; overflow: hidden; z-index: 0; }
     .blob {
-      position:absolute;
-      border-radius:50%;
-      filter:blur(130px);
-      opacity:0.25;
-      animation:drift 30s infinite linear;
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(130px);
+      opacity: 0.25;
+      animation: drift 30s infinite linear;
     }
     .blob:nth-child(1) { width:800px; height:800px; background:#e53935; top:-20%; left:-15%; }
     .blob:nth-child(2) { width:600px; height:600px; background:#8b5cf6; bottom:-10%; right:-10%; }
     .blob:nth-child(3) { width:700px; height:700px; background:#00e5ff; top:40%; left:30%; }
     @keyframes drift {
-      0%,100% { transform:translate(0,0); }
-      50%     { transform:translate(200px,180px) rotate(180deg); }
+      0%,100% { transform: translate(0,0); }
+      50%     { transform: translate(200px,180px) rotate(180deg); }
     }
 
     /* ── Custom Cursor ── */
     #cursor {
-      position:fixed;
-      width:36px; height:36px;
-      border:2px solid var(--accent);
-      border-radius:50%;
-      pointer-events:none;
-      z-index:9999;
-      transform:translate(-50%,-50%);
-      transition:.12s;
-      backdrop-filter:invert(1);
-      mix-blend-mode:difference;
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: .12s;
+      backdrop-filter: invert(1);
+      mix-blend-mode: difference;
     }
     #cursor.hover {
-      transform:translate(-50%,-50%) scale(2.2);
-      background:var(--accent);
+      transform: translate(-50%,-50%) scale(2.2);
+      background: var(--accent);
     }
     #trail {
-      position:fixed;
-      width:10px; height:10px;
-      background:var(--accent);
-      border-radius:50%;
-      pointer-events:none;
-      z-index:9998;
-      opacity:0.6;
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.6;
     }
 
     /* ── Navigation ── */
     .nav {
-      position:fixed;
-      top:20px; left:50%;
-      transform:translateX(-50%);
-      z-index:100;
-      display:flex; gap:16px;
-      padding:12px 30px;
-      background:rgba(10,10,11,0.9);
-      border-radius:50px;
-      border:1px solid rgba(255,255,255,0.1);
-      backdrop-filter:blur(20px);
+      position: fixed;
+      top: 20px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex; gap: 16px;
+      padding: 12px 30px;
+      background: rgba(10,10,11,0.9);
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
     }
     .pill {
-      color:#bbb;
-      text-decoration:none;
-      padding:8px 18px;
-      border-radius:30px;
-      font-size:14px;
-      transition:0.4s;
+      color: #bbb;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 14px;
+      transition: 0.4s;
     }
     .pill:hover {
-      color:#fff;
-      background:rgba(255,255,255,0.1);
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ── Main Content Wrapper (scrollable layer) ── */
+    .main-content {
+      position: relative;
+      z-index: 10;               /* above backgrounds */
+      min-height: 100vh;
+      padding-top: 120px;        /* space for fixed nav */
+      padding-bottom: 60px;
     }
 
     /* ── Sections ── */
     .section-title {
-      font-family:Anton;
-      font-size:58px;
-      text-align:center;
-      margin:120px 0 80px;
-      color:var(--accent);
-      letter-spacing:2px;
+      font-family: Anton;
+      font-size: 58px;
+      text-align: center;
+      margin: 80px 0 60px;
+      color: var(--accent);
+      letter-spacing: 2px;
     }
     .section-subtitle {
-      font-size:20px;
-      color:#aaa;
-      text-align:center;
-      margin-bottom:60px;
+      font-size: 20px;
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 60px;
     }
     .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
-      gap:40px;
-      max-width:1400px;
-      margin:auto;
-      padding:0 20px 100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 40px;
+      max-width: 1400px;
+      margin: auto;
+      padding: 0 20px;
     }
 
     /* ── Cards ── */
     .card {
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.1);
-      border-radius:16px;
-      overflow:hidden;
-      transition:0.6s;
-      backdrop-filter:blur(10px);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: 0.6s;
+      backdrop-filter: blur(10px);
     }
     .card:hover {
-      transform:translateY(-20px) scale(1.04);
-      box-shadow:0 40px 100px var(--glow);
+      transform: translateY(-20px) scale(1.04);
+      box-shadow: 0 40px 100px var(--glow);
     }
     .card img {
-      width:100%;
-      height:320px;
-      object-fit:cover;
-      transition:0.6s;
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      transition: 0.6s;
     }
-    .card:hover img { transform:scale(1.1); }
+    .card:hover img { transform: scale(1.1); }
     .card h3 {
-      font-family:Anton;
-      font-size:28px;
-      margin:16px 20px;
+      font-family: Anton;
+      font-size: 28px;
+      margin: 16px 20px;
     }
     .card p {
-      color:#ccc;
-      margin:0 20px 20px;
-      font-size:15px;
-      line-height:1.6;
+      color: #ccc;
+      margin: 0 20px 20px;
+      font-size: 15px;
+      line-height: 1.6;
     }
     .btn {
-      display:block;
-      margin:20px auto;
-      width:85%;
-      padding:14px;
-      background:var(--accent);
-      color:#fff;
-      border-radius:50px;
-      font-weight:700;
-      text-decoration:none;
-      text-align:center;
-      transition:0.4s;
-      border:none;
-      cursor:pointer;
-      font-family:Montserrat;
+      display: block;
+      margin: 20px auto;
+      width: 85%;
+      padding: 14px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      transition: 0.4s;
+      border: none;
+      cursor: pointer;
+      font-family: Montserrat;
     }
     .btn:hover {
-      background:#c62828;
-      transform:scale(1.05);
+      background: #c62828;
+      transform: scale(1.05);
     }
 
     /* ── Fade-in Animation ── */
     .fade-in {
-      opacity:0;
-      transform:translateY(60px);
-      transition:1.2s;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: 1.2s;
     }
     .fade-in.show {
-      opacity:1;
-      transform:none;
+      opacity: 1;
+      transform: none;
     }
 
-    /* ── Modal & Professional Table ── */
+    /* ── Modal & Table ── */
     .modal {
-      display:none;
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.88);
-      z-index:9999;
-      align-items:center;
-      justify-content:center;
-      backdrop-filter:blur(10px);
-      padding:20px;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      padding: 20px;
     }
     .modal-content {
-      background:var(--dark);
-      border:1px solid var(--border);
-      border-radius:12px;
-      width:100%;
-      max-width:1180px;
-      max-height:88vh;
-      overflow:hidden;
-      box-shadow:0 20px 60px rgba(0,0,0,0.6);
-      display:flex;
-      flex-direction:column;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 1180px;
+      max-height: 88vh;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
     }
     .modal-header {
-      padding:24px 32px 16px;
-      text-align:center;
-      border-bottom:1px solid #1e222c;
+      padding: 24px 32px 16px;
+      text-align: center;
+      border-bottom: 1px solid #1e222c;
     }
     .modal-header h2 {
-      font-family:'Anton', sans-serif;
-      font-size:2.1rem;
-      color:var(--accent);
-      margin:0 0 6px;
-      letter-spacing:1.5px;
+      font-family: 'Anton', sans-serif;
+      font-size: 2.1rem;
+      color: var(--accent);
+      margin: 0 0 6px;
+      letter-spacing: 1.5px;
     }
     .modal-subtitle {
-      color:var(--text-light);
-      font-size:1.05rem;
-      margin:0;
+      color: var(--text-light);
+      font-size: 1.05rem;
+      margin: 0;
     }
     .modal-close {
-      position:absolute;
-      top:16px;
-      right:20px;
-      background:none;
-      border:none;
-      color:#8892b0;
-      font-size:2.2rem;
-      font-weight:300;
-      cursor:pointer;
-      line-height:1;
-      transition:color 0.2s;
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #8892b0;
+      font-size: 2.2rem;
+      font-weight: 300;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
     }
-    .modal-close:hover { color:var(--accent); }
+    .modal-close:hover { color: var(--accent); }
 
     .table-container {
-      overflow:auto;
-      flex:1;
-      padding:0 32px 32px;
+      overflow: auto;
+      flex: 1;
+      padding: 0 32px 32px;
     }
     .beat-sheet-table {
-      width:100%;
-      border-collapse:collapse;
-      font-size:0.94rem;
-      color:var(--text);
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+      color: var(--text);
     }
     .beat-sheet-table th,
     .beat-sheet-table td {
-      padding:14px 16px;
-      text-align:left;
-      border-bottom:1px solid #1e222c;
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #1e222c;
     }
     .beat-sheet-table th {
-      background:#161a24;
-      color:#e2e8f0;
-      font-weight:600;
-      text-transform:uppercase;
-      font-size:0.82rem;
-      letter-spacing:0.6px;
-      white-space:nowrap;
+      background: #161a24;
+      color: #e2e8f0;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.6px;
+      white-space: nowrap;
     }
     .beat-sheet-table td:nth-child(1) {
-      width:14%;
-      font-weight:500;
-      color:var(--text-light);
+      width: 14%;
+      font-weight: 500;
+      color: var(--text-light);
     }
     .beat-sheet-table td:nth-child(2) {
-      width:11%;
-      color:#cbd5e1;
+      width: 11%;
+      color: #cbd5e1;
     }
     .beat-sheet-table tr:nth-child(even) {
-      background:rgba(20,25,35,0.4);
+      background: rgba(20,25,35,0.4);
     }
     .beat-sheet-table tr:hover {
-      background:rgba(229,57,53,0.08);
+      background: rgba(229,57,53,0.08);
     }
 
     @media (max-width: 768px) {
-      .modal-content { max-height:92vh; }
-      .table-container { padding:0 16px 24px; }
-      .beat-sheet-table th,
-      .beat-sheet-table td { padding:12px 10px; font-size:0.88rem; }
-      .section-title { font-size:42px; margin:80px 0 60px; }
+      .modal-content { max-height: 92vh; }
+      .table-container { padding: 0 16px 24px; }
+      .beat-sheet-table th, .beat-sheet-table td { padding: 12px 10px; font-size: 0.88rem; }
+      .section-title { font-size: 42px; margin: 60px 0 40px; }
+      .main-content { padding-top: 100px; }
     }
   </style>
 </head>
@@ -330,58 +352,63 @@
     <a href="index.html#contact" class="pill">CONTACT</a>
   </nav>
 
-  <!-- GAME PROJECTS -->
-  <div class="fade-in">
-    <h2 class="section-title">GAME PROJECTS</h2>
-    <p class="section-subtitle">Fully playable games built from scratch</p>
-    <div class="grid">
-      <div class="card" data-tilt>
-        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
-        <h3>THE LAST CHOICE</h3>
-        <p>Dark narrative-driven adventure where every decision echoes forever.</p>
-        <div style="display:flex; gap:12px; justify-content:center; margin:20px 0; flex-wrap:wrap;">
-          <a href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" class="btn">PLAY ON ITCH.IO</a>
-          <button class="btn" onclick="openBeatSheetModal()">NARRATIVE BEAT SHEET</button>
+  <!-- Main scrollable content -->
+  <main class="main-content">
+
+    <!-- GAME PROJECTS -->
+    <div class="fade-in">
+      <h2 class="section-title">GAME PROJECTS</h2>
+      <p class="section-subtitle">Fully playable games built from scratch</p>
+      <div class="grid">
+        <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
+          <h3>THE LAST CHOICE</h3>
+          <p>Dark narrative-driven adventure where every decision echoes forever.</p>
+          <div style="display:flex; gap:12px; justify-content:center; margin:20px 0; flex-wrap:wrap;">
+            <a href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" class="btn">PLAY ON ITCH.IO</a>
+            <button class="btn" onclick="openBeatSheetModal()">NARRATIVE BEAT SHEET</button>
+          </div>
+        </div>
+
+        <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
+          <h3>DREAM</h3>
+          <p>Surreal psychological horror platformer.</p>
+          <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
+        </div>
+
+        <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
+          <h3>ROCKET THRUSTER LANDING</h3>
+          <p>Physics-based rocket landing challenge.</p>
+          <a href="#" class="btn">JUST PLAY</a>
         </div>
       </div>
+    </div>
 
-      <div class="card" data-tilt>
-        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
-        <h3>DREAM</h3>
-        <p>Surreal psychological horror platformer.</p>
-        <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
-      </div>
-
-      <div class="card" data-tilt>
-        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
-        <h3>ROCKET THRUSTER LANDING</h3>
-        <p>Physics-based rocket landing challenge.</p>
-        <a href="#" class="btn">JUST PLAY</a>
+    <!-- GAME BREAKDOWNS -->
+    <div class="fade-in">
+      <h2 class="section-title">GAME BREAKDOWNS</h2>
+      <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
+      <div class="grid">
+        <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Bully.png" alt="Bully">
+          <h3>BULLY — Game Breakdown</h3>
+          <p>Deep dive into mechanics, narrative structure, and world-building of Rockstar's classic.</p>
+          <a href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
+        </div>
+        <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/cover.png" alt="Prototype">
+          <h3>Prototype Breakdown</h3>
+          <p>Early-stage development insights and design decisions.</p>
+          <a href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- GAME BREAKDOWNS -->
-  <div class="fade-in">
-    <h2 class="section-title">GAME BREAKDOWNS</h2>
-    <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
-    <div class="grid">
-      <div class="card" data-tilt>
-        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Bully.png" alt="Bully">
-        <h3>BULLY — Game Breakdown</h3>
-        <p>Deep dive into mechanics, narrative structure, and world-building of Rockstar's classic.</p>
-        <a href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
-      </div>
-      <div class="card" data-tilt>
-        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/cover.png" alt="Prototype">
-        <h3>Prototype Breakdown</h3>
-        <p>Early-stage development insights and design decisions.</p>
-        <a href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
-      </div>
-    </div>
-  </div>
+  </main>
 
-  <!-- ── Narrative Beat Sheet Modal ── -->
+  <!-- Narrative Beat Sheet Modal -->
   <div id="beatSheetModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeBeatSheetModal()" aria-label="Close">×</button>
@@ -403,125 +430,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Start / AnswerCall</td>
-              <td>Ruby</td>
-              <td>"David! Where are you? We need to talk urgently..."</td>
-              <td>Panicked, Breathless</td>
-              <td>Phone ringing, muffled city noise</td>
-            </tr>
-            <tr>
-              <td>AnswerCall</td>
-              <td>David</td>
-              <td>"I am at New York City, 'Main Street'."</td>
-              <td>Calm, Casual</td>
-              <td>High-angle shot of NYC traffic</td>
-            </tr>
-            <tr>
-              <td>AnswerCall</td>
-              <td>Ruby</td>
-              <td>"David, while coming, buy some chicken and come to cook for dinner."</td>
-              <td>Domestic, Hurried</td>
-              <td>Sound of wind on the phone line</td>
-            </tr>
-            <tr>
-              <td>Enter Store</td>
-              <td>Cashier</td>
-              <td>"That will be $5.99. Cash or card?"</td>
-              <td>Monotonous, Bored</td>
-              <td>Scanned beep, hum of fridge</td>
-            </tr>
-            <tr>
-              <td>Pick up Phone</td>
-              <td>Narrator</td>
-              <td>(David crosses the threshold... a wet, chewing sound slices the air.)</td>
-              <td>Dread, Suspense</td>
-              <td>Heavy heartbeat, squelching sound</td>
-            </tr>
-            <tr>
-              <td>Check the Room</td>
-              <td>David</td>
-              <td>"Ruby...?" (Thinking: Move. Just move...)</td>
-              <td>Paralyzed Terror</td>
-              <td>Flash of fluorescent lights flicking on</td>
-            </tr>
-            <tr>
-              <td>Baseball Bat</td>
-              <td>Werewolf</td>
-              <td>[Deep, guttural snarl/growl]</td>
-              <td>Primal Fury</td>
-              <td>Claws clicking on tile floor</td>
-            </tr>
-            <tr>
-              <td>FightWerewolfBat</td>
-              <td>David</td>
-              <td>"I am sorry, Ruby... I couldn't find you..."</td>
-              <td>Defeated, Grief</td>
-              <td>Slow-motion fade to black</td>
-            </tr>
-            <tr>
-              <td>Who are you</td>
-              <td>God</td>
-              <td>"I am God."</td>
-              <td>Ethereal, God-complex</td>
-              <td>—</td>
-            </tr>
-            <tr>
-              <td>Where am I</td>
-              <td>David</td>
-              <td>"Who am I? Interesting question, child. In human terms... I look like a dumb..."</td>
-              <td>Ethereal, God-Rage</td>
-              <td>Blinding white light, echo in bright sky</td>
-            </tr>
-            <tr>
-              <td>What Mistake</td>
-              <td>God</td>
-              <td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td>
-              <td>Amused, Cruel</td>
-              <td>Sound of thunder, Soft chuckle, magical shimmering</td>
-            </tr>
-            <tr>
-              <td>Be the Hero</td>
-              <td>God</td>
-              <td>"Now, you must level up and climb the Tower."</td>
-              <td>Commanding, Stoic</td>
-              <td>Digital "Ping" of a UI screen appearing</td>
-            </tr>
-            <tr>
-              <td>DodgeWolfJustice</td>
-              <td>David</td>
-              <td>"Come at me, motherfuckers. I'm David. I'm gonna survive this world no matter..."</td>
-              <td>Grit, Determined, Shock</td>
-              <td>Sound of heavy shovel hitting metal, splatter SFX</td>
-            </tr>
-            <tr>
-              <td>Execute</td>
-              <td>Man 1</td>
-              <td>"AH! MY HAND! AHHHHHH!"</td>
-              <td>Agony, Shock</td>
-              <td>Heavy SFX, splatter</td>
-            </tr>
-            <tr>
-              <td>WhatsYourName</td>
-              <td>Linda</td>
-              <td>"M-My... my parents... they're gone... they died..."</td>
-              <td>Heartbroken, Fragile</td>
-              <td>Sound of soft sobbing</td>
-            </tr>
-            <tr>
-              <td>WhatsYourName</td>
-              <td>David (Thinking)</td>
-              <td>(Thinking: Ruby... I couldn't protect you then. But maybe... I can protect her.)</td>
-              <td>Reflective, Protective</td>
-              <td>Visual: Flashback blur overlay</td>
-            </tr>
-            <tr>
-              <td>UseNewSkills</td>
-              <td>David</td>
-              <td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td>
-              <td>Darkly Confident</td>
-              <td>Shadowy aura visual effect</td>
-            </tr>
+            <tr><td>Start / AnswerCall</td><td>Ruby</td><td>"David! Where are you? We need to talk urgently..."</td><td>Panicked, Breathless</td><td>Phone ringing, muffled city noise</td></tr>
+            <tr><td>AnswerCall</td><td>David</td><td>"I am at New York City, 'Main Street'."</td><td>Calm, Casual</td><td>High-angle shot of NYC traffic</td></tr>
+            <tr><td>AnswerCall</td><td>Ruby</td><td>"David, while coming, buy some chicken and come to cook for dinner."</td><td>Domestic, Hurried</td><td>Sound of wind on the phone line</td></tr>
+            <tr><td>Enter Store</td><td>Cashier</td><td>"That will be $5.99. Cash or card?"</td><td>Monotonous, Bored</td><td>Scanned beep, hum of fridge</td></tr>
+            <tr><td>Pick up Phone</td><td>Narrator</td><td>(David crosses the threshold... a wet, chewing sound slices the air.)</td><td>Dread, Suspense</td><td>Heavy heartbeat, squelching sound</td></tr>
+            <tr><td>Check the Room</td><td>David</td><td>"Ruby...?" (Thinking: Move. Just move...)</td><td>Paralyzed Terror</td><td>Flash of fluorescent lights flicking on</td></tr>
+            <tr><td>Baseball Bat</td><td>Werewolf</td><td>[Deep, guttural snarl/growl]</td><td>Primal Fury</td><td>Claws clicking on tile floor</td></tr>
+            <tr><td>FightWerewolfBat</td><td>David</td><td>"I am sorry, Ruby... I couldn't find you..."</td><td>Defeated, Grief</td><td>Slow-motion fade to black</td></tr>
+            <tr><td>Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal, God-complex</td><td>—</td></tr>
+            <tr><td>Where am I</td><td>David</td><td>"Who am I? Interesting question, child. In human terms... I look like a dumb..."</td><td>Ethereal, God-Rage</td><td>Blinding white light, echo in bright sky</td></tr>
+            <tr><td>What Mistake</td><td>God</td><td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td><td>Amused, Cruel</td><td>Sound of thunder, Soft chuckle, magical shimmering</td></tr>
+            <tr><td>Be the Hero</td><td>God</td><td>"Now, you must level up and climb the Tower."</td><td>Commanding, Stoic</td><td>Digital "Ping" of a UI screen appearing</td></tr>
+            <tr><td>DodgeWolfJustice</td><td>David</td><td>"Come at me, motherfuckers. I'm David. I'm gonna survive this world no matter..."</td><td>Grit, Determined, Shock</td><td>Sound of heavy shovel hitting metal, splatter SFX</td></tr>
+            <tr><td>Execute</td><td>Man 1</td><td>"AH! MY HAND! AHHHHHH!"</td><td>Agony, Shock</td><td>Heavy SFX, splatter</td></tr>
+            <tr><td>WhatsYourName</td><td>Linda</td><td>"M-My... my parents... they're gone... they died..."</td><td>Heartbroken, Fragile</td><td>Sound of soft sobbing</td></tr>
+            <tr><td>WhatsYourName</td><td>David (Thinking)</td><td>(Thinking: Ruby... I couldn't protect you then. But maybe... I can protect her.)</td><td>Reflective, Protective</td><td>Visual: Flashback blur overlay</td></tr>
+            <tr><td>UseNewSkills</td><td>David</td><td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td><td>Darkly Confident</td><td>Shadowy aura visual effect</td></tr>
           </tbody>
         </table>
       </div>
@@ -529,7 +454,7 @@
   </div>
 
   <script>
-    // Modal controls
+    // Modal
     function openBeatSheetModal() {
       document.getElementById("beatSheetModal").style.display = "flex";
     }
@@ -562,7 +487,7 @@
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 
-    // Card tilt effect
+    // Card tilt
     document.querySelectorAll('[data-tilt]').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
@@ -577,7 +502,7 @@
       });
     });
 
-    // Fade-in observer
+    // Fade-in
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('show');
