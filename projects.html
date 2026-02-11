@@ -268,30 +268,6 @@
       max-height: 68vh;
       border-radius: 8px;
     }
-    .beat-sheet-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.94rem;
-      color: var(--text);
-    }
-    .beat-sheet-table th, .beat-sheet-table td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid #1e222c;
-    }
-    .beat-sheet-table th {
-      background: #161a24;
-      color: #e2e8f0;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.82rem;
-      letter-spacing: 0.6px;
-      white-space: nowrap;
-    }
-    .beat-sheet-table td:nth-child(1) { width: 14%; font-weight: 500; color: var(--text-light); }
-    .beat-sheet-table td:nth-child(2) { width: 11%; color: #cbd5e1; }
-    .beat-sheet-table tr:nth-child(even) { background: rgba(20,25,35,0.4); }
-    .beat-sheet-table tr:hover { background: rgba(229,57,53,0.08); }
     .buttons-container {
       display: flex;
       gap: 12px;
@@ -344,6 +320,7 @@
             <button class="btn" onclick="openBeatSheetModal()">NARRATIVE BEAT SHEET</button>
           </div>
         </div>
+
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
           <h3>DREAM</h3>
@@ -352,6 +329,7 @@
             <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
           </div>
         </div>
+
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
           <h3>ROCKET THRUSTER LANDING</h3>
@@ -360,14 +338,15 @@
             <a href="#" class="btn">JUST PLAY</a>
           </div>
         </div>
+
         <div class="card" data-tilt>
-          <img src="" alt="Wrath of the Knight"> <!-- Add your screenshot URL here -->
-          <h3>WRATH OF THE KNIGHT</h3>
+          <img src="" alt="Wrath of the Night"> <!-- ← Add your screenshot URL here when ready -->
+          <h3>WRATH OF THE NIGHT</h3>
           <p>FPS shooter, environmental puzzle solver.</p>
           <div class="buttons-container">
             <button class="btn" onclick="openVideoModal('trailerModal')">WATCH TRAILER</button>
             <button class="btn" onclick="openVideoModal('pitchModal')">WATCH GAME PITCH PPT</button>
-            <a href="https://janeshwaran2829.itch.io/wrath-of-the-knight-game-book" target="_blank" class="btn">GAME BOOK</a>
+            <a href="https://janeshwaran2829.itch.io/wrath-of-the-night-game-book" target="_blank" class="btn">GAME BOOK</a>
           </div>
         </div>
       </div>
@@ -414,9 +393,23 @@
             </tr>
           </thead>
           <tbody>
-            <!-- existing rows unchanged -->
             <tr><td>Start / AnswerCall</td><td>Ruby</td><td>"David! Where are you? We need to talk urgently..."</td><td>Panicked, Breathless</td><td>Phone ringing, muffled city noise</td></tr>
-            <!-- ... keep all your existing rows here ... -->
+            <tr><td>AnswerCall</td><td>David</td><td>"I am at New York City, 'Main Street'."</td><td>Calm, Casual</td><td>High-angle shot of NYC traffic</td></tr>
+            <tr><td>AnswerCall</td><td>Ruby</td><td>"David, while coming, buy some chicken and come to cook for dinner."</td><td>Domestic, Hurried</td><td>Sound of wind on the phone line</td></tr>
+            <tr><td>Enter Store</td><td>Cashier</td><td>"That will be $5.99. Cash or card?"</td><td>Monotonous, Bored</td><td>Scanned beep, hum of fridge</td></tr>
+            <tr><td>Pick up Phone</td><td>Narrator</td><td>(David crosses the threshold... a wet, chewing sound slices the air.)</td><td>Dread, Suspense</td><td>Heavy heartbeat, squelching sound</td></tr>
+            <tr><td>Check the Room</td><td>David</td><td>"Ruby...?" (Thinking: Move. Just move...)</td><td>Paralyzed Terror</td><td>Flash of fluorescent lights flicking on</td></tr>
+            <tr><td>Baseball Bat</td><td>Werewolf</td><td>[Deep, guttural snarl/growl]</td><td>Primal Fury</td><td>Claws clicking on tile floor</td></tr>
+            <tr><td>FightWerewolfBat</td><td>David</td><td>"I am sorry, Ruby... I couldn't find you..."</td><td>Defeated, Grief</td><td>Slow-motion fade to black</td></tr>
+            <tr><td>Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal, God-complex</td><td>—</td></tr>
+            <tr><td>Where am I</td><td>David</td><td>"Who am I? Interesting question, child. In human terms... I look like a dumb..."</td><td>Ethereal, God-Rage</td><td>Blinding white light, echo in bright sky</td></tr>
+            <tr><td>What Mistake</td><td>God</td><td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td><td>Amused, Cruel</td><td>Sound of thunder, Soft chuckle, magical shimmering</td></tr>
+            <tr><td>Be the Hero</td><td>God</td><td>"Now, you must level up and climb the Tower."</td><td>Commanding, Stoic</td><td>Digital "Ping" of a UI screen appearing</td></tr>
+            <tr><td>DodgeWolfJustice</td><td>David</td><td>"Come at me, motherfuckers. I'm David. I'm gonna survive this world no matter..."</td><td>Grit, Determined, Shock</td><td>Sound of heavy shovel hitting metal, splatter SFX</td></tr>
+            <tr><td>Execute</td><td>Man 1</td><td>"AH! MY HAND! AHHHHHH!"</td><td>Agony, Shock</td><td>Heavy SFX, splatter</td></tr>
+            <tr><td>WhatsYourName</td><td>Linda</td><td>"M-My... my parents... they're gone... they died..."</td><td>Heartbroken, Fragile</td><td>Sound of soft sobbing</td></tr>
+            <tr><td>WhatsYourName</td><td>David (Thinking)</td><td>(Thinking: Ruby... I couldn't protect you then. But maybe... I can protect her.)</td><td>Reflective, Protective</td><td>Visual: Flashback blur overlay</td></tr>
+            <tr><td>UseNewSkills</td><td>David</td><td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td><td>Darkly Confident</td><td>Shadowy aura visual effect</td></tr>
           </tbody>
         </table>
       </div>
@@ -428,7 +421,7 @@
     <div class="modal-content">
       <button class="modal-close" onclick="closeVideoModal('trailerModal')" aria-label="Close">×</button>
       <header class="modal-header">
-        <h2>WRATH OF THE KNIGHT</h2>
+        <h2>WRATH OF THE NIGHT</h2>
         <p class="modal-subtitle">Trailer</p>
       </header>
       <div class="video-container">
@@ -445,7 +438,7 @@
     <div class="modal-content">
       <button class="modal-close" onclick="closeVideoModal('pitchModal')" aria-label="Close">×</button>
       <header class="modal-header">
-        <h2>WRATH OF THE KNIGHT</h2>
+        <h2>WRATH OF THE NIGHT</h2>
         <p class="modal-subtitle">Game Pitch PPT</p>
       </header>
       <div class="video-container">
@@ -469,7 +462,6 @@
     // Video Modals
     function openVideoModal(modalId) {
       document.getElementById(modalId).style.display = "flex";
-      // Optional: pause other videos if needed
     }
     function closeVideoModal(modalId) {
       const modal = document.getElementById(modalId);
@@ -488,7 +480,7 @@
       if (event.target === pitchModal) closeVideoModal("pitchModal");
     };
 
-    // Cursor + trail (unchanged)
+    // Cursor + trail
     const cursor = document.getElementById('cursor');
     const trail = document.getElementById('trail');
     let mx = 0, my = 0, cx = 0, cy = 0;
@@ -509,7 +501,7 @@
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 
-    // Card tilt (unchanged)
+    // Card tilt
     document.querySelectorAll('[data-tilt]').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
@@ -524,7 +516,7 @@
       });
     });
 
-    // Fade-in (unchanged)
+    // Fade-in on scroll
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('show');
