@@ -175,7 +175,7 @@
     }
     .btn {
       display: block;
-      margin: 20px auto;
+      margin: 12px auto;
       width: 85%;
       padding: 14px;
       background: var(--accent);
@@ -192,11 +192,6 @@
     .btn:hover {
       background: #c62828;
       transform: scale(1.05);
-    }
-    .btn:disabled {
-      background: #444;
-      cursor: not-allowed;
-      transform: none;
     }
     .fade-in {
       opacity: 0;
@@ -230,9 +225,6 @@
       display: flex;
       flex-direction: column;
     }
-    .video-modal .modal-content {
-      max-width: 960px;
-    }
     .modal-header {
       padding: 24px 32px 16px;
       text-align: center;
@@ -265,59 +257,61 @@
       transition: color 0.2s;
     }
     .modal-close:hover { color: var(--accent); }
-    .video-container {
-      padding: 20px 32px 32px;
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .video-container video {
-      width: 100%;
-      max-height: 68vh;
-      border-radius: 8px;
-    }
     .table-container {
       padding: 0 32px 32px;
       overflow-y: auto;
       flex: 1;
     }
-    table.beat-sheet-table {
+    .beat-sheet-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
+      color: var(--text);
     }
-    table.beat-sheet-table th,
-    table.beat-sheet-table td {
-      padding: 12px 16px;
+    .beat-sheet-table th,
+    .beat-sheet-table td {
+      padding: 14px 16px;
       text-align: left;
       border-bottom: 1px solid #1e222c;
     }
-    table.beat-sheet-table th {
-      background: rgba(229,57,53,0.1);
-      color: var(--accent);
+    .beat-sheet-table th {
+      background: #161a24;
+      color: #e2e8f0;
       font-weight: 600;
-      position: sticky;
-      top: 0;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      letter-spacing: 0.6px;
+      white-space: nowrap;
     }
-    table.beat-sheet-table tr:hover {
-      background: rgba(255,255,255,0.03);
-    }
-    .note {
-      font-style: italic;
+    .beat-sheet-table td:nth-child(1) {
+      width: 14%;
+      font-weight: 500;
       color: var(--text-light);
-      text-align: center;
-      padding: 20px;
+    }
+    .beat-sheet-table td:nth-child(2) {
+      width: 11%;
+      color: #cbd5e1;
+    }
+    .beat-sheet-table tr:nth-child(even) {
+      background: rgba(20,25,35,0.4);
+    }
+    .beat-sheet-table tr:hover {
+      background: rgba(229,57,53,0.08);
+    }
+    .buttons-container {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      padding: 0 20px;
     }
     @media (max-width: 768px) {
       .modal-content { max-height: 92vh; }
-      .video-modal .modal-content { max-width: 95%; }
-      .video-container, .table-container { padding: 16px; }
+      .table-container { padding: 0 16px 24px; }
+      .beat-sheet-table th, .beat-sheet-table td { padding: 12px 10px; font-size: 0.88rem; }
       .section-title { font-size: 42px; margin: 60px 0 40px; }
       .main-content { padding-top: 100px; }
-      .card p { font-size: 14px; }
-      table.beat-sheet-table { font-size: 0.85rem; }
-      table.beat-sheet-table th, table.beat-sheet-table td { padding: 10px 12px; }
     }
   </style>
 </head>
@@ -348,6 +342,7 @@
       <div class="grid">
         <!-- THE LAST CHOICE -->
         <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
           <h3>THE LAST CHOICE</h3>
           <div class="genre-engine">Genre: Fantasy, Script-Based Interactive Game • Engine: Twine (Script Engine)</div>
           <p>A dark narrative-driven adventure where every decision echoes forever.<br><br>In a fractured world where reality is slowly collapsing, a young brother embarks on a haunting journey to find his missing little sister. The world they once knew has ended — cities lie in ruins, memories distort the landscape, and mysterious shadow entities whisper forgotten truths.<br><br>The story unfolds through player-driven choices. Every decision reshapes the world, alters relationships, and changes the fate of the characters. Morality is blurred — sometimes the “right” choice leads to devastating consequences.<br><br>As the brother ventures deeper into corrupted forests, abandoned villages, and dreamlike ruins, he uncovers secrets about the world’s collapse and about his sister’s connection to it.</p>
@@ -359,16 +354,18 @@
 
         <!-- DREAM -->
         <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
           <h3>DREAM</h3>
-          <div class="genre-engine">Genre: Action, Adventure, Shooting • Engine: Godot • Style: 2D Pixel Hardcore Platformer</div>
-          <p>A fast-paced 2D pixel platformer where a young girl is trapped inside a distorted dream world. The dream is unstable shifting platforms, hostile creatures, and fragments of broken memories stand in her path.<br><br>The player must escape the nightmare by mastering tight movement mechanics, precise shooting, and quick reflexes. Each level represents a deeper layer of the dream from surreal forests to collapsing cities floating in the sky.<br><br>The world becomes more aggressive the closer she gets to awakening. The dream fights back.</p>
+          <div class="genre-engine">Pixel Hardcore Platformer • Engine: Godot</div>
+          <p>A fast-paced 2D pixel platformer where a young girl is trapped inside a distorted dream world. The dream is unstable — shifting platforms, hostile creatures, and fragments of broken memories stand in her path.<br><br>The player must escape the nightmare by mastering tight movement mechanics, precise shooting, and quick reflexes. Each level represents a deeper layer of the dream from surreal forests to collapsing cities floating in the sky.<br><br>The world becomes more aggressive the closer she gets to awakening. The dream fights back.</p>
           <div class="buttons-container">
             <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
           </div>
         </div>
 
-        <!-- ROCKET THRUSTER LANDING -->
+        <!-- ROCKET THRUSTER LANDING (kept minimal as before) -->
         <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
           <h3>ROCKET THRUSTER LANDING</h3>
           <p>Physics-based rocket landing challenge.</p>
           <div class="buttons-container">
@@ -378,9 +375,10 @@
 
         <!-- WRATH OF THE NIGHT -->
         <div class="card" data-tilt>
+          <!-- Add image if available, e.g. <img src="..." alt="Wrath of the Night"> -->
           <h3>WRATH OF THE NIGHT</h3>
           <div class="genre-engine">Genre: Action, FPS, Adventure • Engine: Unity 3D</div>
-          <p>FPS shooter, environmental puzzle solver.<br><br>Wrath of the Night is a dark FPS survival-action game set in a cursed, abandoned world consumed by night. Players fight against supernatural enemies, corrupted soldiers, and night-born creatures that grow stronger as darkness spreads.<br><br>The player must explore abandoned facilities, solve environmental puzzles, unlock new weapons, and survive relentless enemy waves. Resource management is crucial ammo is scarce, health pickups are limited, and enemies are aggressive.<br><br>The deeper the player explores, the more they uncover the truth behind the spreading darkness and their own connection to it.</p>
+          <p>FPS shooter, environmental puzzle solver.<br><br>Wrath of the Night is a dark FPS survival-action game set in a cursed, abandoned world consumed by night. Players fight against supernatural enemies, corrupted soldiers, and night-born creatures that grow stronger as darkness spreads.<br><br>The player must explore abandoned facilities, solve environmental puzzles, unlock new weapons, and survive relentless enemy waves. Resource management is crucial — ammo is scarce, health pickups are limited, and enemies are aggressive.<br><br>The deeper the player explores, the more they uncover the truth behind the spreading darkness and their own connection to it.</p>
           <div class="buttons-container">
             <button class="btn" onclick="openVideoModal('trailerModal')">WATCH TRAILER</button>
             <button class="btn" onclick="openVideoModal('pitchModal')">WATCH GAME PITCH PPT</button>
@@ -396,14 +394,20 @@
       <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
       <div class="grid">
         <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Bully.png" alt="Bully">
           <h3>BULLY — Game Breakdown</h3>
           <p>Deep dive into mechanics, narrative structure, and world-building of Rockstar's classic.</p>
-          <a href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
+          <div class="buttons-container">
+            <a href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
+          </div>
         </div>
         <div class="card" data-tilt>
+          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/cover.png" alt="Prototype">
           <h3>Prototype Breakdown</h3>
           <p>Early-stage development insights and design decisions.</p>
-          <a href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
+          <div class="buttons-container">
+            <a href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
+          </div>
         </div>
       </div>
     </div>
@@ -415,74 +419,37 @@
       <button class="modal-close" onclick="closeBeatSheetModal()" aria-label="Close">×</button>
       <header class="modal-header">
         <h2>THE LAST CHOICE</h2>
-        <p class="modal-subtitle">Narrative Beat Sheet (Early Outline)</p>
+        <p class="modal-subtitle">Narrative Beat Sheet</p>
       </header>
       <div class="table-container">
         <table class="beat-sheet-table">
           <thead>
             <tr>
-              <th>Passage / Node</th>
-              <th>Character / Narrator</th>
-              <th>Key Dialogue / Action / Choice</th>
+              <th>Scene / Passage</th>
+              <th>Character</th>
+              <th>Dialogue / Action</th>
               <th>Emotion / Tone</th>
               <th>SFX / Visual Cue</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Start / Inciting Incident</td>
-              <td>Narrator</td>
-              <td>The sky fractures. Darkness floods New York. Your phone lights up — it's Ruby.</td>
-              <td>Ominous, disorienting</td>
-              <td>Deep rumble, glass shattering in distance, screen flicker</td>
-            </tr>
-            <tr>
-              <td>AnswerCall</td>
-              <td>Ruby (phone)</td>
-              <td>"David! Where are you? Something's wrong... everything's going dark!"</td>
-              <td>Panicked, breathless</td>
-              <td>Static interference, distant screams, phone buzzing</td>
-            </tr>
-            <tr>
-              <td>AnswerCall → Choice: "I'm on Main Street. Stay calm."</td>
-              <td>David</td>
-              <td>"I'm on Main Street. Stay where you are — I'm coming."</td>
-              <td>Calm but urgent</td>
-              <td>Traffic chaos, shadows lengthening</td>
-            </tr>
-            <tr>
-              <td>AnswerCall → Choice: "Ruby? Hello?" (ignore details)</td>
-              <td>Narrator</td>
-              <td>The line cuts. A shadow moves behind you. You feel watched.</td>
-              <td>Foreboding → dread</td>
-              <td>Call ends with click, low growl nearby</td>
-            </tr>
-            <tr>
-              <td>Street Encounter 1</td>
-              <td>Survivor</td>
-              <td>"They're coming from the subway... don't go down there!"</td>
-              <td>Desperate, terrified</td>
-              <td>Footsteps echoing, flickering streetlights</td>
-            </tr>
-            <tr>
-              <td>Choice: Help Survivor / Leave Him</td>
-              <td>Player → Narrator</td>
-              <td>[Help] → He gives you a flashlight<br>[Leave] → You hear his scream later</td>
-              <td>Moral tension</td>
-              <td>[Help] flashlight click<br>[Leave] scream cut short</td>
-            </tr>
-            <tr>
-              <td>Mid-Act Escalation</td>
-              <td>Ruby (memory / whisper)</td>
-              <td>"You promised you'd always find me..."</td>
-              <td>Haunting, accusatory</td>
-              <td>Echoing voice, distorted child laughter</td>
-            </tr>
-            <tr>
-              <td colspan="5" class="note">
-                This is a condensed early beat sheet. Full version with 40+ nodes, multiple branches, and all 5 endings is still in development. Check the Twine file / devlog for latest progress.
-              </td>
-            </tr>
+            <tr><td>Start / AnswerCall</td><td>Ruby</td><td>"David! Where are you? We need to talk urgently..."</td><td>Panicked, Breathless</td><td>Phone ringing, muffled city noise</td></tr>
+            <tr><td>AnswerCall</td><td>David</td><td>"I am at New York City, 'Main Street'."</td><td>Calm, Casual</td><td>High-angle shot of NYC traffic</td></tr>
+            <tr><td>AnswerCall</td><td>Ruby</td><td>"David, while coming, buy some chicken and come to cook for dinner."</td><td>Domestic, Hurried</td><td>Sound of wind on the phone line</td></tr>
+            <tr><td>Enter Store</td><td>Cashier</td><td>"That will be $5.99. Cash or card?"</td><td>Monotonous, Bored</td><td>Scanned beep, hum of fridge</td></tr>
+            <tr><td>Pick up Phone</td><td>Narrator</td><td>(David crosses the threshold... a wet, chewing sound slices the air.)</td><td>Dread, Suspense</td><td>Heavy heartbeat, squelching sound</td></tr>
+            <tr><td>Check the Room</td><td>David</td><td>"Ruby...?" (Thinking: Move. Just move...)</td><td>Paralyzed Terror</td><td>Flash of fluorescent lights flicking on</td></tr>
+            <tr><td>Baseball Bat</td><td>Werewolf</td><td>[Deep, guttural snarl/growl]</td><td>Primal Fury</td><td>Claws clicking on tile floor</td></tr>
+            <tr><td>FightWerewolfBat</td><td>David</td><td>"I am sorry, Ruby... I couldn't find you..."</td><td>Defeated, Grief</td><td>Slow-motion fade to black</td></tr>
+            <tr><td>Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal, God-complex</td><td>—</td></tr>
+            <tr><td>Where am I</td><td>David</td><td>"Who am I? Interesting question, child. In human terms... I look like a dumb..."</td><td>Ethereal, God-Rage</td><td>Blinding white light, echo in bright sky</td></tr>
+            <tr><td>What Mistake</td><td>God</td><td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td><td>Amused, Cruel</td><td>Sound of thunder, Soft chuckle, magical shimmering</td></tr>
+            <tr><td>Be the Hero</td><td>God</td><td>"Now, you must level up and climb the Tower."</td><td>Commanding, Stoic</td><td>Digital "Ping" of a UI screen appearing</td></tr>
+            <tr><td>DodgeWolfJustice</td><td>David</td><td>"Come at me, motherfuckers. I'm David. I'm gonna survive this world no matter..."</td><td>Grit, Determined, Shock</td><td>Sound of heavy shovel hitting metal, splatter SFX</td></tr>
+            <tr><td>Execute</td><td>Man 1</td><td>"AH! MY HAND! AHHHHHH!"</td><td>Agony, Shock</td><td>Heavy SFX, splatter</td></tr>
+            <tr><td>WhatsYourName</td><td>Linda</td><td>"M-My... my parents... they're gone... they died..."</td><td>Heartbroken, Fragile</td><td>Sound of soft sobbing</td></tr>
+            <tr><td>WhatsYourName</td><td>David (Thinking)</td><td>(Thinking: Ruby... I couldn't protect you then. But maybe... I can protect her.)</td><td>Reflective, Protective</td><td>Visual: Flashback blur overlay</td></tr>
+            <tr><td>UseNewSkills</td><td>David</td><td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td><td>Darkly Confident</td><td>Shadowy aura visual effect</td></tr>
           </tbody>
         </table>
       </div>
@@ -490,7 +457,7 @@
   </div>
 
   <!-- Trailer Video Modal -->
-  <div id="trailerModal" class="modal video-modal">
+  <div id="trailerModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeVideoModal('trailerModal')" aria-label="Close">×</button>
       <header class="modal-header">
@@ -507,7 +474,7 @@
   </div>
 
   <!-- Pitch PPT Video Modal -->
-  <div id="pitchModal" class="modal video-modal">
+  <div id="pitchModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeVideoModal('pitchModal')" aria-label="Close">×</button>
       <header class="modal-header">
@@ -524,7 +491,6 @@
   </div>
 
   <script>
-    // Modal controls
     function openBeatSheetModal() {
       document.getElementById("beatSheetModal").style.display = "flex";
     }
@@ -548,7 +514,6 @@
       }
     };
 
-    // Custom cursor + trail
     const cursor = document.getElementById('cursor');
     const trail = document.getElementById('trail');
     let mx = 0, my = 0, cx = 0, cy = 0;
@@ -564,12 +529,11 @@
     }
     animate();
 
-    document.querySelectorAll('a, .btn:not([disabled]), .card').forEach(el => {
+    document.querySelectorAll('a, .btn, .card').forEach(el => {
       el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 
-    // Card 3D tilt effect
     document.querySelectorAll('[data-tilt]').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
@@ -584,7 +548,6 @@
       });
     });
 
-    // Fade-in on scroll
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('show');
