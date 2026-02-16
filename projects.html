@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
-      --bg: #0a0a0a0b;
+      --bg: #0a0a0b;
       --accent: #e53935;
       --glow: rgba(229,57,53,0.4);
       --dark: #0f1117;
@@ -361,10 +361,12 @@
   </nav>
 
   <main class="main-content">
+    <!-- GAME PROJECTS -->
     <div class="fade-in">
       <h2 class="section-title">GAME PROJECTS</h2>
       <p class="section-subtitle">Fully playable games built from scratch</p>
       <div class="grid">
+        <!-- THE LAST CHOICE -->
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
           <h3>THE LAST CHOICE</h3>
@@ -376,6 +378,7 @@
           </div>
         </div>
 
+        <!-- DREAM -->
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
           <h3>DREAM</h3>
@@ -386,6 +389,7 @@
           </div>
         </div>
 
+        <!-- ROCKET THRUSTER LANDING -->
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
           <h3>ROCKET THRUSTER LANDING</h3>
@@ -395,6 +399,7 @@
           </div>
         </div>
 
+        <!-- WRATH OF THE NIGHT -->
         <div class="card" data-tilt>
           <h3>WRATH OF THE NIGHT</h3>
           <div class="genre-engine">Genre: Action, FPS, Adventure • Engine: Unity 3D</div>
@@ -408,6 +413,7 @@
       </div>
     </div>
 
+    <!-- GAME BREAKDOWNS -->
     <div class="fade-in">
       <h2 class="section-title">GAME BREAKDOWNS</h2>
       <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
@@ -430,9 +436,28 @@
         </div>
       </div>
     </div>
+
+    <!-- NEW: GAME CONCEPT BOOKS -->
+    <div class="fade-in">
+      <h2 class="section-title">GAME CONCEPT BOOKS</h2>
+      <p class="section-subtitle">Complete game design documents &amp; concept books</p>
+      <div class="grid">
+        <!-- CALYNXX: THE LAST RIDE -->
+        <div class="card" data-tilt>
+          <img src="https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg" alt="Calynxx: The Last Ride">
+          <h3>CALYNXX: THE LAST RIDE</h3>
+          <div class="genre-engine">Genre: Adventure / Exploration • Mobile/PC Concept Book</div>
+          <p>After a brutal medieval war, a legendary knight dies weeks after victory. His loyal war horse, Calynxx, does not understand death. Believing its master is alive somewhere in the kingdom, Calynxx begins a journey to find him.</p>
+          <p>Created as a complete mobile game concept for a skills-evaluation assignment. Covers core game idea &amp; mechanics, player goals &amp; progression, difficulty curve, and 5–10 level ideas.</p>
+          <div class="buttons-container">
+            <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/GAME%20DESIGN%20BOOK%20-%20JANESHWARAN%20RAMESH%20CALYNUX%20THE%20LAST%20RIDE_compressed.pdf" target="_blank" class="btn">VIEW CONCEPT BOOK</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <!-- Narrative Beat Sheet Modal (FULL content) -->
+  <!-- Narrative Beat Sheet Modal -->
   <div id="beatSheetModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeBeatSheetModal()" aria-label="Close">×</button>
@@ -475,7 +500,7 @@
     </div>
   </div>
 
-  <!-- Trailer Modal -->
+  <!-- Trailer Video Modal -->
   <div id="trailerModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeVideoModal('trailerModal')" aria-label="Close">×</button>
@@ -492,7 +517,7 @@
     </div>
   </div>
 
-  <!-- Pitch PPT Modal -->
+  <!-- Pitch PPT Video Modal -->
   <div id="pitchModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeVideoModal('pitchModal')" aria-label="Close">×</button>
@@ -514,17 +539,14 @@
       document.getElementById("beatSheetModal").style.display = "flex";
       document.body.style.overflow = "hidden";
     }
-
     function closeBeatSheetModal() {
       document.getElementById("beatSheetModal").style.display = "none";
       document.body.style.overflow = "";
     }
-
     function openVideoModal(modalId) {
       document.getElementById(modalId).style.display = "flex";
       document.body.style.overflow = "hidden";
     }
-
     function closeVideoModal(modalId) {
       const modal = document.getElementById(modalId);
       modal.style.display = "none";
@@ -532,7 +554,6 @@
       const video = modal.querySelector('video');
       if (video) video.pause();
     }
-
     window.onclick = function(event) {
       if (event.target.classList.contains('modal')) {
         event.target.style.display = "none";
