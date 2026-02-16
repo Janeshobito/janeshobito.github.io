@@ -50,6 +50,34 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 .big-btn{display:inline-block;padding:20px 56px;background:var(--accent);color:#fff;border-radius:60px; font-size:19px;font-weight:800;text-decoration:none;position:relative;overflow:hidden;transition:all .5s;z-index:2}
 .big-btn::before{content:'';position:absolute;inset:0;background:#c62828;transform:translateY(100%);transition:transform .5s;z-index:-1}
 .big-btn:hover::before{transform:translateY(0)}
+/* New: Resume & CV buttons */
+.resume-cv-container {display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 50px;}
+.resume-btn, .cv-btn {
+  display: inline-block;
+  padding: 16px 48px;
+  background: var(--purple);
+  color: #fff;
+  border-radius: 60px;
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: all .4s;
+}
+.resume-btn {background: var(--accent);}
+.cv-btn {background: var(--purple);}
+.resume-btn::before, .cv-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  transform: translateY(100%);
+  transition: transform .4s;
+  z-index: -1;
+}
+.resume-btn:hover::before, .cv-btn:hover::before {transform: translateY(0);}
+.resume-btn:hover, .cv-btn:hover {transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.5);}
 .about-grid{display:grid;grid-template-columns:1fr 2fr;gap:70px;align-items:start;max-width:1200px;margin:auto;position:relative;z-index:2}
 .about-img{border-radius:20px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.7);transition:transform .8s}
 .about-img:hover{transform:scale(1.04)}
@@ -60,6 +88,7 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
  .about-grid{grid-template-columns:1fr}
  .intro-block{padding:40px 24px}
  section{padding:120px 20px}
+ .resume-cv-container{flex-direction:column;gap:20px;}
 }
 </style>
 </head>
@@ -113,6 +142,13 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 <p><strong>B.Sc Computer Science</strong> — St. Joseph College, Chennai (2020–2024)</p>
 <p style="margin-top:16px"><strong>M.Sc Game Technology</strong> — ICAT Design & Media College, Chennai (2024–Present)</p>
 </div>
+
+<!-- NEW BUTTONS -->
+<div class="resume-cv-container">
+  <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank" class="resume-btn">View Resume</a>
+  <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf" target="_blank" class="cv-btn">View CV</a>
+</div>
+
 </div>
 </div>
 </div>
@@ -159,19 +195,14 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 <h2 class="text-reveal"><span>PORTFOLIO ARTIFACT</span></h2>
 <h3 style="font-family:Anton;font-size:clamp(40px,6vw,70px);color:var(--purple);margin:20px 0 40px; opacity:0;transform:translateY(50px)">Narrative Designer / Game Narrative - Author's Statement</h3>
 <div class="intro-block fade-in" style="text-align:left;max-width:1100px;padding:70px 60px;font-size:18px;line-height:1.85;color:#ddd">
-
 <strong style="display:block;font-size:28px;color:var(--purple);margin:50px 0 20px;">Author’s Statement</strong>
 <p>My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast - family conflict, happiness, sadness, isolation, and connection. I don't have a clean or singular reason for wanting to become a narrative designer; instead, my interest grew naturally from observing how people react, hide reactions, and learn to survive emotionally. Growing up, I reached a point where honest reactions became difficult, and I began to fake them. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p>
-
 <strong style="display:block;font-size:26px;color:var(--purple);margin:60px 0 20px;border-left:5px solid var(--purple);padding-left:15px;">Personal Lens / Storytelling Perspective</strong>
 <p style="margin-top:20px;">I exist between loneliness and solitude. I enjoy being social, yet often resist it. I experience frequent mood shifts and spend a significant amount of time daydreaming. Depending on my emotional state, these daydreams take the form of love stories, heroic arcs, villain narratives, or internal psychological conflicts - often with myself positioned as the central character. This inner contradiction - wanting connection while withdrawing from it - strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p>
-
 <strong style="display:block;font-size:26px;color:var(--accent);margin:60px 0 20px;border-left:5px solid var(--accent);padding-left:15px;">Writer’s Note</strong>
 <p style="margin-top:20px;">At one stage, I realized that my daydreams would disappear if left untouched. To prevent that loss, I began writing them as stories and publishing them as novels. The response was positive, but instead of grounding me, it expanded my imagination further - pushing me deeper into idea creation and narrative exploration. Writing, for me, is not an escape from thinking; it is an extension of it.</p>
-
 <strong style="display:block;font-size:26px;color:var(--purple);margin:60px 0 20px;border-left:5px solid var(--purple);padding-left:15px;">Narrative Philosophy</strong>
 <p style="margin-top:20px;">I believe stories are built from emotion first and structure second. Human beings naturally live in imagined worlds - some shared, some personal - and narrative exists to give those worlds form. I am particularly drawn to war films and biopics because they compress the full range of human emotion into moments of decision. Even when altered for entertainment, these stories reveal character through choice, pressure, and consequence. A character, to me, is defined not by intent, but by what they choose when outcomes are uncertain.</p>
-
 <strong style="display:block;font-size:26px;color:var(--accent);margin:60px 0 20px;border-left:5px solid var(--accent);padding-left:15px;">Design Ethos</strong>
 <p style="margin-top:20px;">My approach to narrative design is consequence-driven. Choices must matter, and meaning must emerge from their outcomes. Influenced by manhwas and branching narratives, I view life - and by extension story - as a system of decisions. When a choice is made, it must carry weight. When a path is taken, something else must be lost. I design narratives where:</p>
 <ul style="margin:20px 0 0 30px;list-style-type:none;line-height:1.7;">
@@ -179,13 +210,10 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
   <li>• Emotion drives mechanics</li>
   <li>• Past, present, and future coexist in the narrative structure</li>
 </ul>
-
 <strong style="display:block;font-size:26px;color:var(--purple);margin:60px 0 20px;border-left:5px solid var(--purple);padding-left:15px;">Creative Manifesto</strong>
 <p style="margin-top:20px;">I am not afraid of loss, contradiction, or darkness in storytelling. I explore themes ranging from crime and moral decay to ambition, power, and desire. I build worlds that include light and shadow - fun and brutality - because reality contains both. My goal is not to create perfect stories, but honest ones. I aim to turn imagination into something tangible: not dreams that fade, but narratives that endure.</p>
-
 <strong style="display:block;font-size:28px;color:var(--purple);margin:70px 0 20px;text-align:center;">Closing Identity</strong>
 <p style="font-size:20px;color:#ccc;text-align:center;">I am Janeshwaran. This is not a conclusion, but a structure - one that continues to evolve as my skills grow.</p>
-
 </div>
 </div>
 </section>
@@ -229,7 +257,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
-document.querySelectorAll('a, .big-btn, img').forEach(el => {
+document.querySelectorAll('a, .big-btn, img, .resume-btn, .cv-btn').forEach(el => {
   el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
   el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
 });
