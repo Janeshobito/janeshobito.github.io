@@ -26,11 +26,9 @@
       overflow-x: hidden;
     }
     html { scroll-behavior: smooth; }
-
     #video-bg, #video-overlay, .blobs, #cursor, #trail {
       pointer-events: none;
     }
-
     #video-bg {
       position: fixed;
       inset: 0;
@@ -40,14 +38,12 @@
       object-position: center center;
       z-index: -2;
     }
-
     #video-overlay {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.32);
       z-index: -1;
     }
-
     .blobs { position: fixed; inset: 0; overflow: hidden; z-index: 0; }
     .blob {
       position: absolute;
@@ -63,7 +59,6 @@
       0%,100% { transform: translate(0,0); }
       50% { transform: translate(200px,180px) rotate(180deg); }
     }
-
     #cursor {
       position: fixed;
       width: 36px; height: 36px;
@@ -89,7 +84,6 @@
       z-index: 9998;
       opacity: 0.6;
     }
-
     .nav {
       position: fixed;
       top: 20px; left: 50%;
@@ -114,7 +108,6 @@
       color: #fff;
       background: rgba(255,255,255,0.1);
     }
-
     .main-content {
       position: relative;
       z-index: 10;
@@ -122,7 +115,6 @@
       padding-top: 120px;
       padding-bottom: 60px;
     }
-
     .section-title {
       font-family: Anton;
       font-size: 58px;
@@ -137,7 +129,6 @@
       text-align: center;
       margin-bottom: 60px;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -146,7 +137,6 @@
       margin: auto;
       padding: 0 20px;
     }
-
     /* Narrower layout for Concept Books section */
     .concept-grid {
       max-width: 960px;
@@ -154,17 +144,14 @@
       grid-template-columns: repeat(auto-fit, minmax(320px, 420px));
       justify-content: center;
     }
-
     .concept-title {
       font-size: 48px;
       margin: 60px 0 40px;
     }
-
     .concept-subtitle {
       font-size: 18px;
       margin-bottom: 50px;
     }
-
     .card {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
@@ -184,7 +171,6 @@
       transition: 0.6s;
     }
     .card:hover img { transform: scale(1.1); }
-
     .card h3 {
       font-family: Anton;
       font-size: 28px;
@@ -202,7 +188,6 @@
       font-size: 15px;
       line-height: 1.6;
     }
-
     .btn {
       display: block;
       margin: 12px auto;
@@ -223,7 +208,6 @@
       background: #c62828;
       transform: scale(1.05);
     }
-
     .fade-in {
       opacity: 0;
       transform: translateY(60px);
@@ -233,7 +217,6 @@
       opacity: 1;
       transform: none;
     }
-
     .modal {
       display: none;
       position: fixed;
@@ -257,7 +240,6 @@
       display: flex;
       flex-direction: column;
     }
-
     .modal-header {
       padding: 24px 32px 16px;
       text-align: center;
@@ -276,7 +258,6 @@
       font-size: 1.05rem;
       margin: 0;
     }
-
     .modal-close {
       position: absolute;
       top: 16px;
@@ -291,13 +272,11 @@
       transition: color 0.2s;
     }
     .modal-close:hover { color: var(--accent); }
-
     .table-container {
       padding: 0 32px 32px;
       overflow-y: auto;
       flex: 1;
     }
-
     .beat-sheet-table {
       width: 100%;
       border-collapse: collapse;
@@ -323,7 +302,6 @@
     .beat-sheet-table td:nth-child(2) { width: 11%; color: #cbd5e1; }
     .beat-sheet-table tr:nth-child(even) { background: rgba(20,25,35,0.4); }
     .beat-sheet-table tr:hover { background: rgba(229,57,53,0.08); }
-
     .buttons-container {
       display: flex;
       gap: 12px;
@@ -332,7 +310,6 @@
       flex-wrap: wrap;
       padding: 0 20px;
     }
-
     .video-container {
       padding: 0 32px 32px;
       flex: 1;
@@ -345,7 +322,6 @@
       max-height: 60vh;
       object-fit: contain;
     }
-
     @media (max-width: 768px) {
       .modal-content { max-height: 92vh; }
       .table-container { padding: 0 16px 24px; }
@@ -361,16 +337,13 @@
     <source src="https://files.catbox.moe/y5phz1.mp4" type="video/mp4">
   </video>
   <div id="video-overlay"></div>
-
   <div id="cursor"></div>
   <div id="trail"></div>
-
   <div class="blobs">
     <div class="blob"></div>
     <div class="blob"></div>
     <div class="blob"></div>
   </div>
-
   <nav class="nav">
     <a href="index.html" class="pill">HOME</a>
     <a href="index.html#about" class="pill">ABOUT</a>
@@ -378,9 +351,7 @@
     <a href="novels.html" class="pill">NOVELS</a>
     <a href="index.html#contact" class="pill">CONTACT</a>
   </nav>
-
   <main class="main-content">
-
     <!-- GAME PROJECTS -->
     <div class="fade-in">
       <h2 class="section-title">GAME PROJECTS</h2>
@@ -396,7 +367,6 @@
             <button class="btn" onclick="openBeatSheetModal()">NARRATIVE BEAT SHEET</button>
           </div>
         </div>
-
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
           <h3>DREAM</h3>
@@ -406,7 +376,6 @@
             <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
           </div>
         </div>
-
         <div class="card" data-tilt>
           <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
           <h3>ROCKET THRUSTER LANDING</h3>
@@ -415,7 +384,6 @@
             <a href="#" class="btn">JUST PLAY</a>
           </div>
         </div>
-
         <div class="card" data-tilt>
           <h3>WRATH OF THE NIGHT</h3>
           <div class="genre-engine">Genre: Action, FPS, Adventure • Engine: Unity 3D</div>
@@ -428,7 +396,6 @@
         </div>
       </div>
     </div>
-
     <!-- GAME BREAKDOWNS -->
     <div class="fade-in">
       <h2 class="section-title">GAME BREAKDOWNS</h2>
@@ -452,14 +419,22 @@
         </div>
       </div>
     </div>
-
     <!-- GAME CONCEPT BOOKS - smaller & narrower -->
     <div class="fade-in">
       <h2 class="section-title concept-title">GAME CONCEPT BOOKS</h2>
       <p class="section-subtitle concept-subtitle">Complete game design documents & concept books</p>
       <div class="grid concept-grid">
         <div class="card" data-tilt>
-          
+          <img src="https://thumbs.dreamstime.com/b/vibrant-cartoon-illustration-depicting-children-zoo-adventure-guided-zookeeper-encountering-various-animals-like-lions-432577148.jpg" alt="Mini Math Zoo">
+          <h3>Mini Math Zoo</h3>
+          <div class="genre-engine">Project Type: Recruitment Design Task Submission • Genre: Children’s Educational / Early Math Learning / Puzzle • Target: 5+ (Pre-readers & Early Learners) • Platform: Mobile (Primary), PC (Expandable) • 2D Drag-and-Drop Learning Experience</div>
+          <p>Mini Math Zoo is a story driven educational game concept developed as part of a recruitment design assignment. The task was to enhance a basic “Sort & Count” prototype without altering its core mechanics. I reimagined it as a zoo management adventure where players become a Junior Zookeeper, sorting animals into habitats, counting them, and comparing groups to keep the zoo running smoothly. The design focuses on pre-reader-friendly UI, emotional engagement, and pedagogy first interaction to make early math learning meaningful, intuitive, and fun.</p>
+          <div class="buttons-container">
+            <a href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/Mini%20Math%20Zoo%20Game%20Design%20Book%20Janeshwaran%20R_compressed.pdf" target="_blank" class="btn">VIEW BOOK</a>
+          </div>
+        </div>
+
+        <div class="card" data-tilt>
           <h3>CALYNXX: THE LAST RIDE</h3>
           <div class="genre-engine">Genre: Adventure / Exploration • Mobile/PC Concept Book</div>
           <p>After a brutal medieval war, a legendary knight dies weeks after victory. His loyal war horse, Calynxx, does not understand death. Believing its master is alive somewhere in the kingdom, Calynxx begins a journey to find him.</p>
@@ -470,9 +445,7 @@
         </div>
       </div>
     </div>
-
   </main>
-
   <!-- Narrative Beat Sheet Modal -->
   <div id="beatSheetModal" class="modal">
     <div class="modal-content">
@@ -515,7 +488,6 @@
       </div>
     </div>
   </div>
-
   <!-- Trailer Modal -->
   <div id="trailerModal" class="modal">
     <div class="modal-content">
@@ -532,7 +504,6 @@
       </div>
     </div>
   </div>
-
   <!-- Pitch PPT Modal -->
   <div id="pitchModal" class="modal">
     <div class="modal-content">
@@ -549,7 +520,6 @@
       </div>
     </div>
   </div>
-
   <script>
     function openBeatSheetModal() {
       document.getElementById("beatSheetModal").style.display = "flex";
@@ -578,7 +548,6 @@
         if (video) video.pause();
       }
     };
-
     const cursor = document.getElementById('cursor');
     const trail = document.getElementById('trail');
     let mx = 0, my = 0, cx = 0, cy = 0;
@@ -593,12 +562,10 @@
       requestAnimationFrame(animate);
     }
     animate();
-
     document.querySelectorAll('a, .btn, .card').forEach(el => {
       el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
-
     document.querySelectorAll('[data-tilt]').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
@@ -612,7 +579,6 @@
         card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) scale(1)';
       });
     });
-
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('show');
