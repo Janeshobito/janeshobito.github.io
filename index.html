@@ -11,18 +11,70 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;background:var(--bg);color:#fff;font-family:Montserrat,sans-serif;overflow-x:hidden}
 html{scroll-behavior:smooth}
-/* Cursor */
-#cursor{position:fixed;width:38px;height:38px;border:2px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:all .15s;backdrop-filter:invert(1);mix-blend-mode:difference}
+
+/* --- THE VOID SLASH ENTRANCE --- */
+#slash-overlay {
+    position: fixed; inset: 0; background: #000; z-index: 100000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    overflow: hidden; transition: opacity 0.6s ease-in-out;
+}
+.blade {
+    position: absolute; background: #fff; height: 4px; width: 150%;
+    box-shadow: 0 0 20px #fff, 0 0 40px var(--accent); opacity: 0;
+    z-index: 100001; pointer-events: none;
+}
+.b1 { transform: rotate(-45deg) translateX(-100%); }
+.b2 { transform: rotate(45deg) translateX(100%); }
+
+.init-btn {
+    padding: 22px 60px; background: transparent; color: #fff;
+    border: 1px solid rgba(255,255,255,0.2); font-family: 'Anton';
+    font-size: 24px; letter-spacing: 8px; cursor: pointer; z-index: 10;
+    transition: all 0.4s; position: relative;
+}
+.init-btn:hover { border-color: var(--accent); color: var(--accent); letter-spacing: 12px; text-shadow: 0 0 20px var(--accent); }
+
+/* Animation Classes */
+body.slashed .b1 { animation: slashStrike1 0.4s ease-out forwards; opacity: 1; }
+body.slashed .b2 { animation: slashStrike2 0.4s ease-out 0.1s forwards; opacity: 1; }
+body.slashed #slash-overlay { opacity: 0; pointer-events: none; transition-delay: 0.8s; }
+body.slashed { animation: shake 0.3s ease-in-out 0.4s; }
+body.slashed .main-reveal { animation: revealContent 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s; }
+
+@keyframes slashStrike1 { 0% { transform: rotate(-45deg) translateX(-100%); } 100% { transform: rotate(-45deg) translateX(100%); } }
+@keyframes slashStrike2 { 0% { transform: rotate(45deg) translateX(100%); } 100% { transform: rotate(45deg) translateX(-100%); } }
+@keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 10px); } 50% { transform: translate(10px, -10px); } }
+@keyframes revealContent {
+    0% { opacity: 0; filter: blur(30px) brightness(5); transform: scale(1.1); }
+    100% { opacity: 1; filter: blur(0) brightness(1); transform: scale(1); }
+}
+
+/* --- FIXED NAVIGATION (CENTERED) --- */
+.nav {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 9999; display: flex; gap: 18px; padding: 16px 36px; 
+    background: rgba(10,10,11,0.94); border-radius: 60px;
+    border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(24px); 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0; pointer-events: none;
+}
+body.slashed .nav { opacity: 1; pointer-events: auto; transition-delay: 1s; }
+.nav:hover { transform: translateX(-50%) translateY(-5px); }
+.pill{color:#ccc;text-decoration:none;padding:10px 24px;border-radius:40px;font-size:15px;font-weight:600;transition:all .4s}
+.pill:hover{color:#fff;background:rgba(229,57,53,0.15);border:1px solid var(--accent)}
+
+/* --- ORIGINAL STYLES PRESERVED --- */
+#cursor{position:fixed;width:38px;height:38px;border:2px solid var(--accent);border-radius:50%;pointer-events:none;z-index:110000;transform:translate(-50%,-50%);transition:all .15s;backdrop-filter:invert(1);mix-blend-mode:difference}
 #cursor.hover{transform:translate(-50%,-50%) scale(2.5);background:var(--accent);border-color:transparent}
-#trail{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9998;opacity:0.7;filter:blur(4px)}
-/* Floating Blobs */
+#trail{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:109999;opacity:0.7;filter:blur(4px)}
 .blobs{position:fixed;inset:0;overflow:hidden;z-index:-1}
 .blob{position:absolute;border-radius:50%;filter:blur(140px);opacity:0.22;animation:drift 40s infinite linear}
 .blob:nth-child(1){width:900px;height:900px;background:var(--accent);top:-25%;left:-20%;animation-duration:45s}
 .blob:nth-child(2){width:700px;height:700px;background:var(--purple);bottom:-15%;right:-10%;animation-duration:55s}
 .blob:nth-child(3){width:800px;height:800px;background:var(--cyan);top:30%;left:40%;animation-duration:50s}
 @keyframes drift{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(250px,200px) rotate(180deg)}}
-/* Hero */
+
 .hero{height:100vh;position:relative;overflow:hidden}
 .hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.65}
 .hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 20px}
@@ -31,12 +83,7 @@ html{scroll-behavior:smooth}
 .title-big span{font-size:0.45em;position:relative;top:24px;left:8px;opacity:0.9}
 @keyframes fadeIn{to{opacity:1}}
 @keyframes titleRise{to{opacity:1;transform:translateY(0)}}
-/* Nav */
-.nav{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:18px;padding:16px 36px; background:rgba(10,10,11,0.94);border-radius:60px;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(24px); box-shadow:0 10px 40px rgba(0,0,0,0.6);transition:all .4s cubic-bezier(0.175,0.885,0.32,1.275)}
-.nav:hover{transform:translateX(-50%) translateY(-10px) scale(1.05)}
-.pill{color:#ccc;text-decoration:none;padding:10px 24px;border-radius:40px;font-size:15px;font-weight:600;transition:all .4s}
-.pill:hover{color:#fff;background:rgba(229,57,53,0.15);border:1px solid var(--accent)}
-/* Sections */
+
 section{padding:160px 20px;max-width:1400px;margin:auto;text-align:center;position:relative}
 h2{font-family:Anton;font-size:clamp(50px,8vw,90px);margin-bottom:70px; background:linear-gradient(120deg,#e53935,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent; opacity:0;transform:translateY(50px)}
 h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.355,1)}
@@ -45,45 +92,35 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 .text-reveal.show span{transform:none;opacity:1}
 .fade-in{opacity:0;transform:translateY(80px);transition:opacity 1.4s ease-out,transform 1.4s ease-out}
 .fade-in.show{opacity:1;transform:none}
+
 .intro-block{max-width:1000px;margin:0 auto 100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1); border-radius:24px;padding:60px 50px;backdrop-filter:blur(14px);transition:transform .6s;position:relative;z-index:2}
 .intro-block:hover{transform:translateY(-12px) scale(1.02)}
 .big-btn{display:inline-block;padding:20px 56px;background:var(--accent);color:#fff;border-radius:60px; font-size:19px;font-weight:800;text-decoration:none;position:relative;overflow:hidden;transition:all .5s;z-index:2}
 .big-btn::before{content:'';position:absolute;inset:0;background:#c62828;transform:translateY(100%);transition:transform .5s;z-index:-1}
 .big-btn:hover::before{transform:translateY(0)}
-/* New: Resume & CV buttons */
+
 .resume-cv-container {display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 50px;}
 .resume-btn, .cv-btn {
-  display: inline-block;
-  padding: 16px 48px;
-  background: var(--purple);
-  color: #fff;
-  border-radius: 60px;
-  font-size: 17px;
-  font-weight: 700;
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-  transition: all .4s;
+  display: inline-block; padding: 16px 48px; background: var(--purple); color: #fff;
+  border-radius: 60px; font-size: 17px; font-weight: 700; text-decoration: none;
+  position: relative; overflow: hidden; transition: all .4s;
 }
 .resume-btn {background: var(--accent);}
 .cv-btn {background: var(--purple);}
 .resume-btn::before, .cv-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.2);
-  transform: translateY(100%);
-  transition: transform .4s;
-  z-index: -1;
+  content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.2);
+  transform: translateY(100%); transition: transform .4s; z-index: -1;
 }
 .resume-btn:hover::before, .cv-btn:hover::before {transform: translateY(0);}
 .resume-btn:hover, .cv-btn:hover {transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.5);}
+
 .about-grid{display:grid;grid-template-columns:1fr 2fr;gap:70px;align-items:start;max-width:1200px;margin:auto;position:relative;z-index:2}
 .about-img{border-radius:20px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.7);transition:transform .8s}
 .about-img:hover{transform:scale(1.04)}
 .tag{background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);font-size:14px}
 .social-icons a{font-size:46px;color:#999;transition:all .6s cubic-bezier(0.175,0.885,0.32,1.275)}
 .social-icons a:hover{color:var(--accent);transform:scale(1.5) translateY(-16px)!important;filter:drop-shadow(0 0 20px var(--accent))}
+
 @media(max-width:900px){
  .about-grid{grid-template-columns:1fr}
  .intro-block{padding:40px 24px}
@@ -93,11 +130,26 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </style>
 </head>
 <body>
+
+<div id="slash-overlay">
+    <div class="blade b1"></div>
+    <div class="blade b2"></div>
+    <button class="init-btn" onclick="triggerSlash()">INITIALIZE LINK</button>
+</div>
+
+<nav class="nav">
+<a href="#about" class="pill">ABOUT</a>
+<a href="projects.html" class="pill">PROJECTS</a>
+<a href="novels.html" class="pill">NOVELS</a>
+<a href="#contact" class="pill">CONTACT</a>
+</nav>
+
+<div class="main-reveal" style="opacity: 0;">
+
 <div id="cursor"></div>
 <div id="trail"></div>
 <div class="blobs"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
 
-<!-- Hero -->
 <section class="hero">
 <video autoplay loop muted playsinline src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/video0001-0300.mp4"></video>
 <div class="hero-content">
@@ -107,15 +159,6 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </div>
 </section>
 
-<!-- Nav -->
-<nav class="nav">
-<a href="#about" class="pill">ABOUT</a>
-<a href="projects.html" class="pill">PROJECTS</a>
-<a href="novels.html" class="pill">NOVELS</a>
-<a href="#contact" class="pill">CONTACT</a>
-</nav>
-
-<!-- ABOUT ME -->
 <section id="about" style="position:relative;overflow:hidden;background:var(--bg);">
 <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.52;z-index:0;" src="https://files.catbox.moe/aky7yi.mp4"></video>
 <div style="position:absolute;inset:0;background:rgba(10,10,11,0.84);z-index:1;"></div>
@@ -143,7 +186,6 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 <p style="margin-top:16px"><strong>M.Sc Game Technology</strong> — ICAT Design & Media College, Chennai (2024–Present)</p>
 </div>
 
-<!-- NEW BUTTONS -->
 <div class="resume-cv-container">
   <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank" class="resume-btn">View Resume</a>
   <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf" target="_blank" class="cv-btn">View CV</a>
@@ -154,7 +196,6 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </div>
 </section>
 
-<!-- PROJECTS -->
 <section style="position:relative;overflow:hidden;background:var(--bg);">
 <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.55;z-index:0;" src="https://files.catbox.moe/o6icxy.mp4"></video>
 <div style="position:absolute;inset:0;background:rgba(10,10,11,0.80);z-index:1;"></div>
@@ -171,7 +212,6 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </div>
 </section>
 
-<!-- NOVELS -->
 <section style="position:relative;overflow:hidden;background:var(--bg);">
 <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.50;z-index:0;" src="https://files.catbox.moe/sl8158.mp4"></video>
 <div style="position:absolute;inset:0;background:rgba(10,10,11,0.82);z-index:1;"></div>
@@ -186,7 +226,6 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </div>
 </section>
 
-<!-- PORTFOLIO ARTIFACT (Narrative Designer / Game Narrative) -->
 <section style="position:relative;overflow:hidden;background:var(--bg);">
 <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.52;z-index:0;" src="https://files.catbox.moe/aky7yi.mp4"></video>
 <div style="position:absolute;inset:0;background:rgba(10,10,11,0.84);z-index:1;"></div>
@@ -218,14 +257,12 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact" style="position:relative;overflow:hidden;background:var(--bg);">
 <video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.48;z-index:0;" src="https://github.com/Janeshobito/Janeshobito.github.io/blob/main/myFolder/campfire-watermarked_w7o6vg.mp4?raw=true"></video>
 <div style="position:absolute;inset:0;background:rgba(10,10,11,0.82);z-index:1;"></div>
 <div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, var(--bg) 100%);z-index:1;"></div>
 <div style="position:relative;z-index:2;">
 <h2 class="text-reveal"><span>LET'S CREATE SOMETHING DARK</span></h2>
-<p style="font-size:21px;color:#bbb;max-width:800px;margin:0 auto 60px"> Available for game dev collaborations, 3D commissions, narrative design, or just to talk dark fantasy. </p>
 <div class="social-icons fade-in" style="display:flex;gap:50px;justify-content:center;margin-top:60px">
 <a href="https://www.artstation.com/janeshobito283" target="_blank"><i class="fab fa-artstation"></i></a>
 <a href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin"></i></a>
@@ -239,32 +276,39 @@ h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.3
 </div>
 </section>
 
-<script>
+</div> <script>
+function triggerSlash() {
+    // Sharp blade sound
+    const audio = new Audio('https://www.fesliyanstudios.com/play-mp3/6373'); 
+    audio.volume = 0.5;
+    audio.play();
+    document.body.classList.add('slashed');
+}
+
+// ORIGINAL CURSOR LOGIC
 const cursor = document.getElementById('cursor');
 const trail = document.getElementById('trail');
 let mx = 0, my = 0, cx = 0, cy = 0;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX;
-  my = e.clientY;
-});
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 function animate() {
-  cx += (mx - cx) * 0.16;
-  cy += (my - cy) * 0.16;
-  cursor.style.left = cx + 'px';
-  cursor.style.top = cy + 'px';
-  trail.style.left = mx + 'px';
-  trail.style.top = my + 'px';
-  requestAnimationFrame(animate);
+ cx += (mx - cx) * 0.16;
+ cy += (my - cy) * 0.16;
+ cursor.style.left = cx + 'px';
+ cursor.style.top = cy + 'px';
+ trail.style.left = mx + 'px';
+ trail.style.top = my + 'px';
+ requestAnimationFrame(animate);
 }
 animate();
-document.querySelectorAll('a, .big-btn, img, .resume-btn, .cv-btn').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+
+document.querySelectorAll('a, .big-btn, img, .resume-btn, .cv-btn, .init-btn, .pill').forEach(el => {
+ el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+ el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
 });
+
+// SCROLL OBSERVER
 const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('show');
-  });
+ entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('show'); });
 }, { threshold: 0.15 });
 document.querySelectorAll('h2, .fade-in, .intro-block, .about-grid').forEach(el => observer.observe(el));
 </script>
