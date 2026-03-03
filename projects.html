@@ -128,6 +128,10 @@
       color: #aaa;
       text-align: center;
       margin-bottom: 60px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
     }
     .grid {
       display: grid;
@@ -351,7 +355,6 @@
     <a href="index.html#contact" class="pill">CONTACT</a>
   </nav>
   <main class="main-content">
-    <!-- GAME PROJECTS -->
     <div class="fade-in">
       <h2 class="section-title">GAME PROJECTS</h2>
       <p class="section-subtitle">Fully playable games built from scratch</p>
@@ -397,7 +400,6 @@
       </div>
     </div>
 
-    <!-- GAME BREAKDOWNS -->
     <div class="fade-in">
       <h2 class="section-title">GAME BREAKDOWNS</h2>
       <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
@@ -421,7 +423,6 @@
       </div>
     </div>
 
-    <!-- GAME CONCEPT BOOKS -->
     <div class="fade-in">
       <h2 class="section-title concept-title">GAME CONCEPT BOOKS</h2>
       <p class="section-subtitle concept-subtitle">Complete game design documents & concept books</p>
@@ -445,9 +446,63 @@
         </div>
       </div>
     </div>
+
+    <div class="fade-in">
+      <h2 class="section-title">AI GEN CREATION</h2>
+      <p class="section-subtitle">I create and explore cutting-edge AI video and image tools, constantly experimenting with new techniques and visual styles. Here are some of my recent works that showcase my creativity and passion for AI-driven content creation.</p>
+      <div class="grid">
+        <div class="card" data-tilt>
+          <h3>PIXEL HORSE GAME TRAILER</h3>
+          <div class="genre-engine">Tool: Gemini AI</div>
+          <p>A Trailer For My New 2d Pixel Story Platformer Game</p>
+          <div class="buttons-container">
+            <button class="btn" onclick="openVideoModal('pixelHorseModal')">VIEW VIDEO</button>
+          </div>
+        </div>
+
+        <div class="card" data-tilt>
+          <h3>THE LAST DESIRE I WISH DIDN'T HAPPEN</h3>
+          <div class="genre-engine">Tool: Gemini AI</div>
+          <p>Trailer for new launching novel</p>
+          <div class="buttons-container">
+            <button class="btn" onclick="openVideoModal('lastDesireModal')">VIEW VIDEO</button>
+          </div>
+        </div>
+
+        <div class="card" data-tilt>
+          <h3>BEAST REBIRTH ASCENDING AS ALIEN X</h3>
+          <div class="genre-engine">Tools: Gemini Ai, Sora Ai, ChatGPT</div>
+          <p>Trailer for new coming Novel</p>
+          <div class="buttons-container">
+            <button class="btn" onclick="openVideoModal('beastRebirthModal')">VIEW VIDEO</button>
+          </div>
+        </div>
+
+        <div class="card" data-tilt>
+          <h3>F1 JET CHAPTER 8: THE ABSENCE</h3>
+          <div class="genre-engine">Tools: Gemini Ai, Boba Ai, ChatGPT</div>
+          <p>Particular Scene of Novel Chapter 8</p>
+          <div class="buttons-container">
+            <button class="btn" onclick="openVideoModal('f1Jet1')">VIDEO 1</button>
+            <button class="btn" onclick="openVideoModal('f1Jet2')">VIDEO 2</button>
+            <button class="btn" onclick="openVideoModal('f1Jet3')">VIDEO 3</button>
+          </div>
+        </div>
+
+        <div class="card" data-tilt>
+          <h3>WOMAN STANDING ON THE HILL</h3>
+          <div class="genre-engine">Tools: ChatGpt, Gemini Ai, Boba Ai</div>
+          <p>A woman on a hill chilling and enjoying nature (Anime Style)</p>
+          <div class="buttons-container">
+            <button class="btn" onclick="openVideoModal('hillWoman1')">VIEW 1</button>
+            <button class="btn" onclick="openVideoModal('hillWoman2')">VIEW 2</button>
+            <button class="btn" onclick="openVideoModal('hillWoman3')">VIEW 3</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <!-- Narrative Beat Sheet Modal -->
   <div id="beatSheetModal" class="modal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeBeatSheetModal()" aria-label="Close">×</button>
@@ -490,39 +545,20 @@
     </div>
   </div>
 
-  <!-- Trailer Modal -->
-  <div id="trailerModal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeVideoModal('trailerModal')" aria-label="Close">×</button>
-      <header class="modal-header">
-        <h2>WRATH OF THE NIGHT</h2>
-        <p class="modal-subtitle">Trailer</p>
-      </header>
-      <div class="video-container">
-        <video controls autoplay>
-          <source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Wrath%20of%20the%20Night%20Trailer.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-  </div>
+  <div id="trailerModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('trailerModal')">×</button><header class="modal-header"><h2>WRATH OF THE NIGHT</h2><p class="modal-subtitle">Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Wrath%20of%20the%20Night%20Trailer.mp4" type="video/mp4"></video></div></div></div>
+  <div id="pitchModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('pitchModal')">×</button><header class="modal-header"><h2>WRATH OF THE NIGHT</h2><p class="modal-subtitle">Game Pitch PPT</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Video%20Project.mp4" type="video/mp4"></video></div></div></div>
+  <div id="pixelHorseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('pixelHorseModal')">×</button><header class="modal-header"><h2>PIXEL HORSE</h2><p class="modal-subtitle">AI Generated Game Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Pixel_Horse_Biome_Transition_Video.mp4" type="video/mp4"></video></div></div></div>
+  <div id="lastDesireModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('lastDesireModal')">×</button><header class="modal-header"><h2>THE LAST DESIRE</h2><p class="modal-subtitle">Novel Launch Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%2045.mp4" type="video/mp4"></video></div></div></div>
+  
+  <div id="beastRebirthModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('beastRebirthModal')">×</button><header class="modal-header"><h2>BEAST REBIRTH</h2><p class="modal-subtitle">Novel Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Cinematic_Manhwa_Intro_Prompt.mp4" type="video/mp4"></video></div></div></div>
 
-  <!-- Pitch PPT Modal -->
-  <div id="pitchModal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeVideoModal('pitchModal')" aria-label="Close">×</button>
-      <header class="modal-header">
-        <h2>WRATH OF THE NIGHT</h2>
-        <p class="modal-subtitle">Game Pitch PPT</p>
-      </header>
-      <div class="video-container">
-        <video controls autoplay>
-          <source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Video%20Project.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-  </div>
+  <div id="f1Jet1" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('f1Jet1')">×</button><header class="modal-header"><h2>F1 JET</h2><p class="modal-subtitle">Chapter 8 Scene - Video 1</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%206.mp4" type="video/mp4"></video></div></div></div>
+  <div id="f1Jet2" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('f1Jet2')">×</button><header class="modal-header"><h2>F1 JET</h2><p class="modal-subtitle">Chapter 8 Scene - Video 2</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%203.mp4" type="video/mp4"></video></div></div></div>
+  <div id="f1Jet3" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('f1Jet3')">×</button><header class="modal-header"><h2>F1 JET</h2><p class="modal-subtitle">Chapter 8 Scene - Video 3</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%201.mp4" type="video/mp4"></video></div></div></div>
+
+  <div id="hillWoman1" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('hillWoman1')">×</button><header class="modal-header"><h2>HILL SIDE</h2><p class="modal-subtitle">Enjoying Nature - View 1</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/86c28cfa-0a27-44da-a736-341c8bad23fa_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+  <div id="hillWoman2" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('hillWoman2')">×</button><header class="modal-header"><h2>HILL SIDE</h2><p class="modal-subtitle">Enjoying Nature - View 2</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/c6c8346c-7069-42c1-8776-55fc010b8f0_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+  <div id="hillWoman3" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('hillWoman3')">×</button><header class="modal-header"><h2>HILL SIDE</h2><p class="modal-subtitle">Enjoying Nature - View 3</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/fe4305d2-94ab-4d85-8b7b-04252903bb22_fullscreen.mp4" type="video/mp4"></video></div></div></div>
 
   <script>
     function openBeatSheetModal() {
