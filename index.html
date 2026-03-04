@@ -6,611 +6,525 @@
 <title>Janeshwaran R — Portfolio 2025</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
-/* =============================================
-   TOKENS
-   ============================================= */
+
+/* ─── TOKENS ─────────────────────────────────── */
 :root {
-  --bg:        #080809;
-  --bg-card:   rgba(255,255,255,0.03);
-  --border:    rgba(255,255,255,0.08);
-  --border-em: rgba(229,57,53,0.45);
-  --red:       #e53935;
-  --red-soft:  rgba(229,57,53,0.10);
-  --white:     #f0f0ee;
-  --muted:     #6b6e7e;
-  --dim:       #2d2f3a;
-  --fd:        'Oswald', sans-serif;
-  --fb:        'DM Sans', sans-serif;
+  --bg:       #060608;
+  --card:     rgba(255,255,255,0.03);
+  --border:   rgba(255,255,255,0.07);
+  --bdr-red:  rgba(229,57,53,0.4);
+  --red:      #e53935;
+  --red-soft: rgba(229,57,53,0.10);
+  --white:    #ededeb;
+  --muted:    #656878;
+  --dim:      #252733;
+  --fd: 'Oswald', sans-serif;
+  --fb: 'DM Sans', sans-serif;
 }
-
-/* =============================================
-   RESET + BASE
-   ============================================= */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
-  color: var(--white);
-  font-family: var(--fb);
-  font-weight: 300;
-  overflow-x: hidden;
-  cursor: none;
+  background: var(--bg); color: var(--white);
+  font-family: var(--fb); font-weight: 300;
+  overflow-x: hidden; cursor: none;
 }
 
-/* =============================================
-   CURSOR
-   ============================================= */
+/* ─── CURSOR ─────────────────────────────────── */
 #cur {
-  position: fixed;
-  width: 10px; height: 10px;
-  background: var(--red);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 999999;
-  transform: translate(-50%,-50%);
-  transition: transform .15s, width .3s, height .3s, background .3s;
+  position:fixed; width:9px; height:9px;
+  background:var(--red); border-radius:50%;
+  pointer-events:none; z-index:999999;
+  transform:translate(-50%,-50%);
 }
 #cur-ring {
-  position: fixed;
-  width: 34px; height: 34px;
-  border: 1px solid rgba(229,57,53,0.6);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 999998;
-  transform: translate(-50%,-50%);
+  position:fixed; width:32px; height:32px;
+  border:1px solid rgba(229,57,53,0.55); border-radius:50%;
+  pointer-events:none; z-index:999998;
+  transform:translate(-50%,-50%);
+  transition: transform .08s, border-color .3s;
 }
-body.on-link #cur { transform: translate(-50%,-50%) scale(2.5); }
-body.on-link #cur-ring { transform: translate(-50%,-50%) scale(1.4); border-color: var(--red); }
+body.hov #cur-ring { transform:translate(-50%,-50%) scale(1.8); border-color:var(--red); }
 
-/* =============================================
-   LOADER  — split-panel cinematic entrance
-   ============================================= */
-#loader {
-  position: fixed; inset: 0; z-index: 99999;
-  display: flex;
-  pointer-events: all;
-}
-.loader-panel {
-  flex: 1; background: #000;
-  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
-}
-.loader-panel:first-child  { transform-origin: left;  }
-.loader-panel:last-child   { transform-origin: right; }
-
-/* content inside loader */
-.loader-inner {
-  position: fixed; inset: 0; z-index: 100000;
+/* ─── PROFESSIONAL ENTRANCE ──────────────────── */
+#intro {
+  position: fixed; inset: 0; z-index: 999990;
+  background: #000;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 28px; pointer-events: none;
+  pointer-events: all;
 }
-.loader-name {
-  font-family: var(--fd);
-  font-size: clamp(36px, 7vw, 80px);
-  font-weight: 700;
-  letter-spacing: 14px;
-  color: #fff;
-  text-transform: uppercase;
-  opacity: 0;
-  animation: loader-fade-in 0.6s ease 0.3s forwards;
-}
-.loader-name span { color: var(--red); }
-.loader-role {
-  font-family: var(--fb);
-  font-size: 11px;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  color: var(--muted);
-  opacity: 0;
-  animation: loader-fade-in 0.5s ease 0.7s forwards;
-}
-.loader-bar-wrap {
-  width: min(380px, 80vw);
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  animation: loader-fade-in 0.4s ease 0.5s forwards;
-}
-.loader-bar-fill {
-  position: absolute;
-  inset: 0;
+
+/* thin red horizontal rule that draws itself first */
+.intro-rule {
+  width: 0; height: 1px;
   background: var(--red);
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: bar-fill 1.4s cubic-bezier(0.77, 0, 0.175, 1) 0.6s forwards;
+  animation: rule-draw 0.7s cubic-bezier(0.77,0,0.175,1) 0.2s forwards;
+  position: absolute;
 }
-@keyframes loader-fade-in { to { opacity: 1; } }
-@keyframes bar-fill { to { transform: scaleX(1); } }
+@keyframes rule-draw { to { width: min(480px, 70vw); } }
 
-/* slide panels away */
-body.loaded .loader-panel:first-child { transform: translateX(-100%); }
-body.loaded .loader-panel:last-child  { transform: translateX(100%);  }
-body.loaded .loader-inner { opacity: 0; transition: opacity 0.3s ease; }
-body.loaded #loader       { pointer-events: none; }
-
-/* =============================================
-   NAV
-   ============================================= */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 9000;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 48px;
+/* name fades + rises cleanly */
+.intro-name {
+  font-family: var(--fd);
+  font-size: clamp(38px, 7.5vw, 96px);
+  font-weight: 700; letter-spacing: 14px;
+  text-transform: uppercase; color: #fff;
+  text-align: center; position: relative; z-index: 2;
   opacity: 0;
-  transition: opacity 0.6s ease 0.3s, background 0.4s;
+  animation: intro-rise 0.8s cubic-bezier(0.215,0.61,0.355,1) 0.7s forwards;
 }
-body.loaded .nav { opacity: 1; }
-.nav.scrolled {
-  background: rgba(8,8,9,0.92);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+.intro-name em { font-style: normal; color: var(--red); }
+@keyframes intro-rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* role line */
+.intro-role {
+  font-size: 11px; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--muted); margin-top: 18px;
+  opacity: 0; position: relative; z-index: 2;
+  animation: intro-rise 0.6s ease 1.1s forwards;
+}
+
+/* thin progress bar */
+.intro-bar-wrap {
+  width: min(480px, 70vw); height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin-top: 40px; overflow: hidden;
+  opacity: 0; position: relative; z-index: 2;
+  animation: intro-rise 0.4s ease 0.9s forwards;
+}
+.intro-bar {
+  height: 1px; background: var(--red);
+  transform: scaleX(0); transform-origin: left;
+  animation: bar-run 1.4s cubic-bezier(0.77,0,0.175,1) 1s forwards;
+}
+@keyframes bar-run  { to { transform: scaleX(1); } }
+@keyframes fade-up  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+/* percentage counter */
+.intro-pct {
+  font-family: var(--fd); font-size: 11px; letter-spacing: 4px;
+  color: var(--red); margin-top: 14px;
+  opacity: 0; position: relative; z-index: 2;
+  animation: intro-rise 0.4s ease 1s forwards;
+}
+
+/* exit: whole overlay fades, no panel split */
+#intro { transition: opacity 0.6s ease; }
+#intro.gone { opacity: 0; pointer-events: none; }
+
+/* ─── NAV ────────────────────────────────────── */
+.nav {
+  position:fixed; top:0; left:0; right:0; z-index:9000;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 52px;
+  opacity:0; pointer-events:none;
+  transition: opacity .5s ease .2s, background .4s, padding .4s;
+}
+body.entered .nav { opacity:1; pointer-events:auto; }
+.nav.bg {
+  background:rgba(6,6,8,0.94);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding-top:14px; padding-bottom:14px;
 }
 .nav-logo {
-  font-family: var(--fd);
-  font-size: 20px; font-weight: 700; letter-spacing: 4px;
-  color: var(--white); text-decoration: none;
+  font-family:var(--fd); font-size:19px; font-weight:700; letter-spacing:4px;
+  color:var(--white); text-decoration:none;
 }
-.nav-logo span { color: var(--red); }
-.nav-links { display: flex; align-items: center; gap: 6px; }
-.nav-link {
-  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--muted); text-decoration: none; padding: 8px 18px;
-  border-radius: 4px;
-  transition: color 0.3s, background 0.3s;
+.nav-logo span { color:var(--red); }
+.nav-links { display:flex; align-items:center; gap:4px; }
+.nl {
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted); text-decoration:none;
+  padding:8px 16px; border-radius:3px; transition:color .3s;
 }
-.nav-link:hover { color: var(--white); }
-.nav-link.cta {
-  color: var(--white);
-  border: 1px solid var(--border-em);
-  margin-left: 8px;
-  padding: 8px 22px;
+.nl:hover { color:var(--white); }
+.nl.act   { color:var(--white); }
+.nl.cta   {
+  color:var(--white); border:1px solid var(--bdr-red);
+  padding:8px 22px; margin-left:8px;
+  transition: background .3s, border-color .3s;
 }
-.nav-link.cta:hover { background: var(--red-soft); border-color: var(--red); }
+.nl.cta:hover { background:var(--red-soft); border-color:var(--red); }
 
-/* =============================================
-   HERO
-   ============================================= */
+/* ─── HERO ───────────────────────────────────── */
 .hero {
-  height: 100vh; min-height: 700px;
-  position: relative; overflow: hidden;
-  display: flex; align-items: flex-end;
+  height:100vh; min-height:700px;
+  position:relative; overflow:hidden;
+  display:flex; align-items:flex-end;
 }
-.hero-video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%; object-fit: cover;
-  opacity: 0.5;
+.hero-vid {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; opacity:.5;
+  will-change:transform; /* parallax target */
 }
-.hero-fade-bottom {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
-  background: linear-gradient(to bottom, transparent, var(--bg));
-  z-index: 1;
+.hero-fade-bot {
+  position:absolute; bottom:0; left:0; right:0; height:55%;
+  background:linear-gradient(to bottom,transparent,var(--bg)); z-index:1;
 }
-.hero-fade-sides {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, transparent 50%, rgba(8,8,9,0.7) 100%);
-  z-index: 1;
+.hero-vignette {
+  position:absolute; inset:0; z-index:1;
+  background:radial-gradient(ellipse at center,transparent 45%,rgba(6,6,8,.75) 100%);
 }
-
 .hero-content {
-  position: relative; z-index: 2;
-  padding: 0 48px 72px;
-  max-width: 1300px; width: 100%; margin: 0 auto;
+  position:relative; z-index:2;
+  padding:0 52px 72px;
+  max-width:1300px; width:100%; margin:0 auto;
+  opacity:0;
+  transition: opacity .8s ease;
 }
-.hero-eyebrow {
-  font-size: 11px; letter-spacing: 6px; color: var(--red);
-  text-transform: uppercase; margin-bottom: 18px;
-  display: flex; align-items: center; gap: 14px;
+body.entered .hero-content { opacity:1; transition-delay:.4s; }
+.hero-eye {
+  font-size:11px; letter-spacing:7px; color:var(--red); text-transform:uppercase;
+  margin-bottom:16px; display:flex; align-items:center; gap:12px;
 }
-.hero-eyebrow::before {
-  content: ''; display: inline-block;
-  width: 28px; height: 1px; background: var(--red);
-}
+.hero-eye::before { content:''; display:inline-block; width:28px; height:1px; background:var(--red); }
 .hero-name {
-  font-family: var(--fd);
-  font-size: clamp(52px, 10vw, 140px);
-  font-weight: 700; line-height: 0.9;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--white);
+  font-family:var(--fd);
+  font-size:clamp(54px,11vw,150px);
+  font-weight:700; line-height:.88; letter-spacing:2px; text-transform:uppercase;
+  color:var(--white);
 }
 .hero-name em {
-  font-style: normal;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.4);
-  color: transparent;
+  font-style:normal;
+  -webkit-text-stroke:1px rgba(255,255,255,.35);
+  color:transparent;
 }
-.hero-bottom {
-  margin-top: 36px;
-  display: flex; align-items: flex-end;
-  justify-content: space-between; flex-wrap: wrap; gap: 24px;
+.hero-bot {
+  margin-top:34px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  flex-wrap:wrap; gap:22px;
 }
 .hero-desc {
-  font-size: 15px; line-height: 1.7;
-  color: var(--muted); max-width: 420px;
+  font-size:15px; line-height:1.75; color:var(--muted); max-width:420px;
 }
-.hero-desc strong { color: rgba(255,255,255,0.7); font-weight: 400; }
-.hero-cta-group { display: flex; gap: 14px; flex-wrap: wrap; }
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 14px 32px; background: var(--red); color: #fff;
-  font-family: var(--fb); font-size: 12px; letter-spacing: 3px;
-  text-transform: uppercase; font-weight: 500; text-decoration: none;
-  border-radius: 3px; transition: background 0.3s, transform 0.3s;
+.hero-desc strong { color:rgba(255,255,255,.65); font-weight:400; }
+.cta-row { display:flex; gap:14px; flex-wrap:wrap; }
+.btn-p {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:13px 30px; background:var(--red); color:#fff;
+  font-family:var(--fb); font-size:11px; letter-spacing:3px;
+  text-transform:uppercase; font-weight:500; text-decoration:none;
+  border-radius:3px; transition:background .3s, transform .3s;
 }
-.btn-primary:hover { background: #c62828; transform: translateY(-2px); }
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 13px 30px; background: transparent; color: var(--muted);
-  font-family: var(--fb); font-size: 12px; letter-spacing: 3px;
-  text-transform: uppercase; font-weight: 500; text-decoration: none;
-  border: 1px solid var(--border); border-radius: 3px;
-  transition: color 0.3s, border-color 0.3s;
+.btn-p:hover { background:#c62828; transform:translateY(-2px); }
+.btn-g {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:12px 28px; background:transparent; color:var(--muted);
+  font-family:var(--fb); font-size:11px; letter-spacing:3px;
+  text-transform:uppercase; font-weight:500; text-decoration:none;
+  border:1px solid var(--border); border-radius:3px;
+  transition:color .3s, border-color .3s;
 }
-.btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
-
-.hero-scroll {
-  position: absolute; bottom: 32px; right: 48px; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  font-size: 9px; letter-spacing: 4px; color: var(--dim); text-transform: uppercase;
+.btn-g:hover { color:var(--white); border-color:rgba(255,255,255,.25); }
+.scroll-hint {
+  position:absolute; bottom:30px; right:52px; z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  font-size:9px; letter-spacing:4px; color:var(--dim); text-transform:uppercase;
+  opacity:0; transition:opacity .5s ease;
 }
-.hero-scroll-line {
-  width: 1px; height: 44px;
-  background: linear-gradient(to bottom, var(--red), transparent);
-  animation: line-breathe 2.4s ease-in-out infinite;
+body.entered .scroll-hint { opacity:1; transition-delay:.8s; }
+.scroll-line {
+  width:1px; height:44px;
+  background:linear-gradient(to bottom,var(--red),transparent);
+  animation: sline 2.4s ease-in-out infinite;
 }
-@keyframes line-breathe {
-  0%,100% { opacity: 0.3; transform: scaleY(0.6); }
-  50%      { opacity: 1;   transform: scaleY(1);   }
-}
-
-/* =============================================
-   SECTION COMMONS
-   ============================================= */
-.section {
-  position: relative; overflow: hidden;
-}
-.section-bg-video {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; pointer-events: none; z-index: 0;
-}
-.section-overlay {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: rgba(8,8,9,0.82);
-}
-.section-grad-top {
-  position: absolute; top: 0; left: 0; right: 0; height: 30%;
-  background: linear-gradient(to bottom, var(--bg), transparent);
-  z-index: 2; pointer-events: none;
-}
-.section-grad-bot {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
-  background: linear-gradient(to top, var(--bg), transparent);
-  z-index: 2; pointer-events: none;
-}
-.section-inner {
-  position: relative; z-index: 3;
-  max-width: 1300px; margin: 0 auto;
-  padding: 120px 48px;
+@keyframes sline {
+  0%,100%{opacity:.25;transform:scaleY(.5)}
+  50%    {opacity:1;  transform:scaleY(1)  }
 }
 
-.section-label {
-  font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
-  color: var(--red); margin-bottom: 10px;
-  display: flex; align-items: center; gap: 12px;
+/* ─── SECTION BASE ───────────────────────────── */
+.sec { position:relative; overflow:hidden; }
+.sbv {
+  position:absolute; inset:0; width:100%; height:120%;
+  object-fit:cover; z-index:0; pointer-events:none;
+  will-change:transform; top:-10%;
 }
-.section-label::before {
-  content: ''; display: inline-block;
-  width: 24px; height: 1px; background: var(--red);
+.sov {
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:rgba(6,6,8,.83);
 }
-.section-title {
-  font-family: var(--fd);
-  font-size: clamp(40px, 6vw, 80px);
-  font-weight: 700; line-height: 0.95;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: var(--white);
+.sgt {
+  position:absolute; top:0; left:0; right:0; height:28%;
+  background:linear-gradient(to bottom,var(--bg),transparent);
+  z-index:2; pointer-events:none;
+}
+.sgb {
+  position:absolute; bottom:0; left:0; right:0; height:28%;
+  background:linear-gradient(to top,var(--bg),transparent);
+  z-index:2; pointer-events:none;
+}
+.si {
+  position:relative; z-index:3;
+  max-width:1300px; margin:0 auto; padding:120px 52px;
+}
+.slbl {
+  font-size:10px; letter-spacing:6px; text-transform:uppercase; color:var(--red);
+  margin-bottom:10px; display:flex; align-items:center; gap:12px;
+}
+.slbl::before { content:''; display:inline-block; width:22px; height:1px; background:var(--red); }
+.stitle {
+  font-family:var(--fd); font-size:clamp(42px,6vw,84px);
+  font-weight:700; line-height:.93; letter-spacing:1px; text-transform:uppercase;
+  color:var(--white);
 }
 
-/* =============================================
-   REVEAL
-   ============================================= */
-.reveal {
-  opacity: 0; transform: translateY(36px);
-  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.215,0.61,0.355,1);
-}
-.reveal.up { opacity: 1; transform: none; }
-.d1 { transition-delay: 0.08s; }
-.d2 { transition-delay: 0.16s; }
-.d3 { transition-delay: 0.24s; }
-.d4 { transition-delay: 0.32s; }
+/* ─── REVEAL ─────────────────────────────────── */
+.rv { opacity:0; transform:translateY(32px); transition:opacity .9s ease, transform .9s cubic-bezier(.215,.61,.355,1); }
+.rv.up { opacity:1; transform:none; }
+.d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s} .d4{transition-delay:.32s} .d5{transition-delay:.40s}
 
-/* =============================================
-   ABOUT
-   ============================================= */
-.about-layout {
-  margin-top: 64px;
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 72px;
-  align-items: start;
+/* ─── ABOUT ──────────────────────────────────── */
+.about-grid {
+  margin-top:60px; display:grid;
+  grid-template-columns:300px 1fr; gap:68px; align-items:start;
 }
-.about-photo-wrap {
-  position: relative;
+.photo-wrap { position:relative; }
+.photo-wrap::after {
+  content:''; position:absolute;
+  inset:14px -14px -14px 14px;
+  border:1px solid var(--bdr-red); border-radius:3px;
+  z-index:0; transition:inset .4s;
 }
-.about-photo-wrap::after {
-  content: '';
-  position: absolute;
-  inset: 12px -12px -12px 12px;
-  border: 1px solid var(--border-em);
-  border-radius: 4px;
-  z-index: 0;
-  pointer-events: none;
-  transition: inset 0.4s ease;
+.photo-wrap:hover::after { inset:8px -8px -8px 8px; }
+.photo-wrap img {
+  width:100%; border-radius:3px; display:block;
+  position:relative; z-index:1;
+  filter:grayscale(20%); transition:filter .5s;
 }
-.about-photo-wrap:hover::after { inset: 8px -8px -8px 8px; }
-.about-photo {
-  width: 100%; border-radius: 4px;
-  display: block; position: relative; z-index: 1;
-  filter: grayscale(20%);
-  transition: filter 0.5s;
-}
-.about-photo:hover { filter: grayscale(0); }
-
-.about-bio {
-  font-size: 16px; line-height: 1.85; color: #b8bacb;
-  margin-bottom: 14px;
-}
-.about-divider {
-  width: 40px; height: 1px; background: var(--red);
-  margin: 32px 0;
-}
-.skill-heading {
-  font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
-  color: var(--red); margin-bottom: 14px;
-}
-.tags {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px;
-}
+.photo-wrap:hover img { filter:grayscale(0); }
+.about-bio { font-size:15.5px; line-height:1.85; color:#b4b6c7; margin-bottom:14px; }
+.divider   { width:36px; height:1px; background:var(--red); margin:28px 0; }
+.sh { font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--red); margin-bottom:12px; }
+.tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
 .tag {
-  font-size: 12px; letter-spacing: 1px;
-  padding: 7px 16px; border-radius: 3px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  color: #9a9cb0;
-  transition: border-color 0.3s, color 0.3s;
+  font-size:12px; padding:6px 15px; border-radius:3px;
+  background:var(--card); border:1px solid var(--border); color:#8e91a4;
+  transition:border-color .3s, color .3s;
 }
-.tag:hover { border-color: rgba(229,57,53,0.3); color: var(--white); }
+.tag:hover { border-color:rgba(229,57,53,.3); color:var(--white); }
+.edu {
+  border:1px solid var(--border); border-radius:3px;
+  overflow:hidden; margin:28px 0 32px;
+}
+.edu-row { padding:16px 20px; display:flex; align-items:flex-start; gap:16px; }
+.edu-row+.edu-row { border-top:1px solid var(--border); }
+.edu-dot { width:8px; height:8px; border-radius:50%; background:var(--red); margin-top:4px; flex-shrink:0; }
+.edu-deg  { font-size:14px; font-weight:500; color:var(--white); }
+.edu-meta { font-size:12px; color:var(--muted); margin-top:3px; }
+.doc-row  { display:flex; gap:12px; flex-wrap:wrap; }
 
-.edu-wrap {
-  border: 1px solid var(--border); border-radius: 4px;
-  overflow: hidden; margin: 32px 0 36px;
+/* ─── PROJECTS ───────────────────────────────── */
+.proj-grid { margin-top:56px; display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.pc {
+  border-radius:3px; overflow:hidden;
+  border:1px solid var(--border); background:var(--card);
+  transition:border-color .4s, transform .5s cubic-bezier(.215,.61,.355,1);
+  cursor:none;
 }
-.edu-item {
-  padding: 18px 22px;
-  display: flex; align-items: flex-start; gap: 18px;
+.pc:hover { border-color:var(--bdr-red); transform:translateY(-6px); }
+.pc img {
+  width:100%; height:210px; object-fit:cover; display:block;
+  filter:saturate(.55); transition:filter .6s, transform .6s;
 }
-.edu-item + .edu-item { border-top: 1px solid var(--border); }
-.edu-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--red); margin-top: 5px; flex-shrink: 0;
-}
-.edu-degree { font-size: 14px; font-weight: 500; color: var(--white); }
-.edu-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.pc:hover img { filter:saturate(1); transform:scale(1.04); }
+.pc-body { padding:20px 24px 24px; }
+.pc-eng { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--red); margin-bottom:7px; }
+.pc-title { font-family:var(--fd); font-size:25px; font-weight:600; color:var(--white); margin-bottom:9px; }
+.pc-desc  { font-size:13px; line-height:1.7; color:var(--muted); }
 
-.doc-row { display: flex; gap: 14px; flex-wrap: wrap; }
+/* ─── NOVELS ─────────────────────────────────── */
+.nov-row {
+  margin-top:56px; display:flex; gap:16px;
+  overflow-x:auto; padding-bottom:6px;
+  scrollbar-width:thin; scrollbar-color:var(--dim) transparent;
+}
+.nc {
+  min-width:210px; flex-shrink:0; border-radius:3px; overflow:hidden;
+  border:1px solid var(--border); background:var(--card);
+  transition:border-color .4s, transform .5s; cursor:none;
+}
+.nc:hover { border-color:rgba(139,92,246,.5); transform:translateY(-8px); }
+.nc-cov-wrap { overflow:hidden; height:280px; }
+.nc-cov {
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:saturate(.5); transition:filter .6s, transform .6s;
+}
+.nc:hover .nc-cov { filter:saturate(1); transform:scale(1.07); }
+.nc-body { padding:15px 17px 18px; }
+.nc-gen  { font-size:10px; letter-spacing:3px; color:#8b5cf6; text-transform:uppercase; margin-bottom:5px; }
+.nc-title { font-family:var(--fd); font-size:17px; font-weight:600; color:var(--white); margin-bottom:12px; line-height:1.15; }
+.nc-link {
+  font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted); text-decoration:none;
+  display:flex; align-items:center; gap:5px; transition:color .3s;
+}
+.nc-link:hover { color:var(--white); }
 
-/* =============================================
-   PROJECTS PREVIEW
-   ============================================= */
-.projects-grid {
-  margin-top: 60px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-.proj-card {
-  position: relative; border-radius: 4px; overflow: hidden;
-  border: 1px solid var(--border); background: var(--bg-card);
-  transition: border-color 0.4s, transform 0.5s cubic-bezier(0.215,0.61,0.355,1);
-  cursor: none;
-}
-.proj-card:hover {
-  border-color: var(--border-em);
-  transform: translateY(-6px);
-}
-.proj-card-img {
-  width: 100%; height: 220px; object-fit: cover;
-  display: block; filter: saturate(0.6);
-  transition: filter 0.6s, transform 0.6s;
-}
-.proj-card:hover .proj-card-img { filter: saturate(1); transform: scale(1.04); }
-.proj-card-body { padding: 22px 26px 26px; }
-.proj-engine {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--red); margin-bottom: 8px;
-}
-.proj-title {
-  font-family: var(--fd); font-size: 26px; font-weight: 600;
-  letter-spacing: 1px; color: var(--white); margin-bottom: 10px;
-}
-.proj-desc {
-  font-size: 13px; line-height: 1.7; color: var(--muted);
-}
-.projects-footer {
-  margin-top: 36px; text-align: center;
-}
+/* ─── STATEMENT ──────────────────────────────── */
 
-/* =============================================
-   NOVELS PREVIEW
-   ============================================= */
-.novels-row {
-  margin-top: 60px;
-  display: flex; gap: 18px;
-  overflow-x: auto; padding-bottom: 8px;
-  scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
+/* big quote banner */
+.stmt-banner {
+  margin-top:60px;
+  padding:52px 60px;
+  border:1px solid var(--border); border-radius:3px;
+  background:var(--card);
+  position:relative; overflow:hidden;
 }
-.novel-card {
-  min-width: 220px; flex-shrink: 0;
-  border-radius: 4px; overflow: hidden;
-  border: 1px solid var(--border); background: var(--bg-card);
-  transition: border-color 0.4s, transform 0.5s;
-  cursor: none;
+.stmt-banner::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:var(--red);
 }
-.novel-card:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-8px); }
-.novel-cover-wrap { overflow: hidden; height: 290px; }
-.novel-cover { width: 100%; height: 100%; object-fit: cover; display: block;
-  filter: saturate(0.55); transition: filter 0.6s, transform 0.6s; }
-.novel-card:hover .novel-cover { filter: saturate(1); transform: scale(1.06); }
-.novel-body { padding: 16px 18px 20px; }
-.novel-genre { font-size: 10px; letter-spacing: 3px; color: #8b5cf6; text-transform: uppercase; margin-bottom: 6px; }
-.novel-title { font-family: var(--fd); font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 14px; line-height: 1.15; }
-.novel-link {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--muted); text-decoration: none;
-  display: flex; align-items: center; gap: 6px;
-  transition: color 0.3s;
+.stmt-banner blockquote {
+  font-family:var(--fd);
+  font-size:clamp(22px,3.2vw,38px); font-weight:300; line-height:1.4;
+  letter-spacing:1px; color:rgba(255,255,255,.8);
 }
-.novel-link:hover { color: var(--white); }
-.novels-footer { margin-top: 36px; text-align: center; }
-
-/* =============================================
-   STATEMENT SECTION
-   ============================================= */
-.statement-columns {
-  margin-top: 64px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border: 1px solid var(--border); border-radius: 4px;
-  overflow: hidden;
-}
-.stmt-card {
-  padding: 44px 48px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  transition: background 0.4s;
-}
-.stmt-card:nth-child(even) { border-left: 1px solid var(--border); }
-.stmt-card:nth-last-child(-n+2) { border-bottom: none; }
-.stmt-card:hover { background: rgba(255,255,255,0.025); }
-.stmt-num {
-  font-family: var(--fd); font-size: 11px;
-  letter-spacing: 4px; color: var(--dim);
-  margin-bottom: 16px;
-}
-.stmt-heading {
-  font-family: var(--fd); font-size: 22px; font-weight: 600;
-  letter-spacing: 1px; color: var(--white);
-  margin-bottom: 14px;
-}
-.stmt-bar {
-  width: 24px; height: 1px; background: var(--red);
-  margin-bottom: 18px;
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.5s ease 0.2s;
-}
-.stmt-card:hover .stmt-bar { transform: scaleX(1); }
-.stmt-body {
-  font-size: 14px; line-height: 1.8; color: var(--muted);
-}
-.statement-quote {
-  margin-top: 56px; text-align: center;
-}
-.statement-quote blockquote {
-  font-family: var(--fd);
-  font-size: clamp(22px, 3.5vw, 36px);
-  font-weight: 300; letter-spacing: 1px;
-  color: rgba(255,255,255,0.75); line-height: 1.45;
-  max-width: 820px; margin: 0 auto;
-}
-.statement-quote blockquote em { font-style: normal; color: var(--red); }
-.statement-quote cite {
-  display: block; margin-top: 18px;
-  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
-  color: var(--muted); font-style: normal;
+.stmt-banner blockquote em { font-style:normal; color:var(--red); }
+.stmt-banner cite {
+  display:block; margin-top:16px;
+  font-size:10px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--muted); font-style:normal;
 }
 
-/* =============================================
-   CONTACT
-   ============================================= */
-.contact-layout {
-  margin-top: 64px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px; align-items: center;
+/* accordion-style statement cards */
+.stmt-grid {
+  margin-top:40px;
+  display:grid; grid-template-columns:1fr 1fr; gap:0;
+  border:1px solid var(--border); border-radius:3px; overflow:hidden;
 }
-.contact-heading {
-  font-family: var(--fd);
-  font-size: clamp(44px, 6vw, 76px);
-  font-weight: 700; line-height: 0.95;
-  letter-spacing: 1px; text-transform: uppercase;
-  margin-bottom: 22px;
+.sc {
+  padding:40px 44px; border-bottom:1px solid var(--border);
+  position:relative; transition:background .4s; cursor:default;
 }
-.contact-heading em { font-style: normal; color: var(--red); }
-.contact-sub {
-  font-size: 15px; line-height: 1.7;
-  color: var(--muted); max-width: 380px;
-}
-.contact-list { display: flex; flex-direction: column; gap: 12px; }
-.contact-row {
-  display: flex; align-items: center; gap: 18px;
-  padding: 18px 22px; border-radius: 4px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  text-decoration: none; color: var(--white);
-  transition: border-color 0.3s, transform 0.4s;
-}
-.contact-row:hover { border-color: var(--border-em); transform: translateX(5px); }
-.contact-icon {
-  width: 40px; height: 40px; border-radius: 3px;
-  background: var(--red-soft); display: flex;
-  align-items: center; justify-content: center;
-  font-size: 16px; color: var(--red); flex-shrink: 0;
-}
-.contact-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 3px; }
-.contact-value { font-size: 14px; font-weight: 400; }
-.socials { display: flex; gap: 10px; margin-top: 28px; }
-.social-btn {
-  width: 46px; height: 46px; border-radius: 4px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; color: var(--muted); text-decoration: none;
-  transition: all 0.3s;
-}
-.social-btn:hover { background: var(--red-soft); border-color: var(--border-em); color: var(--red); transform: translateY(-3px); }
+.sc:nth-child(even)          { border-left:1px solid var(--border); }
+.sc:nth-last-child(-n+2)     { border-bottom:none; }
+.sc:hover { background:rgba(255,255,255,.025); }
 
-/* =============================================
-   FOOTER
-   ============================================= */
+.sc-num  { font-family:var(--fd); font-size:10px; letter-spacing:5px; color:var(--dim); margin-bottom:14px; }
+.sc-bar  {
+  width:20px; height:1px; background:var(--red); margin-bottom:14px;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .5s ease .15s;
+}
+.sc:hover .sc-bar { transform:scaleX(1); }
+.sc-head { font-family:var(--fd); font-size:21px; font-weight:600; letter-spacing:1px; color:var(--white); margin-bottom:12px; }
+.sc-icon { font-size:18px; color:var(--red); margin-bottom:14px; opacity:.7; }
+.sc-body { font-size:13.5px; line-height:1.82; color:var(--muted); }
+.sc-body ul { margin-top:12px; list-style:none; display:flex; flex-direction:column; gap:8px; }
+.sc-body ul li::before { content:'→ '; color:var(--red); }
+
+/* full statement text block */
+.stmt-full {
+  margin-top:40px;
+  padding:48px 52px;
+  border:1px solid var(--border); border-radius:3px;
+  background:var(--card);
+}
+.stmt-section { margin-bottom:44px; }
+.stmt-section:last-child { margin-bottom:0; }
+.stmt-section-label {
+  font-size:9px; letter-spacing:6px; text-transform:uppercase;
+  color:var(--red); margin-bottom:12px;
+  display:flex; align-items:center; gap:10px;
+}
+.stmt-section-label::before { content:''; display:inline-block; width:16px; height:1px; background:var(--red); }
+.stmt-section-title {
+  font-family:var(--fd); font-size:24px; font-weight:600; letter-spacing:1px;
+  color:var(--white); margin-bottom:14px;
+}
+.stmt-section p {
+  font-size:15px; line-height:1.9; color:#a8aab9;
+}
+.stmt-section ul {
+  margin-top:14px; list-style:none; display:flex; flex-direction:column; gap:10px;
+}
+.stmt-section ul li {
+  font-size:15px; color:#a8aab9; padding-left:20px; position:relative;
+}
+.stmt-section ul li::before { content:'→'; position:absolute; left:0; color:var(--red); }
+
+.closing-block {
+  margin-top:48px; padding:36px 40px;
+  border:1px solid var(--bdr-red); border-radius:3px;
+  background:var(--red-soft); text-align:center;
+}
+.closing-block p { font-family:var(--fd); font-size:20px; letter-spacing:2px; color:var(--white); line-height:1.5; }
+.closing-block em { font-style:normal; color:var(--red); }
+
+/* ─── CONTACT ────────────────────────────────── */
+.con-layout {
+  margin-top:60px; display:grid;
+  grid-template-columns:1fr 1fr; gap:72px; align-items:center;
+}
+.con-head {
+  font-family:var(--fd);
+  font-size:clamp(44px,6vw,78px); font-weight:700; line-height:.93;
+  letter-spacing:1px; text-transform:uppercase; margin-bottom:20px;
+}
+.con-head em { font-style:normal; color:var(--red); }
+.con-sub { font-size:15px; line-height:1.75; color:var(--muted); max-width:360px; }
+.con-list { display:flex; flex-direction:column; gap:10px; }
+.con-row {
+  display:flex; align-items:center; gap:16px;
+  padding:16px 20px; border-radius:3px;
+  background:var(--card); border:1px solid var(--border);
+  text-decoration:none; color:var(--white);
+  transition:border-color .3s, transform .4s;
+}
+.con-row:hover { border-color:var(--bdr-red); transform:translateX(6px); }
+.con-ic {
+  width:38px; height:38px; border-radius:3px;
+  background:var(--red-soft); display:flex; align-items:center; justify-content:center;
+  font-size:15px; color:var(--red); flex-shrink:0;
+}
+.con-lbl   { font-size:10px; letter-spacing:2px; color:var(--muted); margin-bottom:2px; }
+.con-val   { font-size:14px; }
+.socials   { display:flex; gap:9px; margin-top:26px; }
+.sb {
+  width:44px; height:44px; border-radius:3px;
+  background:var(--card); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:var(--muted); text-decoration:none;
+  transition:all .3s;
+}
+.sb:hover { background:var(--red-soft); border-color:var(--bdr-red); color:var(--red); transform:translateY(-3px); }
+
+/* ─── FOOTER ─────────────────────────────────── */
 footer {
-  border-top: 1px solid var(--border);
-  max-width: 1300px; margin: 0 auto;
-  padding: 28px 48px;
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 11px; letter-spacing: 2px; color: var(--dim);
+  border-top:1px solid var(--border);
+  max-width:1300px; margin:0 auto; padding:26px 52px;
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:11px; letter-spacing:2px; color:var(--dim);
 }
-footer a { color: var(--muted); text-decoration: none; transition: color 0.3s; }
-footer a:hover { color: var(--white); }
+footer a { color:var(--muted); text-decoration:none; transition:color .3s; }
+footer a:hover { color:var(--white); }
 
-/* =============================================
-   RESPONSIVE
-   ============================================= */
-@media (max-width: 1000px) {
-  .about-layout { grid-template-columns: 1fr; }
-  .about-photo-wrap { max-width: 280px; }
-  .projects-grid { grid-template-columns: 1fr; }
-  .statement-columns { grid-template-columns: 1fr; }
-  .stmt-card:nth-child(even) { border-left: none; }
-  .stmt-card:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
-  .stmt-card:last-child { border-bottom: none; }
-  .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media(max-width:1020px){
+  .about-grid, .con-layout { grid-template-columns:1fr; }
+  .about-grid .photo-wrap { max-width:280px; }
+  .proj-grid  { grid-template-columns:1fr; }
+  .stmt-grid  { grid-template-columns:1fr; }
+  .sc:nth-child(even) { border-left:none; }
+  .sc:nth-last-child(-n+2){ border-bottom:1px solid var(--border); }
+  .sc:last-child { border-bottom:none; }
 }
-@media (max-width: 640px) {
-  .section-inner { padding: 90px 24px; }
-  .hero-content  { padding: 0 24px 56px; }
-  .hero-scroll   { right: 24px; }
-  .nav           { padding: 16px 24px; }
-  .nav-links .nav-link:not(.cta) { display: none; }
-  footer         { padding: 24px; flex-direction: column; gap: 8px; }
+@media(max-width:640px){
+  .si           { padding:80px 22px; }
+  .hero-content { padding:0 22px 52px; }
+  .scroll-hint  { right:22px; }
+  .nav          { padding:14px 22px; }
+  .nav-links .nl:not(.cta){ display:none; }
+  footer        { padding:22px; flex-direction:column; gap:8px; }
+  .stmt-full    { padding:32px 22px; }
+  .stmt-banner  { padding:32px 22px; }
 }
 </style>
 </head>
@@ -620,433 +534,458 @@ footer a:hover { color: var(--white); }
 <div id="cur"></div>
 <div id="cur-ring"></div>
 
-<!-- =============================================
-     LOADER
-     ============================================= -->
-<div id="loader">
-  <div class="loader-panel"></div>
-  <div class="loader-panel"></div>
-</div>
-<div class="loader-inner">
-  <div class="loader-name">JANE<span>SH</span>WARAN <span>R</span></div>
-  <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
-  <div class="loader-role">Game Designer · Narrative Designer · 3D Artist · Author</div>
+<!-- ═══════════════════════════════════════════
+     CINEMATIC ENTRANCE
+══════════════════════════════════════════════ -->
+<div id="intro">
+  <div class="intro-rule"></div>
+  <h1 class="intro-name">JANE<em>SH</em>WARAN <em>R</em></h1>
+  <p class="intro-role">Game Designer &nbsp;·&nbsp; Narrative Designer &nbsp;·&nbsp; 3D Artist &nbsp;·&nbsp; Author</p>
+  <div class="intro-bar-wrap"><div class="intro-bar"></div></div>
+  <p class="intro-pct" id="intro-pct">0%</p>
 </div>
 
-<!-- =============================================
+<!-- ═══════════════════════════════════════════
      NAV
-     ============================================= -->
+══════════════════════════════════════════════ -->
 <nav class="nav" id="nav">
   <a class="nav-logo" href="#"><span>J</span>ANESHWARAN</a>
   <div class="nav-links">
-    <a class="nav-link" href="#about">About</a>
-    <a class="nav-link" href="#projects">Projects</a>
-    <a class="nav-link" href="#novels">Novels</a>
-    <a class="nav-link" href="#statement">Statement</a>
-    <a class="nav-link cta" href="#contact">Contact</a>
+    <a class="nl" href="#about">About</a>
+    <a class="nl" href="#projects">Projects</a>
+    <a class="nl" href="#novels">Novels</a>
+    <a class="nl" href="#statement">Statement</a>
+    <a class="nl cta" href="#contact">Contact</a>
   </div>
 </nav>
 
-<!-- =============================================
+<!-- ═══════════════════════════════════════════
      HERO
-     ============================================= -->
-<section class="hero">
-  <video class="hero-video" autoplay loop muted playsinline>
+══════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <video class="hero-vid" data-parallax="0.3" autoplay loop muted playsinline>
     <source src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/video0001-0300.mp4" type="video/mp4">
   </video>
-  <div class="hero-fade-bottom"></div>
-  <div class="hero-fade-sides"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-fade-bot"></div>
 
   <div class="hero-content">
-    <p class="hero-eyebrow">Game Designer · Narrative Designer · 3D Artist</p>
+    <p class="hero-eye">Game Designer · Narrative Designer · 3D Artist</p>
     <h1 class="hero-name">JANESH<em>WARAN</em><br>R</h1>
-    <div class="hero-bottom">
+    <div class="hero-bot">
       <p class="hero-desc">
         Crafting <strong>dark fantasy worlds</strong> through games, 3D art &amp; narrative design.
         Based in Chennai — obsessed with consequence-driven storytelling.
       </p>
-      <div class="hero-cta-group">
-        <a class="btn-primary" href="#projects"><i class="fas fa-gamepad"></i> View Projects</a>
-        <a class="btn-ghost"   href="#about">About Me</a>
+      <div class="cta-row">
+        <a class="btn-p" href="#projects"><i class="fas fa-gamepad"></i> View Projects</a>
+        <a class="btn-g" href="#about">About Me</a>
       </div>
     </div>
   </div>
 
-  <div class="hero-scroll">
-    <div class="hero-scroll-line"></div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
     <span>Scroll</span>
   </div>
 </section>
 
-<!-- =============================================
+<!-- ═══════════════════════════════════════════
      ABOUT
-     ============================================= -->
-<section class="section" id="about">
-  <video class="section-bg-video" autoplay loop muted playsinline>
+══════════════════════════════════════════════ -->
+<section class="sec" id="about">
+  <video class="sbv" data-parallax="0.25" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/aky7yi.mp4" type="video/mp4">
   </video>
-  <div class="section-overlay"></div>
-  <div class="section-grad-top"></div>
-  <div class="section-grad-bot"></div>
+  <div class="sov"></div><div class="sgt"></div><div class="sgb"></div>
 
-  <div class="section-inner">
-    <p class="section-label reveal">Chapter 01</p>
-    <h2 class="section-title reveal d1">About Me</h2>
+  <div class="si">
+    <p class="slbl rv">Chapter 01</p>
+    <h2 class="stitle rv d1">About Me</h2>
 
-    <div class="about-layout">
-      <div class="about-photo-wrap reveal d1">
-        <img class="about-photo"
-             src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/fdd69b7caf75cd56c7aeac86013ca245.jpg"
-             alt="Janeshwaran R">
+    <div class="about-grid">
+      <div class="photo-wrap rv d1">
+        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/fdd69b7caf75cd56c7aeac86013ca245.jpg" alt="Janeshwaran R">
       </div>
-
       <div>
-        <p class="about-bio reveal d1">
-          Creative and imaginative designer with a deep passion for crafting dark fantasy worlds through game development, 3D art, and storytelling. Known for pushing the limits of villain protagonists and building emotionally immersive experiences.
-        </p>
-        <p class="about-bio reveal d2">
-          Calm, collaborative, and obsessed with detail — I turn twisted ideas into polished realities.
-        </p>
-
-        <div class="about-divider reveal d2"></div>
-
-        <p class="skill-heading reveal d2">Core Skills</p>
-        <div class="tags reveal d2">
-          <span class="tag">3D Modeling — Blender</span>
-          <span class="tag">Game Development</span>
-          <span class="tag">Narrative Design</span>
-          <span class="tag">Scriptwriting</span>
-          <span class="tag">World Building</span>
-          <span class="tag">Storytelling</span>
+        <p class="about-bio rv d1">Creative and imaginative designer with a deep passion for crafting dark fantasy worlds through game development, 3D art, and storytelling. Known for pushing the limits of villain protagonists and building emotionally immersive experiences.</p>
+        <p class="about-bio rv d2">Calm, collaborative, and obsessed with detail — I turn twisted ideas into polished realities.</p>
+        <div class="divider rv d2"></div>
+        <p class="sh rv d2">Core Skills</p>
+        <div class="tags rv d2">
+          <span class="tag">3D Modeling — Blender</span><span class="tag">Game Development</span>
+          <span class="tag">Narrative Design</span><span class="tag">Scriptwriting</span>
+          <span class="tag">World Building</span><span class="tag">Storytelling</span>
         </div>
-
-        <p class="skill-heading reveal d3">Tools & Engines</p>
-        <div class="tags reveal d3">
-          <span class="tag">Unity</span>
-          <span class="tag">Unreal Engine</span>
-          <span class="tag">Godot</span>
-          <span class="tag">Blender</span>
-          <span class="tag">Krita</span>
-          <span class="tag">Photoshop</span>
+        <p class="sh rv d3">Tools & Engines</p>
+        <div class="tags rv d3">
+          <span class="tag">Unity</span><span class="tag">Unreal Engine</span><span class="tag">Godot</span>
+          <span class="tag">Blender</span><span class="tag">Krita</span><span class="tag">Photoshop</span>
         </div>
-
-        <div class="edu-wrap reveal d3">
-          <div class="edu-item">
+        <div class="edu rv d3">
+          <div class="edu-row">
             <div class="edu-dot"></div>
-            <div>
-              <p class="edu-degree">B.Sc Computer Science</p>
-              <p class="edu-meta">St. Joseph College, Chennai &nbsp;·&nbsp; 2020 – 2024</p>
-            </div>
+            <div><p class="edu-deg">B.Sc Computer Science</p><p class="edu-meta">St. Joseph College, Chennai &nbsp;·&nbsp; 2020 – 2024</p></div>
           </div>
-          <div class="edu-item">
+          <div class="edu-row">
             <div class="edu-dot"></div>
-            <div>
-              <p class="edu-degree">M.Sc Game Technology</p>
-              <p class="edu-meta">ICAT Design & Media College, Chennai &nbsp;·&nbsp; 2024 – Present</p>
-            </div>
+            <div><p class="edu-deg">M.Sc Game Technology</p><p class="edu-meta">ICAT Design & Media College, Chennai &nbsp;·&nbsp; 2024 – Present</p></div>
           </div>
         </div>
-
-        <div class="doc-row reveal d4">
-          <a class="btn-primary" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank"><i class="fas fa-file-alt"></i> Resume</a>
-          <a class="btn-ghost"   href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf"    target="_blank"><i class="fas fa-file"></i> Full CV</a>
+        <div class="doc-row rv d4">
+          <a class="btn-p" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank"><i class="fas fa-file-alt"></i> Resume</a>
+          <a class="btn-g" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf" target="_blank"><i class="fas fa-file"></i> Full CV</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- =============================================
+<!-- ═══════════════════════════════════════════
      PROJECTS PREVIEW
-     ============================================= -->
-<section class="section" id="projects">
-  <video class="section-bg-video" autoplay loop muted playsinline>
+══════════════════════════════════════════════ -->
+<section class="sec" id="projects">
+  <video class="sbv" data-parallax="0.25" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/o6icxy.mp4" type="video/mp4">
   </video>
-  <div class="section-overlay"></div>
-  <div class="section-grad-top"></div>
-  <div class="section-grad-bot"></div>
+  <div class="sov"></div><div class="sgt"></div><div class="sgb"></div>
 
-  <div class="section-inner">
-    <p class="section-label reveal">Chapter 02</p>
-    <h2 class="section-title reveal d1">Projects</h2>
+  <div class="si">
+    <p class="slbl rv">Chapter 02</p>
+    <h2 class="stitle rv d1">Projects</h2>
 
-    <div class="projects-grid">
-      <div class="proj-card reveal d1">
-        <img class="proj-card-img"
-             src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png"
-             alt="The Last Choice">
-        <div class="proj-card-body">
-          <p class="proj-engine">Twine · Narrative</p>
-          <h3 class="proj-title">The Last Choice</h3>
-          <p class="proj-desc">A dark story-driven adventure where every decision echoes forever — werewolves, fractured realities, and a missing sister.</p>
+    <div class="proj-grid">
+      <div class="pc rv d1">
+        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
+        <div class="pc-body">
+          <p class="pc-eng">Twine · Narrative</p>
+          <h3 class="pc-title">The Last Choice</h3>
+          <p class="pc-desc">A dark story-driven adventure where every decision echoes forever — werewolves, fractured realities, and a missing sister.</p>
         </div>
       </div>
-      <div class="proj-card reveal d2">
-        <img class="proj-card-img"
-             src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png"
-             alt="DREAM">
-        <div class="proj-card-body">
-          <p class="proj-engine">Godot · Platformer</p>
-          <h3 class="proj-title">DREAM</h3>
-          <p class="proj-desc">A hardcore 2D pixel platformer — a young girl trapped inside a distorted dream world. Atmospheric, brutal, emotional.</p>
+      <div class="pc rv d2">
+        <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
+        <div class="pc-body">
+          <p class="pc-eng">Godot · Platformer</p>
+          <h3 class="pc-title">DREAM</h3>
+          <p class="pc-desc">A hardcore 2D pixel platformer — a young girl trapped inside a distorted dream world. Atmospheric, brutal, emotional.</p>
         </div>
       </div>
     </div>
-
-    <div class="projects-footer reveal d3">
-      <a class="btn-primary" href="projects.html">View All Projects <i class="fas fa-arrow-right"></i></a>
+    <div style="margin-top:32px;text-align:center;" class="rv d3">
+      <a class="btn-p" href="projects.html">View All Projects <i class="fas fa-arrow-right"></i></a>
     </div>
   </div>
 </section>
 
-<!-- =============================================
+<!-- ═══════════════════════════════════════════
      NOVELS PREVIEW
-     ============================================= -->
-<section class="section" id="novels">
-  <video class="section-bg-video" autoplay loop muted playsinline>
+══════════════════════════════════════════════ -->
+<section class="sec" id="novels">
+  <video class="sbv" data-parallax="0.2" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/sl8158.mp4" type="video/mp4">
   </video>
-  <div class="section-overlay" style="background:rgba(8,8,9,0.86);"></div>
-  <div class="section-grad-top"></div>
-  <div class="section-grad-bot"></div>
+  <div class="sov" style="background:rgba(6,6,8,.87);"></div><div class="sgt"></div><div class="sgb"></div>
 
-  <div class="section-inner">
-    <p class="section-label reveal" style="color:#8b5cf6;">Chapter 03</p>
-    <h2 class="section-title reveal d1">Novels</h2>
-    <p style="margin-top:10px;font-size:13px;letter-spacing:3px;color:var(--muted);" class="reveal d1">
+  <div class="si">
+    <p class="slbl rv" style="color:#8b5cf6;">Chapter 03</p>
+    <h2 class="stitle rv d1">Novels</h2>
+    <p class="rv d1" style="margin-top:8px;font-size:13px;letter-spacing:3px;color:var(--muted);">
       by <span style="color:#8b5cf6;font-style:italic;">Mr. Darkpath</span>
     </p>
 
-    <div class="novels-row">
-      <div class="novel-card reveal d1">
-        <div class="novel-cover-wrap">
-          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Gods%20Betrayed%20Me%20So%20I%20Made%20Them%20As%20Sx%20Slaves.png" alt="Gods Betrayed Me">
-        </div>
-        <div class="novel-body">
-          <p class="novel-genre">Dark Revenge Fantasy</p>
-          <h3 class="novel-title">Gods Betrayed Me</h3>
-          <a class="novel-link" href="https://www.webnovel.com/book/31871358200404405" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
-        </div>
+    <div class="nov-row">
+      <div class="nc rv d1">
+        <div class="nc-cov-wrap"><img class="nc-cov" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Gods%20Betrayed%20Me%20So%20I%20Made%20Them%20As%20Sx%20Slaves.png" alt="Gods Betrayed Me"></div>
+        <div class="nc-body"><p class="nc-gen">Dark Revenge Fantasy</p><h3 class="nc-title">Gods Betrayed Me</h3><a class="nc-link" href="https://www.webnovel.com/book/31871358200404405" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
       </div>
-      <div class="novel-card reveal d2">
-        <div class="novel-cover-wrap">
-          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/The%20HERMITS%20HAVEN.png" alt="Hermit's Haven">
-        </div>
-        <div class="novel-body">
-          <p class="novel-genre">Post-Apocalyptic</p>
-          <h3 class="novel-title">The Hermit's Haven</h3>
-          <a class="novel-link" href="https://www.webnovel.com/book/29761771700037905" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
-        </div>
+      <div class="nc rv d2">
+        <div class="nc-cov-wrap"><img class="nc-cov" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/The%20HERMITS%20HAVEN.png" alt="Hermit's Haven"></div>
+        <div class="nc-body"><p class="nc-gen">Post-Apocalyptic</p><h3 class="nc-title">The Hermit's Haven</h3><a class="nc-link" href="https://www.webnovel.com/book/29761771700037905" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
       </div>
-      <div class="novel-card reveal d3">
-        <div class="novel-cover-wrap">
-          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/THE%20WISH%20OF%20MALICE.png" alt="Wish of Malice">
-        </div>
-        <div class="novel-body">
-          <p class="novel-genre">Villain Protagonist</p>
-          <h3 class="novel-title">The Wish of Malice</h3>
-          <a class="novel-link" href="https://www.webnovel.com/book/29761690700035805" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
-        </div>
+      <div class="nc rv d3">
+        <div class="nc-cov-wrap"><img class="nc-cov" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/THE%20WISH%20OF%20MALICE.png" alt="Wish of Malice"></div>
+        <div class="nc-body"><p class="nc-gen">Villain Protagonist</p><h3 class="nc-title">The Wish of Malice</h3><a class="nc-link" href="https://www.webnovel.com/book/29761690700035805" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
       </div>
-      <div class="novel-card reveal d4">
-        <div class="novel-cover-wrap">
-          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/I%20Was%20Summoned%20By%20a%20God%20But%20I%20Tricked%20The%20God%20To%20Become%20a%20God.png" alt="I Was Summoned">
-        </div>
-        <div class="novel-body">
-          <p class="novel-genre">Dark Isekai</p>
-          <h3 class="novel-title">I Was Summoned But I Tricked The God</h3>
-          <a class="novel-link" href="https://www.webnovel.com/book/29962599308510305" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
-        </div>
+      <div class="nc rv d4">
+        <div class="nc-cov-wrap"><img class="nc-cov" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/I%20Was%20Summoned%20By%20a%20God%20But%20I%20Tricked%20The%20God%20To%20Become%20a%20God.png" alt="I Was Summoned"></div>
+        <div class="nc-body"><p class="nc-gen">Dark Isekai</p><h3 class="nc-title">I Was Summoned But I Tricked The God</h3><a class="nc-link" href="https://www.webnovel.com/book/29962599308510305" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
       </div>
-      <div class="novel-card reveal d4">
-        <div class="novel-cover-wrap">
-          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Formula%20Jet%20Racing.png" alt="Formula Jet Racing">
-        </div>
-        <div class="novel-body">
-          <p class="novel-genre">Sky Racing</p>
-          <h3 class="novel-title">Formula Jet Racing</h3>
-          <a class="novel-link" href="https://www.webnovel.com/book/32853058600730605" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
-        </div>
+      <div class="nc rv d5">
+        <div class="nc-cov-wrap"><img class="nc-cov" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Formula%20Jet%20Racing.png" alt="Formula Jet Racing"></div>
+        <div class="nc-body"><p class="nc-gen">Sky Racing</p><h3 class="nc-title">Formula Jet Racing</h3><a class="nc-link" href="https://www.webnovel.com/book/32853058600730605" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
       </div>
     </div>
-
-    <div class="novels-footer reveal">
-      <a class="btn-ghost" href="novels.html" style="display:inline-flex;align-items:center;gap:10px;">
+    <div style="margin-top:32px;text-align:center;" class="rv">
+      <a class="btn-g" href="novels.html" style="display:inline-flex;align-items:center;gap:9px;">
         <i class="fas fa-book-open"></i> View All Novels
       </a>
     </div>
   </div>
 </section>
 
-<!-- =============================================
-     AUTHOR STATEMENT
-     ============================================= -->
-<section class="section" id="statement">
-  <video class="section-bg-video" autoplay loop muted playsinline>
+<!-- ═══════════════════════════════════════════
+     NARRATIVE DESIGNER — FULL STATEMENT
+══════════════════════════════════════════════ -->
+<section class="sec" id="statement">
+  <video class="sbv" data-parallax="0.2" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/aky7yi.mp4" type="video/mp4">
   </video>
-  <div class="section-overlay" style="background:rgba(8,8,9,0.87);"></div>
-  <div class="section-grad-top"></div>
-  <div class="section-grad-bot"></div>
+  <div class="sov" style="background:rgba(6,6,8,.88);"></div><div class="sgt"></div><div class="sgb"></div>
 
-  <div class="section-inner">
-    <p class="section-label reveal">Chapter 04</p>
-    <h2 class="section-title reveal d1">Narrative Designer</h2>
-    <p style="margin-top:8px;font-size:12px;letter-spacing:3px;color:var(--muted);" class="reveal d1">Author's Statement & Design Philosophy</p>
+  <div class="si">
+    <p class="slbl rv">Chapter 04</p>
+    <h2 class="stitle rv d1">Narrative Designer</h2>
+    <p class="rv d1" style="margin-top:8px;font-size:12px;letter-spacing:3px;color:var(--muted);">Author's Statement & Design Philosophy</p>
 
-    <div class="statement-columns reveal d2">
-      <div class="stmt-card">
-        <p class="stmt-num">01 — Personal Lens</p>
-        <div class="stmt-bar"></div>
-        <h3 class="stmt-heading">Who I Am</h3>
-        <p class="stmt-body">Shaped by lived emotional contrast — family conflict, isolation, and connection. I exist between loneliness and solitude. This inner contradiction strongly influences the characters I create. My stories are built on emotional ambiguity, not certainty.</p>
-      </div>
-      <div class="stmt-card">
-        <p class="stmt-num">02 — Writer's Note</p>
-        <div class="stmt-bar"></div>
-        <h3 class="stmt-heading">Why I Write</h3>
-        <p class="stmt-body">I began writing to prevent my daydreams from disappearing. The response expanded my imagination further rather than grounding me. Writing, for me, is not an escape from thinking — it is an extension of it.</p>
-      </div>
-      <div class="stmt-card">
-        <p class="stmt-num">03 — Philosophy</p>
-        <div class="stmt-bar"></div>
-        <h3 class="stmt-heading">How I Build Narratives</h3>
-        <p class="stmt-body">Stories are built from emotion first, structure second. I am drawn to war films and biopics because they compress the full range of human emotion into moments of decision. A character is defined not by intent, but by what they choose when outcomes are uncertain.</p>
-      </div>
-      <div class="stmt-card">
-        <p class="stmt-num">04 — Design Ethos</p>
-        <div class="stmt-bar"></div>
-        <h3 class="stmt-heading">Consequence-Driven</h3>
-        <p class="stmt-body">Choices must matter. I design narratives where choice defines character, emotion drives mechanics, and past, present, and future coexist. When a path is taken, something else must be lost.</p>
-      </div>
-    </div>
-
-    <div class="statement-quote reveal">
+    <!-- OPENING QUOTE BANNER -->
+    <div class="stmt-banner rv d2">
       <blockquote>
         "My goal is not to create <em>perfect</em> stories —<br>but <em>honest</em> ones."
       </blockquote>
-      <cite>— Janeshwaran R</cite>
+      <cite>— Janeshwaran R, Narrative Designer</cite>
     </div>
+
+    <!-- 4-CARD PHILOSOPHY GRID -->
+    <div class="stmt-grid rv d2">
+      <div class="sc">
+        <p class="sc-num">01 — Personal Lens</p>
+        <div class="sc-ic"><i class="fas fa-eye"></i></div>
+        <div class="sc-bar"></div>
+        <h3 class="sc-head">Who I Am</h3>
+        <p class="sc-body">Shaped by lived emotional contrast — family conflict, isolation, and connection. I exist between loneliness and solitude, and this inner contradiction is foundational to every character I build. My stories embrace emotional ambiguity over certainty.</p>
+      </div>
+      <div class="sc">
+        <p class="sc-num">02 — Writer's Note</p>
+        <div class="sc-ic"><i class="fas fa-pen-nib"></i></div>
+        <div class="sc-bar"></div>
+        <h3 class="sc-head">Why I Write</h3>
+        <p class="sc-body">I began writing to prevent my daydreams from disappearing. Publishing them as novels expanded my imagination further rather than grounding me. Writing is not an escape from thinking — it is an extension of it.</p>
+      </div>
+      <div class="sc">
+        <p class="sc-num">03 — Narrative Philosophy</p>
+        <div class="sc-ic"><i class="fas fa-theater-masks"></i></div>
+        <div class="sc-bar"></div>
+        <h3 class="sc-head">How I Build Stories</h3>
+        <p class="sc-body">Stories are built from emotion first, structure second. I am drawn to war films and biopics because they compress the full range of human emotion into moments of decision. A character is defined not by intent, but by what they choose when outcomes are uncertain.</p>
+      </div>
+      <div class="sc">
+        <p class="sc-num">04 — Design Ethos</p>
+        <div class="sc-ic"><i class="fas fa-project-diagram"></i></div>
+        <div class="sc-bar"></div>
+        <h3 class="sc-head">Consequence-Driven</h3>
+        <p class="sc-body">Choices must matter. When a path is taken, something else must be lost.
+          <ul>
+            <li>Choice defines character</li>
+            <li>Emotion drives mechanics</li>
+            <li>Past, present, and future coexist in the structure</li>
+          </ul>
+        </p>
+      </div>
+    </div>
+
+    <!-- FULL STATEMENT TEXT -->
+    <div class="stmt-full rv d3">
+
+      <div class="stmt-section">
+        <p class="stmt-section-label">Author's Statement</p>
+        <h3 class="stmt-section-title">The Origin</h3>
+        <p>My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast — family conflict, happiness, sadness, isolation, and connection. I don't have a clean or singular reason for wanting to become a narrative designer; instead, my interest grew naturally from observing how people react, hide reactions, and learn to survive emotionally. Growing up, I reached a point where honest reactions became difficult, and I began to fake them. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p>
+      </div>
+
+      <div class="stmt-section">
+        <p class="stmt-section-label">Personal Lens</p>
+        <h3 class="stmt-section-title">Storytelling Perspective</h3>
+        <p>I exist between loneliness and solitude. I enjoy being social, yet often resist it. I experience frequent mood shifts and spend a significant amount of time daydreaming. Depending on my emotional state, these daydreams take the form of love stories, heroic arcs, villain narratives, or internal psychological conflicts — often with myself positioned as the central character. This inner contradiction — wanting connection while withdrawing from it — strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p>
+      </div>
+
+      <div class="stmt-section">
+        <p class="stmt-section-label">Writer's Note</p>
+        <h3 class="stmt-section-title">From Daydream to Story</h3>
+        <p>At one stage, I realized that my daydreams would disappear if left untouched. To prevent that loss, I began writing them as stories and publishing them as novels. The response was positive, but instead of grounding me, it expanded my imagination further — pushing me deeper into idea creation and narrative exploration. Writing, for me, is not an escape from thinking; it is an extension of it.</p>
+      </div>
+
+      <div class="stmt-section">
+        <p class="stmt-section-label">Narrative Philosophy</p>
+        <h3 class="stmt-section-title">Emotion Before Structure</h3>
+        <p>I believe stories are built from emotion first and structure second. Human beings naturally live in imagined worlds — some shared, some personal — and narrative exists to give those worlds form. I am particularly drawn to war films and biopics because they compress the full range of human emotion into moments of decision. Even when altered for entertainment, these stories reveal character through choice, pressure, and consequence. A character, to me, is defined not by intent, but by what they choose when outcomes are uncertain.</p>
+      </div>
+
+      <div class="stmt-section">
+        <p class="stmt-section-label">Design Ethos</p>
+        <h3 class="stmt-section-title">Consequence-Driven Design</h3>
+        <p>My approach to narrative design is consequence-driven. Choices must matter, and meaning must emerge from their outcomes. Influenced by manhwas and branching narratives, I view life — and by extension story — as a system of decisions. When a choice is made, it must carry weight. When a path is taken, something else must be lost. I design narratives where:</p>
+        <ul>
+          <li>Choice defines character</li>
+          <li>Emotion drives mechanics</li>
+          <li>Past, present, and future coexist in the narrative structure</li>
+        </ul>
+      </div>
+
+      <div class="stmt-section">
+        <p class="stmt-section-label">Creative Manifesto</p>
+        <h3 class="stmt-section-title">Honest Over Perfect</h3>
+        <p>I am not afraid of loss, contradiction, or darkness in storytelling. I explore themes ranging from crime and moral decay to ambition, power, and desire. I build worlds that include light and shadow — fun and brutality — because reality contains both. My goal is not to create perfect stories, but honest ones. I aim to turn imagination into something tangible: not dreams that fade, but narratives that endure.</p>
+      </div>
+
+      <div class="closing-block">
+        <p>I am <em>Janeshwaran</em>. This is not a conclusion, but a <em>structure</em> —<br>one that continues to evolve as my skills grow.</p>
+      </div>
+
+    </div><!-- end stmt-full -->
   </div>
 </section>
 
-<!-- =============================================
+<!-- ═══════════════════════════════════════════
      CONTACT
-     ============================================= -->
-<section class="section" id="contact">
-  <video class="section-bg-video" autoplay loop muted playsinline>
+══════════════════════════════════════════════ -->
+<section class="sec" id="contact">
+  <video class="sbv" data-parallax="0.2" autoplay loop muted playsinline>
     <source src="https://github.com/Janeshobito/Janeshobito.github.io/blob/main/myFolder/campfire-watermarked_w7o6vg.mp4?raw=true" type="video/mp4">
   </video>
-  <div class="section-overlay" style="background:rgba(8,8,9,0.85);"></div>
-  <div class="section-grad-top"></div>
-  <div class="section-grad-bot"></div>
+  <div class="sov" style="background:rgba(6,6,8,.86);"></div><div class="sgt"></div><div class="sgb"></div>
 
-  <div class="section-inner">
-    <p class="section-label reveal">Chapter 05</p>
+  <div class="si">
+    <p class="slbl rv">Chapter 05</p>
 
-    <div class="contact-layout">
+    <div class="con-layout">
       <div>
-        <h2 class="contact-heading reveal">Let's<br>Create<br><em>Something</em><br>Dark.</h2>
-        <p class="contact-sub reveal d1">Open to collaborations, freelance work, and conversations about game narrative, 3D art, and world-building.</p>
-        <div class="socials reveal d2">
-          <a class="social-btn" href="https://www.artstation.com/janeshobito283" target="_blank"><i class="fab fa-artstation"></i></a>
-          <a class="social-btn" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-          <a class="social-btn" href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
-          <a class="social-btn" href="mailto:janeshwaranboito283@gmail.com"><i class="fas fa-envelope"></i></a>
+        <h2 class="con-head rv">Let's<br>Create<br><em>Something</em><br>Dark.</h2>
+        <p class="con-sub rv d1">Open to collaborations, freelance work, and conversations about game narrative, 3D art, and world-building.</p>
+        <div class="socials rv d2">
+          <!-- ArtStation -->
+          <a class="sb" href="https://www.artstation.com/janeshobito283" target="_blank" title="ArtStation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/>
+            </svg>
+          </a>
+          <!-- LinkedIn -->
+          <a class="sb" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank" title="LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <!-- Webnovel — book icon since no brand icon exists -->
+          <a class="sb" href="https://www.webnovel.com/profile/4327938398" target="_blank" title="Webnovel">
+            <i class="fas fa-book-open"></i>
+          </a>
+          <!-- Email -->
+          <a class="sb" href="mailto:janeshwaranboito283@gmail.com" title="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
         </div>
       </div>
-      <div class="contact-list">
-        <a class="contact-row reveal d1" href="mailto:janeshwaranboito283@gmail.com">
-          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-          <div>
-            <p class="contact-label">Email</p>
-            <p class="contact-value">janeshwaranboito283@gmail.com</p>
-          </div>
+
+      <div class="con-list">
+        <a class="con-row rv d1" href="mailto:janeshwaranboito283@gmail.com">
+          <div class="con-ic"><i class="fas fa-envelope"></i></div>
+          <div><p class="con-lbl">Email</p><p class="con-val">janeshwaranboito283@gmail.com</p></div>
         </a>
-        <div class="contact-row reveal d2">
-          <div class="contact-icon"><i class="fas fa-phone"></i></div>
-          <div>
-            <p class="contact-label">Phone</p>
-            <p class="contact-value">+91 63799 89918</p>
-          </div>
+        <div class="con-row rv d2">
+          <div class="con-ic"><i class="fas fa-phone"></i></div>
+          <div><p class="con-lbl">Phone</p><p class="con-val">+91 63799 89918</p></div>
         </div>
-        <div class="contact-row reveal d3">
-          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-          <div>
-            <p class="contact-label">Location</p>
-            <p class="contact-value">Chennai, Tamil Nadu, India</p>
-          </div>
+        <div class="con-row rv d3">
+          <div class="con-ic"><i class="fas fa-map-marker-alt"></i></div>
+          <div><p class="con-lbl">Location</p><p class="con-val">Chennai, Tamil Nadu, India</p></div>
         </div>
-        <a class="contact-row reveal d4" href="https://www.artstation.com/janeshobito283" target="_blank">
-          <div class="contact-icon"><i class="fab fa-artstation"></i></div>
-          <div>
-            <p class="contact-label">ArtStation</p>
-            <p class="contact-value">janeshobito283</p>
+        <a class="con-row rv d4" href="https://www.artstation.com/janeshobito283" target="_blank">
+          <div class="con-ic">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/>
+            </svg>
           </div>
+          <div><p class="con-lbl">ArtStation</p><p class="con-val">janeshobito283</p></div>
+        </a>
+        <a class="con-row rv d5" href="https://www.webnovel.com/profile/4327938398" target="_blank">
+          <div class="con-ic"><i class="fas fa-book-open"></i></div>
+          <div><p class="con-lbl">Webnovel</p><p class="con-val">Mr. Darkpath — Profile</p></div>
+        </a>
+        <a class="con-row rv d5" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank">
+          <div class="con-ic"><i class="fab fa-linkedin-in"></i></div>
+          <div><p class="con-lbl">LinkedIn</p><p class="con-val">janeshwaran-r-a33729285</p></div>
         </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <span>© 2025 Janeshwaran R</span>
+  <span>© 2025 Janeshwaran R &nbsp;·&nbsp; <span style="color:var(--red)">Mr. Darkpath</span></span>
   <a href="#">↑ Back to top</a>
 </footer>
 
+<!-- ═══════════════════════════════════════════
+     JS
+══════════════════════════════════════════════ -->
 <script>
-/* ------- LOADER ------- */
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.body.classList.add('loaded');
-  }, 2200);
-});
+/* ── ENTRANCE ── */
+(function(){
+  const pctEl = document.getElementById('intro-pct');
+  let n = 0;
+  const tick = setInterval(() => {
+    n = Math.min(n + Math.ceil(Math.random() * 9), 100);
+    if (pctEl) pctEl.textContent = n + '%';
+    if (n >= 100) clearInterval(tick);
+  }, 28);
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('intro').classList.add('gone');
+      document.body.classList.add('entered');
+    }, 2500);
+  });
+})();
 
-/* ------- CURSOR ------- */
+/* ── CURSOR ── */
 const cur = document.getElementById('cur');
-const curRing = document.getElementById('cur-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-(function loop() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  cur.style.left = mx + 'px';
-  cur.style.top  = my + 'px';
-  curRing.style.left = rx + 'px';
-  curRing.style.top  = ry + 'px';
+const ring = document.getElementById('cur-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function loop(){
+  rx += (mx-rx)*.1; ry += (my-ry)*.1;
+  cur.style.left  = mx+'px'; cur.style.top  = my+'px';
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
   requestAnimationFrame(loop);
 })();
-document.querySelectorAll('a, button, .proj-card, .novel-card, .tag, .stmt-card').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('on-link'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
+document.querySelectorAll('a,button,.pc,.nc,.sc,.tag').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
 });
 
-/* ------- NAV SCROLL ------- */
+/* ── NAV scroll ── */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 60);
-}, { passive: true });
+  nav.classList.toggle('bg', window.scrollY > 50);
+}, { passive:true });
 
-/* ------- SCROLL REVEAL ------- */
-const observer = new IntersectionObserver(entries => {
+/* ── SCROLL REVEAL ── */
+const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('up'); });
-}, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}, { threshold:0.11 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
-/* ------- ACTIVE NAV LINK ------- */
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link:not(.cta)');
+/* ── ACTIVE NAV ── */
+const secs = document.querySelectorAll('section[id]');
+const nls  = document.querySelectorAll('.nl:not(.cta)');
 window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 160) current = s.id;
+  let cur = '';
+  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 140) cur = s.id; });
+  nls.forEach(l => {
+    const active = l.getAttribute('href') === '#'+cur;
+    l.classList.toggle('act', active);
   });
-  navLinks.forEach(l => {
-    l.style.color = l.getAttribute('href') === '#' + current ? 'var(--white)' : '';
+}, { passive:true });
+
+/* ── PARALLAX ── */
+const parallaxEls = document.querySelectorAll('[data-parallax]');
+function doParallax(){
+  parallaxEls.forEach(el => {
+    const rect   = el.parentElement.getBoundingClientRect();
+    const speed  = parseFloat(el.dataset.parallax);
+    const offset = -(rect.top * speed);
+    el.style.transform = `translateY(${offset}px)`;
   });
-}, { passive: true });
+}
+window.addEventListener('scroll', doParallax, { passive:true });
+doParallax();
 </script>
 </body>
 </html>
