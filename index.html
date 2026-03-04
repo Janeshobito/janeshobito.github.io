@@ -4,313 +4,1049 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Janeshwaran R — Portfolio 2025</title>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-:root{--bg:#0a0a0b;--accent:#e53935;--purple:#8b5cf6;--cyan:#00e5ff}
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;background:var(--bg);color:#fff;font-family:Montserrat,sans-serif;overflow-x:hidden}
-html{scroll-behavior:smooth}
-
-/* --- THE VOID SLASH ENTRANCE --- */
-#slash-overlay {
-    position: fixed; inset: 0; background: #000; z-index: 100000;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    overflow: hidden; transition: opacity 0.6s ease-in-out;
-}
-.blade {
-    position: absolute; background: #fff; height: 4px; width: 150%;
-    box-shadow: 0 0 20px #fff, 0 0 40px var(--accent); opacity: 0;
-    z-index: 100001; pointer-events: none;
-}
-.b1 { transform: rotate(-45deg) translateX(-100%); }
-.b2 { transform: rotate(45deg) translateX(100%); }
-
-.init-btn {
-    padding: 22px 60px; background: transparent; color: #fff;
-    border: 1px solid rgba(255,255,255,0.2); font-family: 'Anton';
-    font-size: 24px; letter-spacing: 8px; cursor: pointer; z-index: 10;
-    transition: all 0.4s; position: relative;
-}
-.init-btn:hover { border-color: var(--accent); color: var(--accent); letter-spacing: 12px; text-shadow: 0 0 20px var(--accent); }
-
-/* Animation Classes */
-body.slashed .b1 { animation: slashStrike1 0.4s ease-out forwards; opacity: 1; }
-body.slashed .b2 { animation: slashStrike2 0.4s ease-out 0.1s forwards; opacity: 1; }
-body.slashed #slash-overlay { opacity: 0; pointer-events: none; transition-delay: 0.8s; }
-body.slashed { animation: shake 0.3s ease-in-out 0.4s; }
-body.slashed .main-reveal { animation: revealContent 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards 0.5s; }
-
-@keyframes slashStrike1 { 0% { transform: rotate(-45deg) translateX(-100%); } 100% { transform: rotate(-45deg) translateX(100%); } }
-@keyframes slashStrike2 { 0% { transform: rotate(45deg) translateX(100%); } 100% { transform: rotate(45deg) translateX(-100%); } }
-@keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 10px); } 50% { transform: translate(10px, -10px); } }
-@keyframes revealContent {
-    0% { opacity: 0; filter: blur(30px) brightness(5); transform: scale(1.1); }
-    100% { opacity: 1; filter: blur(0) brightness(1); transform: scale(1); }
+/* =============================================
+   TOKENS
+   ============================================= */
+:root {
+  --bg:        #080809;
+  --bg-card:   rgba(255,255,255,0.03);
+  --border:    rgba(255,255,255,0.08);
+  --border-em: rgba(229,57,53,0.45);
+  --red:       #e53935;
+  --red-soft:  rgba(229,57,53,0.10);
+  --white:     #f0f0ee;
+  --muted:     #6b6e7e;
+  --dim:       #2d2f3a;
+  --fd:        'Oswald', sans-serif;
+  --fb:        'DM Sans', sans-serif;
 }
 
-/* --- FIXED NAVIGATION (CENTERED) --- */
+/* =============================================
+   RESET + BASE
+   ============================================= */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--fb);
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* =============================================
+   CURSOR
+   ============================================= */
+#cur {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999999;
+  transform: translate(-50%,-50%);
+  transition: transform .15s, width .3s, height .3s, background .3s;
+}
+#cur-ring {
+  position: fixed;
+  width: 34px; height: 34px;
+  border: 1px solid rgba(229,57,53,0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999998;
+  transform: translate(-50%,-50%);
+}
+body.on-link #cur { transform: translate(-50%,-50%) scale(2.5); }
+body.on-link #cur-ring { transform: translate(-50%,-50%) scale(1.4); border-color: var(--red); }
+
+/* =============================================
+   LOADER  — split-panel cinematic entrance
+   ============================================= */
+#loader {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex;
+  pointer-events: all;
+}
+.loader-panel {
+  flex: 1; background: #000;
+  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.loader-panel:first-child  { transform-origin: left;  }
+.loader-panel:last-child   { transform-origin: right; }
+
+/* content inside loader */
+.loader-inner {
+  position: fixed; inset: 0; z-index: 100000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 28px; pointer-events: none;
+}
+.loader-name {
+  font-family: var(--fd);
+  font-size: clamp(36px, 7vw, 80px);
+  font-weight: 700;
+  letter-spacing: 14px;
+  color: #fff;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: loader-fade-in 0.6s ease 0.3s forwards;
+}
+.loader-name span { color: var(--red); }
+.loader-role {
+  font-family: var(--fb);
+  font-size: 11px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0;
+  animation: loader-fade-in 0.5s ease 0.7s forwards;
+}
+.loader-bar-wrap {
+  width: min(380px, 80vw);
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: loader-fade-in 0.4s ease 0.5s forwards;
+}
+.loader-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: bar-fill 1.4s cubic-bezier(0.77, 0, 0.175, 1) 0.6s forwards;
+}
+@keyframes loader-fade-in { to { opacity: 1; } }
+@keyframes bar-fill { to { transform: scaleX(1); } }
+
+/* slide panels away */
+body.loaded .loader-panel:first-child { transform: translateX(-100%); }
+body.loaded .loader-panel:last-child  { transform: translateX(100%);  }
+body.loaded .loader-inner { opacity: 0; transition: opacity 0.3s ease; }
+body.loaded #loader       { pointer-events: none; }
+
+/* =============================================
+   NAV
+   ============================================= */
 .nav {
-    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
-    z-index: 9999; display: flex; gap: 18px; padding: 16px 36px; 
-    background: rgba(10,10,11,0.94); border-radius: 60px;
-    border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(24px); 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    opacity: 0; pointer-events: none;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 9000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.3s, background 0.4s;
 }
-body.slashed .nav { opacity: 1; pointer-events: auto; transition-delay: 1s; }
-.nav:hover { transform: translateX(-50%) translateY(-5px); }
-.pill{color:#ccc;text-decoration:none;padding:10px 24px;border-radius:40px;font-size:15px;font-weight:600;transition:all .4s}
-.pill:hover{color:#fff;background:rgba(229,57,53,0.15);border:1px solid var(--accent)}
-
-/* --- ORIGINAL STYLES PRESERVED --- */
-#cursor{position:fixed;width:38px;height:38px;border:2px solid var(--accent);border-radius:50%;pointer-events:none;z-index:110000;transform:translate(-50%,-50%);transition:all .15s;backdrop-filter:invert(1);mix-blend-mode:difference}
-#cursor.hover{transform:translate(-50%,-50%) scale(2.5);background:var(--accent);border-color:transparent}
-#trail{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:109999;opacity:0.7;filter:blur(4px)}
-.blobs{position:fixed;inset:0;overflow:hidden;z-index:-1}
-.blob{position:absolute;border-radius:50%;filter:blur(140px);opacity:0.22;animation:drift 40s infinite linear}
-.blob:nth-child(1){width:900px;height:900px;background:var(--accent);top:-25%;left:-20%;animation-duration:45s}
-.blob:nth-child(2){width:700px;height:700px;background:var(--purple);bottom:-15%;right:-10%;animation-duration:55s}
-.blob:nth-child(3){width:800px;height:800px;background:var(--cyan);top:30%;left:40%;animation-duration:50s}
-@keyframes drift{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(250px,200px) rotate(180deg)}}
-
-.hero{height:100vh;position:relative;overflow:hidden}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.65}
-.hero-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 20px}
-.meta{font-size:18px;letter-spacing:5px;font-weight:600;color:#ccc;opacity:0;animation:fadeIn 1s ease-out 1s forwards}
-.title-big{font-family:Anton,sans-serif;font-size:clamp(80px,12vw,180px);line-height:0.88;letter-spacing:4px; background:linear-gradient(90deg,#fff,#e53935,#8b5cf6,#fff);-webkit-background-clip:text;background-clip:text;color:transparent; opacity:0;transform:translateY(80px);animation:titleRise 2s ease-out forwards}
-.title-big span{font-size:0.45em;position:relative;top:24px;left:8px;opacity:0.9}
-@keyframes fadeIn{to{opacity:1}}
-@keyframes titleRise{to{opacity:1;transform:translateY(0)}}
-
-section{padding:160px 20px;max-width:1400px;margin:auto;text-align:center;position:relative}
-h2{font-family:Anton;font-size:clamp(50px,8vw,90px);margin-bottom:70px; background:linear-gradient(120deg,#e53935,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent; opacity:0;transform:translateY(50px)}
-h2.show{opacity:1;transform:none;transition:all 1.2s cubic-bezier(0.215,0.61,0.355,1)}
-.text-reveal{overflow:hidden;display:inline-block}
-.text-reveal span{display:inline-block;transform:translateY(120%);opacity:0;transition:transform 1s cubic-bezier(0.215,0.61,0.355,1),opacity 1s}
-.text-reveal.show span{transform:none;opacity:1}
-.fade-in{opacity:0;transform:translateY(80px);transition:opacity 1.4s ease-out,transform 1.4s ease-out}
-.fade-in.show{opacity:1;transform:none}
-
-.intro-block{max-width:1000px;margin:0 auto 100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1); border-radius:24px;padding:60px 50px;backdrop-filter:blur(14px);transition:transform .6s;position:relative;z-index:2}
-.intro-block:hover{transform:translateY(-12px) scale(1.02)}
-.big-btn{display:inline-block;padding:20px 56px;background:var(--accent);color:#fff;border-radius:60px; font-size:19px;font-weight:800;text-decoration:none;position:relative;overflow:hidden;transition:all .5s;z-index:2}
-.big-btn::before{content:'';position:absolute;inset:0;background:#c62828;transform:translateY(100%);transition:transform .5s;z-index:-1}
-.big-btn:hover::before{transform:translateY(0)}
-
-.resume-cv-container {display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 50px;}
-.resume-btn, .cv-btn {
-  display: inline-block; padding: 16px 48px; background: var(--purple); color: #fff;
-  border-radius: 60px; font-size: 17px; font-weight: 700; text-decoration: none;
-  position: relative; overflow: hidden; transition: all .4s;
+body.loaded .nav { opacity: 1; }
+.nav.scrolled {
+  background: rgba(8,8,9,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
 }
-.resume-btn {background: var(--accent);}
-.cv-btn {background: var(--purple);}
-.resume-btn::before, .cv-btn::before {
-  content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.2);
-  transform: translateY(100%); transition: transform .4s; z-index: -1;
+.nav-logo {
+  font-family: var(--fd);
+  font-size: 20px; font-weight: 700; letter-spacing: 4px;
+  color: var(--white); text-decoration: none;
 }
-.resume-btn:hover::before, .cv-btn:hover::before {transform: translateY(0);}
-.resume-btn:hover, .cv-btn:hover {transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.5);}
+.nav-logo span { color: var(--red); }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-link {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; padding: 8px 18px;
+  border-radius: 4px;
+  transition: color 0.3s, background 0.3s;
+}
+.nav-link:hover { color: var(--white); }
+.nav-link.cta {
+  color: var(--white);
+  border: 1px solid var(--border-em);
+  margin-left: 8px;
+  padding: 8px 22px;
+}
+.nav-link.cta:hover { background: var(--red-soft); border-color: var(--red); }
 
-.about-grid{display:grid;grid-template-columns:1fr 2fr;gap:70px;align-items:start;max-width:1200px;margin:auto;position:relative;z-index:2}
-.about-img{border-radius:20px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.7);transition:transform .8s}
-.about-img:hover{transform:scale(1.04)}
-.tag{background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);font-size:14px}
-.social-icons a{font-size:46px;color:#999;transition:all .6s cubic-bezier(0.175,0.885,0.32,1.275)}
-.social-icons a:hover{color:var(--accent);transform:scale(1.5) translateY(-16px)!important;filter:drop-shadow(0 0 20px var(--accent))}
+/* =============================================
+   HERO
+   ============================================= */
+.hero {
+  height: 100vh; min-height: 700px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: flex-end;
+}
+.hero-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.5;
+}
+.hero-fade-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  z-index: 1;
+}
+.hero-fade-sides {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(8,8,9,0.7) 100%);
+  z-index: 1;
+}
 
-@media(max-width:900px){
- .about-grid{grid-template-columns:1fr}
- .intro-block{padding:40px 24px}
- section{padding:120px 20px}
- .resume-cv-container{flex-direction:column;gap:20px;}
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 0 48px 72px;
+  max-width: 1300px; width: 100%; margin: 0 auto;
+}
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 6px; color: var(--red);
+  text-transform: uppercase; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 14px;
+}
+.hero-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 1px; background: var(--red);
+}
+.hero-name {
+  font-family: var(--fd);
+  font-size: clamp(52px, 10vw, 140px);
+  font-weight: 700; line-height: 0.9;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--white);
+}
+.hero-name em {
+  font-style: normal;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.4);
+  color: transparent;
+}
+.hero-bottom {
+  margin-top: 36px;
+  display: flex; align-items: flex-end;
+  justify-content: space-between; flex-wrap: wrap; gap: 24px;
+}
+.hero-desc {
+  font-size: 15px; line-height: 1.7;
+  color: var(--muted); max-width: 420px;
+}
+.hero-desc strong { color: rgba(255,255,255,0.7); font-weight: 400; }
+.hero-cta-group { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px; background: var(--red); color: #fff;
+  font-family: var(--fb); font-size: 12px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 500; text-decoration: none;
+  border-radius: 3px; transition: background 0.3s, transform 0.3s;
+}
+.btn-primary:hover { background: #c62828; transform: translateY(-2px); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 13px 30px; background: transparent; color: var(--muted);
+  font-family: var(--fb); font-size: 12px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 500; text-decoration: none;
+  border: 1px solid var(--border); border-radius: 3px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+.hero-scroll {
+  position: absolute; bottom: 32px; right: 48px; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-size: 9px; letter-spacing: 4px; color: var(--dim); text-transform: uppercase;
+}
+.hero-scroll-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, var(--red), transparent);
+  animation: line-breathe 2.4s ease-in-out infinite;
+}
+@keyframes line-breathe {
+  0%,100% { opacity: 0.3; transform: scaleY(0.6); }
+  50%      { opacity: 1;   transform: scaleY(1);   }
+}
+
+/* =============================================
+   SECTION COMMONS
+   ============================================= */
+.section {
+  position: relative; overflow: hidden;
+}
+.section-bg-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; pointer-events: none; z-index: 0;
+}
+.section-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: rgba(8,8,9,0.82);
+}
+.section-grad-top {
+  position: absolute; top: 0; left: 0; right: 0; height: 30%;
+  background: linear-gradient(to bottom, var(--bg), transparent);
+  z-index: 2; pointer-events: none;
+}
+.section-grad-bot {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 30%;
+  background: linear-gradient(to top, var(--bg), transparent);
+  z-index: 2; pointer-events: none;
+}
+.section-inner {
+  position: relative; z-index: 3;
+  max-width: 1300px; margin: 0 auto;
+  padding: 120px 48px;
+}
+
+.section-label {
+  font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::before {
+  content: ''; display: inline-block;
+  width: 24px; height: 1px; background: var(--red);
+}
+.section-title {
+  font-family: var(--fd);
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 700; line-height: 0.95;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--white);
+}
+
+/* =============================================
+   REVEAL
+   ============================================= */
+.reveal {
+  opacity: 0; transform: translateY(36px);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.215,0.61,0.355,1);
+}
+.reveal.up { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.16s; }
+.d3 { transition-delay: 0.24s; }
+.d4 { transition-delay: 0.32s; }
+
+/* =============================================
+   ABOUT
+   ============================================= */
+.about-layout {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 72px;
+  align-items: start;
+}
+.about-photo-wrap {
+  position: relative;
+}
+.about-photo-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 12px -12px -12px 12px;
+  border: 1px solid var(--border-em);
+  border-radius: 4px;
+  z-index: 0;
+  pointer-events: none;
+  transition: inset 0.4s ease;
+}
+.about-photo-wrap:hover::after { inset: 8px -8px -8px 8px; }
+.about-photo {
+  width: 100%; border-radius: 4px;
+  display: block; position: relative; z-index: 1;
+  filter: grayscale(20%);
+  transition: filter 0.5s;
+}
+.about-photo:hover { filter: grayscale(0); }
+
+.about-bio {
+  font-size: 16px; line-height: 1.85; color: #b8bacb;
+  margin-bottom: 14px;
+}
+.about-divider {
+  width: 40px; height: 1px; background: var(--red);
+  margin: 32px 0;
+}
+.skill-heading {
+  font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 14px;
+}
+.tags {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px;
+}
+.tag {
+  font-size: 12px; letter-spacing: 1px;
+  padding: 7px 16px; border-radius: 3px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: #9a9cb0;
+  transition: border-color 0.3s, color 0.3s;
+}
+.tag:hover { border-color: rgba(229,57,53,0.3); color: var(--white); }
+
+.edu-wrap {
+  border: 1px solid var(--border); border-radius: 4px;
+  overflow: hidden; margin: 32px 0 36px;
+}
+.edu-item {
+  padding: 18px 22px;
+  display: flex; align-items: flex-start; gap: 18px;
+}
+.edu-item + .edu-item { border-top: 1px solid var(--border); }
+.edu-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); margin-top: 5px; flex-shrink: 0;
+}
+.edu-degree { font-size: 14px; font-weight: 500; color: var(--white); }
+.edu-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.doc-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* =============================================
+   PROJECTS PREVIEW
+   ============================================= */
+.projects-grid {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.proj-card {
+  position: relative; border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--bg-card);
+  transition: border-color 0.4s, transform 0.5s cubic-bezier(0.215,0.61,0.355,1);
+  cursor: none;
+}
+.proj-card:hover {
+  border-color: var(--border-em);
+  transform: translateY(-6px);
+}
+.proj-card-img {
+  width: 100%; height: 220px; object-fit: cover;
+  display: block; filter: saturate(0.6);
+  transition: filter 0.6s, transform 0.6s;
+}
+.proj-card:hover .proj-card-img { filter: saturate(1); transform: scale(1.04); }
+.proj-card-body { padding: 22px 26px 26px; }
+.proj-engine {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--red); margin-bottom: 8px;
+}
+.proj-title {
+  font-family: var(--fd); font-size: 26px; font-weight: 600;
+  letter-spacing: 1px; color: var(--white); margin-bottom: 10px;
+}
+.proj-desc {
+  font-size: 13px; line-height: 1.7; color: var(--muted);
+}
+.projects-footer {
+  margin-top: 36px; text-align: center;
+}
+
+/* =============================================
+   NOVELS PREVIEW
+   ============================================= */
+.novels-row {
+  margin-top: 60px;
+  display: flex; gap: 18px;
+  overflow-x: auto; padding-bottom: 8px;
+  scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
+}
+.novel-card {
+  min-width: 220px; flex-shrink: 0;
+  border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--border); background: var(--bg-card);
+  transition: border-color 0.4s, transform 0.5s;
+  cursor: none;
+}
+.novel-card:hover { border-color: rgba(139,92,246,0.5); transform: translateY(-8px); }
+.novel-cover-wrap { overflow: hidden; height: 290px; }
+.novel-cover { width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: saturate(0.55); transition: filter 0.6s, transform 0.6s; }
+.novel-card:hover .novel-cover { filter: saturate(1); transform: scale(1.06); }
+.novel-body { padding: 16px 18px 20px; }
+.novel-genre { font-size: 10px; letter-spacing: 3px; color: #8b5cf6; text-transform: uppercase; margin-bottom: 6px; }
+.novel-title { font-family: var(--fd); font-size: 18px; font-weight: 600; color: var(--white); margin-bottom: 14px; line-height: 1.15; }
+.novel-link {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+  transition: color 0.3s;
+}
+.novel-link:hover { color: var(--white); }
+.novels-footer { margin-top: 36px; text-align: center; }
+
+/* =============================================
+   STATEMENT SECTION
+   ============================================= */
+.statement-columns {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--border); border-radius: 4px;
+  overflow: hidden;
+}
+.stmt-card {
+  padding: 44px 48px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  transition: background 0.4s;
+}
+.stmt-card:nth-child(even) { border-left: 1px solid var(--border); }
+.stmt-card:nth-last-child(-n+2) { border-bottom: none; }
+.stmt-card:hover { background: rgba(255,255,255,0.025); }
+.stmt-num {
+  font-family: var(--fd); font-size: 11px;
+  letter-spacing: 4px; color: var(--dim);
+  margin-bottom: 16px;
+}
+.stmt-heading {
+  font-family: var(--fd); font-size: 22px; font-weight: 600;
+  letter-spacing: 1px; color: var(--white);
+  margin-bottom: 14px;
+}
+.stmt-bar {
+  width: 24px; height: 1px; background: var(--red);
+  margin-bottom: 18px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.5s ease 0.2s;
+}
+.stmt-card:hover .stmt-bar { transform: scaleX(1); }
+.stmt-body {
+  font-size: 14px; line-height: 1.8; color: var(--muted);
+}
+.statement-quote {
+  margin-top: 56px; text-align: center;
+}
+.statement-quote blockquote {
+  font-family: var(--fd);
+  font-size: clamp(22px, 3.5vw, 36px);
+  font-weight: 300; letter-spacing: 1px;
+  color: rgba(255,255,255,0.75); line-height: 1.45;
+  max-width: 820px; margin: 0 auto;
+}
+.statement-quote blockquote em { font-style: normal; color: var(--red); }
+.statement-quote cite {
+  display: block; margin-top: 18px;
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--muted); font-style: normal;
+}
+
+/* =============================================
+   CONTACT
+   ============================================= */
+.contact-layout {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+.contact-heading {
+  font-family: var(--fd);
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 700; line-height: 0.95;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.contact-heading em { font-style: normal; color: var(--red); }
+.contact-sub {
+  font-size: 15px; line-height: 1.7;
+  color: var(--muted); max-width: 380px;
+}
+.contact-list { display: flex; flex-direction: column; gap: 12px; }
+.contact-row {
+  display: flex; align-items: center; gap: 18px;
+  padding: 18px 22px; border-radius: 4px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  text-decoration: none; color: var(--white);
+  transition: border-color 0.3s, transform 0.4s;
+}
+.contact-row:hover { border-color: var(--border-em); transform: translateX(5px); }
+.contact-icon {
+  width: 40px; height: 40px; border-radius: 3px;
+  background: var(--red-soft); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 16px; color: var(--red); flex-shrink: 0;
+}
+.contact-label { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-bottom: 3px; }
+.contact-value { font-size: 14px; font-weight: 400; }
+.socials { display: flex; gap: 10px; margin-top: 28px; }
+.social-btn {
+  width: 46px; height: 46px; border-radius: 4px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; color: var(--muted); text-decoration: none;
+  transition: all 0.3s;
+}
+.social-btn:hover { background: var(--red-soft); border-color: var(--border-em); color: var(--red); transform: translateY(-3px); }
+
+/* =============================================
+   FOOTER
+   ============================================= */
+footer {
+  border-top: 1px solid var(--border);
+  max-width: 1300px; margin: 0 auto;
+  padding: 28px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; letter-spacing: 2px; color: var(--dim);
+}
+footer a { color: var(--muted); text-decoration: none; transition: color 0.3s; }
+footer a:hover { color: var(--white); }
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1000px) {
+  .about-layout { grid-template-columns: 1fr; }
+  .about-photo-wrap { max-width: 280px; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .statement-columns { grid-template-columns: 1fr; }
+  .stmt-card:nth-child(even) { border-left: none; }
+  .stmt-card:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .stmt-card:last-child { border-bottom: none; }
+  .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+}
+@media (max-width: 640px) {
+  .section-inner { padding: 90px 24px; }
+  .hero-content  { padding: 0 24px 56px; }
+  .hero-scroll   { right: 24px; }
+  .nav           { padding: 16px 24px; }
+  .nav-links .nav-link:not(.cta) { display: none; }
+  footer         { padding: 24px; flex-direction: column; gap: 8px; }
 }
 </style>
 </head>
 <body>
 
-<div id="slash-overlay">
-    <div class="blade b1"></div>
-    <div class="blade b2"></div>
-    <button class="init-btn" onclick="triggerSlash()">INITIALIZE LINK</button>
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- =============================================
+     LOADER
+     ============================================= -->
+<div id="loader">
+  <div class="loader-panel"></div>
+  <div class="loader-panel"></div>
+</div>
+<div class="loader-inner">
+  <div class="loader-name">JANE<span>SH</span>WARAN <span>R</span></div>
+  <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+  <div class="loader-role">Game Designer · Narrative Designer · 3D Artist · Author</div>
 </div>
 
-<nav class="nav">
-<a href="#about" class="pill">ABOUT</a>
-<a href="projects.html" class="pill">PROJECTS</a>
-<a href="novels.html" class="pill">NOVELS</a>
-<a href="#contact" class="pill">CONTACT</a>
+<!-- =============================================
+     NAV
+     ============================================= -->
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="#"><span>J</span>ANESHWARAN</a>
+  <div class="nav-links">
+    <a class="nav-link" href="#about">About</a>
+    <a class="nav-link" href="#projects">Projects</a>
+    <a class="nav-link" href="#novels">Novels</a>
+    <a class="nav-link" href="#statement">Statement</a>
+    <a class="nav-link cta" href="#contact">Contact</a>
+  </div>
 </nav>
 
-<div class="main-reveal" style="opacity: 0;">
-
-<div id="cursor"></div>
-<div id="trail"></div>
-<div class="blobs"><div class="blob"></div><div class="blob"></div><div class="blob"></div></div>
-
+<!-- =============================================
+     HERO
+     ============================================= -->
 <section class="hero">
-<video autoplay loop muted playsinline src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/video0001-0300.mp4"></video>
-<div class="hero-content">
-<div class="meta">Gamedesigner • Narrative Designer • 3D Artist • Webnovel Author</div>
-<h1 class="title-big">JANESHWARAN<span>R</span></h1>
-<p style="font-size:24px;opacity:0.9;letter-spacing:3px;margin-top:16px;opacity:0;animation:fadeIn 1s ease-out 2s forwards"> Portfolio <span style="color:var(--accent)">2025</span> </p>
-</div>
+  <video class="hero-video" autoplay loop muted playsinline>
+    <source src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/video0001-0300.mp4" type="video/mp4">
+  </video>
+  <div class="hero-fade-bottom"></div>
+  <div class="hero-fade-sides"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Game Designer · Narrative Designer · 3D Artist</p>
+    <h1 class="hero-name">JANESH<em>WARAN</em><br>R</h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        Crafting <strong>dark fantasy worlds</strong> through games, 3D art &amp; narrative design.
+        Based in Chennai — obsessed with consequence-driven storytelling.
+      </p>
+      <div class="hero-cta-group">
+        <a class="btn-primary" href="#projects"><i class="fas fa-gamepad"></i> View Projects</a>
+        <a class="btn-ghost"   href="#about">About Me</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
 </section>
 
-<section id="about" style="position:relative;overflow:hidden;background:var(--bg);">
-<video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.52;z-index:0;" src="https://files.catbox.moe/aky7yi.mp4"></video>
-<div style="position:absolute;inset:0;background:rgba(10,10,11,0.84);z-index:1;"></div>
-<div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, var(--bg) 90%);z-index:1;"></div>
-<div style="position:relative;z-index:2;">
-<h2 class="text-reveal"><span>ABOUT ME</span></h2>
-<div class="about-grid fade-in">
-<img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/fdd69b7caf75cd56c7aeac86013ca245.jpg" alt="Janeshwaran R" class="about-img">
-<div style="text-align:left">
-<p style="font-size:18px;line-height:1.9;color:#ddd"> Creative and imaginative student with a deep passion for crafting dark fantasy worlds through game development, 3D art, and storytelling. Known for pushing the boundaries of villain protagonists and immersive narrative experiences. </p>
-<p style="margin-top:20px;font-size:18px;color:#ccc"> Calm, collaborative, and obsessed with detail — I turn twisted ideas into polished realities. </p>
-<h3 style="margin:40px 0 16px;font-size:24px;color:var(--purple)">Skills</h3>
-<div style="display:flex;flex-wrap:wrap;gap:12px">
-<span class="tag">3D Modeling (Blender)</span><span class="tag">Game Development</span><span class="tag">Narrative Design</span>
-<span class="tag">Scriptwriting</span><span class="tag">World Building</span><span class="tag">Storytelling</span>
-</div>
-<h3 style="margin:40px 0 16px;font-size:24px;color:var(--purple)">Tools</h3>
-<div style="display:flex;flex-wrap:wrap;gap:12px">
-<span class="tag">Unity</span><span class="tag">Unreal Engine</span><span class="tag">Godot</span>
-<span class="tag">Blender</span><span class="tag">Krita</span><span class="tag">Photoshop</span>
-</div>
-<h3 style="margin:40px 0 16px;font-size:24px;color:var(--purple)">Education</h3>
-<div style="background:rgba(0,0,0,0.4);padding:24px;border-radius:16px">
-<p><strong>B.Sc Computer Science</strong> — St. Joseph College, Chennai (2020–2024)</p>
-<p style="margin-top:16px"><strong>M.Sc Game Technology</strong> — ICAT Design & Media College, Chennai (2024–Present)</p>
-</div>
+<!-- =============================================
+     ABOUT
+     ============================================= -->
+<section class="section" id="about">
+  <video class="section-bg-video" autoplay loop muted playsinline>
+    <source src="https://files.catbox.moe/aky7yi.mp4" type="video/mp4">
+  </video>
+  <div class="section-overlay"></div>
+  <div class="section-grad-top"></div>
+  <div class="section-grad-bot"></div>
 
-<div class="resume-cv-container">
-  <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank" class="resume-btn">View Resume</a>
-  <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf" target="_blank" class="cv-btn">View CV</a>
-</div>
+  <div class="section-inner">
+    <p class="section-label reveal">Chapter 01</p>
+    <h2 class="section-title reveal d1">About Me</h2>
 
-</div>
-</div>
-</div>
+    <div class="about-layout">
+      <div class="about-photo-wrap reveal d1">
+        <img class="about-photo"
+             src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/fdd69b7caf75cd56c7aeac86013ca245.jpg"
+             alt="Janeshwaran R">
+      </div>
+
+      <div>
+        <p class="about-bio reveal d1">
+          Creative and imaginative designer with a deep passion for crafting dark fantasy worlds through game development, 3D art, and storytelling. Known for pushing the limits of villain protagonists and building emotionally immersive experiences.
+        </p>
+        <p class="about-bio reveal d2">
+          Calm, collaborative, and obsessed with detail — I turn twisted ideas into polished realities.
+        </p>
+
+        <div class="about-divider reveal d2"></div>
+
+        <p class="skill-heading reveal d2">Core Skills</p>
+        <div class="tags reveal d2">
+          <span class="tag">3D Modeling — Blender</span>
+          <span class="tag">Game Development</span>
+          <span class="tag">Narrative Design</span>
+          <span class="tag">Scriptwriting</span>
+          <span class="tag">World Building</span>
+          <span class="tag">Storytelling</span>
+        </div>
+
+        <p class="skill-heading reveal d3">Tools & Engines</p>
+        <div class="tags reveal d3">
+          <span class="tag">Unity</span>
+          <span class="tag">Unreal Engine</span>
+          <span class="tag">Godot</span>
+          <span class="tag">Blender</span>
+          <span class="tag">Krita</span>
+          <span class="tag">Photoshop</span>
+        </div>
+
+        <div class="edu-wrap reveal d3">
+          <div class="edu-item">
+            <div class="edu-dot"></div>
+            <div>
+              <p class="edu-degree">B.Sc Computer Science</p>
+              <p class="edu-meta">St. Joseph College, Chennai &nbsp;·&nbsp; 2020 – 2024</p>
+            </div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-dot"></div>
+            <div>
+              <p class="edu-degree">M.Sc Game Technology</p>
+              <p class="edu-meta">ICAT Design & Media College, Chennai &nbsp;·&nbsp; 2024 – Present</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-row reveal d4">
+          <a class="btn-primary" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank"><i class="fas fa-file-alt"></i> Resume</a>
+          <a class="btn-ghost"   href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf"    target="_blank"><i class="fas fa-file"></i> Full CV</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section style="position:relative;overflow:hidden;background:var(--bg);">
-<video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.55;z-index:0;" src="https://files.catbox.moe/o6icxy.mp4"></video>
-<div style="position:absolute;inset:0;background:rgba(10,10,11,0.80);z-index:1;"></div>
-<div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, var(--bg) 100%);z-index:1;"></div>
-<div style="position:relative;z-index:2;">
-<h2 class="text-reveal"><span>PROJECTS</span></h2>
-<div class="intro-block fade-in">
-<h3 style="font-family:Anton;font-size:36px;color:var(--accent);margin:40px 0 20px">3D Artist | Blender</h3>
-<p style="font-size:17px;line-height:1.9;color:#ddd;margin-bottom:32px"> Aspiring 3D artist specializing in stylized character modeling and cinematic scene design using Blender. Experienced in expressive posing, advanced lighting, and cinematic camera composition. </p>
-<h3 style="font-family:Anton;font-size:36px;color:var(--accent);margin:40px 0 20px">Game Developer & Designer | Unity (2D & Basic 3D)</h3>
-<p style="font-size:17px;line-height:1.9;color:#ddd;margin-bottom:32px"> Creative game developer and designer with experience in building engaging 2D and 3D games using Unity. Skilled in scripting, prototyping, and scene management. </p>
-<a href="projects.html" class="big-btn">VIEW ALL PROJECTS</a>
-</div>
-</div>
+<!-- =============================================
+     PROJECTS PREVIEW
+     ============================================= -->
+<section class="section" id="projects">
+  <video class="section-bg-video" autoplay loop muted playsinline>
+    <source src="https://files.catbox.moe/o6icxy.mp4" type="video/mp4">
+  </video>
+  <div class="section-overlay"></div>
+  <div class="section-grad-top"></div>
+  <div class="section-grad-bot"></div>
+
+  <div class="section-inner">
+    <p class="section-label reveal">Chapter 02</p>
+    <h2 class="section-title reveal d1">Projects</h2>
+
+    <div class="projects-grid">
+      <div class="proj-card reveal d1">
+        <img class="proj-card-img"
+             src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png"
+             alt="The Last Choice">
+        <div class="proj-card-body">
+          <p class="proj-engine">Twine · Narrative</p>
+          <h3 class="proj-title">The Last Choice</h3>
+          <p class="proj-desc">A dark story-driven adventure where every decision echoes forever — werewolves, fractured realities, and a missing sister.</p>
+        </div>
+      </div>
+      <div class="proj-card reveal d2">
+        <img class="proj-card-img"
+             src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png"
+             alt="DREAM">
+        <div class="proj-card-body">
+          <p class="proj-engine">Godot · Platformer</p>
+          <h3 class="proj-title">DREAM</h3>
+          <p class="proj-desc">A hardcore 2D pixel platformer — a young girl trapped inside a distorted dream world. Atmospheric, brutal, emotional.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="projects-footer reveal d3">
+      <a class="btn-primary" href="projects.html">View All Projects <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
 </section>
 
-<section style="position:relative;overflow:hidden;background:var(--bg);">
-<video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.50;z-index:0;" src="https://files.catbox.moe/sl8158.mp4"></video>
-<div style="position:absolute;inset:0;background:rgba(10,10,11,0.82);z-index:1;"></div>
-<div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(139,92,246,0.15) 0%, var(--bg) 100%);z-index:1;"></div>
-<div style="position:relative;z-index:2;">
-<h2 class="text-reveal"><span>NOVELS — by Darkpath</span></h2>
-<div class="intro-block fade-in">
-<h3 style="font-family:Anton;font-size:36px;color:var(--purple);margin:40px 0 20px">Author | Novels</h3>
-<p style="font-size:17px;line-height:1.9;color:#ddd;margin-bottom:32px"> I am Mr. Darkpath, an author passionate about creating unique, immersive, and thought-provoking stories. I craft compelling narratives that explore human emotion, adventure, and fantastical worlds, aiming to captivate readers from start to finish. </p>
-<a href="novels.html" class="big-btn">VIEW ALL NOVELS</a>
-</div>
-</div>
+<!-- =============================================
+     NOVELS PREVIEW
+     ============================================= -->
+<section class="section" id="novels">
+  <video class="section-bg-video" autoplay loop muted playsinline>
+    <source src="https://files.catbox.moe/sl8158.mp4" type="video/mp4">
+  </video>
+  <div class="section-overlay" style="background:rgba(8,8,9,0.86);"></div>
+  <div class="section-grad-top"></div>
+  <div class="section-grad-bot"></div>
+
+  <div class="section-inner">
+    <p class="section-label reveal" style="color:#8b5cf6;">Chapter 03</p>
+    <h2 class="section-title reveal d1">Novels</h2>
+    <p style="margin-top:10px;font-size:13px;letter-spacing:3px;color:var(--muted);" class="reveal d1">
+      by <span style="color:#8b5cf6;font-style:italic;">Mr. Darkpath</span>
+    </p>
+
+    <div class="novels-row">
+      <div class="novel-card reveal d1">
+        <div class="novel-cover-wrap">
+          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Gods%20Betrayed%20Me%20So%20I%20Made%20Them%20As%20Sx%20Slaves.png" alt="Gods Betrayed Me">
+        </div>
+        <div class="novel-body">
+          <p class="novel-genre">Dark Revenge Fantasy</p>
+          <h3 class="novel-title">Gods Betrayed Me</h3>
+          <a class="novel-link" href="https://www.webnovel.com/book/31871358200404405" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
+        </div>
+      </div>
+      <div class="novel-card reveal d2">
+        <div class="novel-cover-wrap">
+          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/The%20HERMITS%20HAVEN.png" alt="Hermit's Haven">
+        </div>
+        <div class="novel-body">
+          <p class="novel-genre">Post-Apocalyptic</p>
+          <h3 class="novel-title">The Hermit's Haven</h3>
+          <a class="novel-link" href="https://www.webnovel.com/book/29761771700037905" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
+        </div>
+      </div>
+      <div class="novel-card reveal d3">
+        <div class="novel-cover-wrap">
+          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/THE%20WISH%20OF%20MALICE.png" alt="Wish of Malice">
+        </div>
+        <div class="novel-body">
+          <p class="novel-genre">Villain Protagonist</p>
+          <h3 class="novel-title">The Wish of Malice</h3>
+          <a class="novel-link" href="https://www.webnovel.com/book/29761690700035805" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
+        </div>
+      </div>
+      <div class="novel-card reveal d4">
+        <div class="novel-cover-wrap">
+          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/I%20Was%20Summoned%20By%20a%20God%20But%20I%20Tricked%20The%20God%20To%20Become%20a%20God.png" alt="I Was Summoned">
+        </div>
+        <div class="novel-body">
+          <p class="novel-genre">Dark Isekai</p>
+          <h3 class="novel-title">I Was Summoned But I Tricked The God</h3>
+          <a class="novel-link" href="https://www.webnovel.com/book/29962599308510305" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
+        </div>
+      </div>
+      <div class="novel-card reveal d4">
+        <div class="novel-cover-wrap">
+          <img class="novel-cover" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Formula%20Jet%20Racing.png" alt="Formula Jet Racing">
+        </div>
+        <div class="novel-body">
+          <p class="novel-genre">Sky Racing</p>
+          <h3 class="novel-title">Formula Jet Racing</h3>
+          <a class="novel-link" href="https://www.webnovel.com/book/32853058600730605" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="novels-footer reveal">
+      <a class="btn-ghost" href="novels.html" style="display:inline-flex;align-items:center;gap:10px;">
+        <i class="fas fa-book-open"></i> View All Novels
+      </a>
+    </div>
+  </div>
 </section>
 
-<section style="position:relative;overflow:hidden;background:var(--bg);">
-<video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.52;z-index:0;" src="https://files.catbox.moe/aky7yi.mp4"></video>
-<div style="position:absolute;inset:0;background:rgba(10,10,11,0.84);z-index:1;"></div>
-<div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, var(--bg) 90%);z-index:1;"></div>
-<div style="position:relative;z-index:2;">
-<h2 class="text-reveal"><span>PORTFOLIO ARTIFACT</span></h2>
-<h3 style="font-family:Anton;font-size:clamp(40px,6vw,70px);color:var(--purple);margin:20px 0 40px; opacity:0;transform:translateY(50px)">Narrative Designer / Game Narrative - Author's Statement</h3>
-<div class="intro-block fade-in" style="text-align:left;max-width:1100px;padding:70px 60px;font-size:18px;line-height:1.85;color:#ddd">
-<strong style="display:block;font-size:28px;color:var(--purple);margin:50px 0 20px;">Author’s Statement</strong>
-<p>My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast - family conflict, happiness, sadness, isolation, and connection. I don't have a clean or singular reason for wanting to become a narrative designer; instead, my interest grew naturally from observing how people react, hide reactions, and learn to survive emotionally. Growing up, I reached a point where honest reactions became difficult, and I began to fake them. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p>
-<strong style="display:block;font-size:26px;color:var(--purple);margin:60px 0 20px;border-left:5px solid var(--purple);padding-left:15px;">Personal Lens / Storytelling Perspective</strong>
-<p style="margin-top:20px;">I exist between loneliness and solitude. I enjoy being social, yet often resist it. I experience frequent mood shifts and spend a significant amount of time daydreaming. Depending on my emotional state, these daydreams take the form of love stories, heroic arcs, villain narratives, or internal psychological conflicts - often with myself positioned as the central character. This inner contradiction - wanting connection while withdrawing from it - strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p>
-<strong style="display:block;font-size:26px;color:var(--accent);margin:60px 0 20px;border-left:5px solid var(--accent);padding-left:15px;">Writer’s Note</strong>
-<p style="margin-top:20px;">At one stage, I realized that my daydreams would disappear if left untouched. To prevent that loss, I began writing them as stories and publishing them as novels. The response was positive, but instead of grounding me, it expanded my imagination further - pushing me deeper into idea creation and narrative exploration. Writing, for me, is not an escape from thinking; it is an extension of it.</p>
-<strong style="display:block;font-size:26px;color:var(--purple);margin:60px 0 20px;border-left:5px solid var(--purple);padding-left:15px;">Narrative Philosophy</strong>
-<p style="margin-top:20px;">I believe stories are built from emotion first and structure second. Human beings naturally live in imagined worlds - some shared, some personal - and narrative exists to give those worlds form. I am particularly drawn to war films and biopics because they compress the full range of human emotion into moments of decision. Even when altered for entertainment, these stories reveal character through choice, pressure, and consequence. A character, to me, is defined not by intent, but by what they choose when outcomes are uncertain.</p>
-<strong style="display:block;font-size:26px;color:var(--accent);margin:60px 0 20px;border-left:5px solid var(--accent);padding-left:15px;">Design Ethos</strong>
-<p style="margin-top:20px;">My approach to narrative design is consequence-driven. Choices must matter, and meaning must emerge from their outcomes. Influenced by manhwas and branching narratives, I view life - and by extension story - as a system of decisions. When a choice is made, it must carry weight. When a path is taken, something else must be lost. I design narratives where:</p>
-<ul style="margin:20px 0 0 30px;list-style-type:none;line-height:1.7;">
-  <li>• Choice defines character</li>
-  <li>• Emotion drives mechanics</li>
-  <li>• Past, present, and future coexist in the narrative structure</li>
-</ul>
-<strong style="display:block;font-size:26px;color:var(--purple);margin:60px 0 20px;border-left:5px solid var(--purple);padding-left:15px;">Creative Manifesto</strong>
-<p style="margin-top:20px;">I am not afraid of loss, contradiction, or darkness in storytelling. I explore themes ranging from crime and moral decay to ambition, power, and desire. I build worlds that include light and shadow - fun and brutality - because reality contains both. My goal is not to create perfect stories, but honest ones. I aim to turn imagination into something tangible: not dreams that fade, but narratives that endure.</p>
-<strong style="display:block;font-size:28px;color:var(--purple);margin:70px 0 20px;text-align:center;">Closing Identity</strong>
-<p style="font-size:20px;color:#ccc;text-align:center;">I am Janeshwaran. This is not a conclusion, but a structure - one that continues to evolve as my skills grow.</p>
-</div>
-</div>
+<!-- =============================================
+     AUTHOR STATEMENT
+     ============================================= -->
+<section class="section" id="statement">
+  <video class="section-bg-video" autoplay loop muted playsinline>
+    <source src="https://files.catbox.moe/aky7yi.mp4" type="video/mp4">
+  </video>
+  <div class="section-overlay" style="background:rgba(8,8,9,0.87);"></div>
+  <div class="section-grad-top"></div>
+  <div class="section-grad-bot"></div>
+
+  <div class="section-inner">
+    <p class="section-label reveal">Chapter 04</p>
+    <h2 class="section-title reveal d1">Narrative Designer</h2>
+    <p style="margin-top:8px;font-size:12px;letter-spacing:3px;color:var(--muted);" class="reveal d1">Author's Statement & Design Philosophy</p>
+
+    <div class="statement-columns reveal d2">
+      <div class="stmt-card">
+        <p class="stmt-num">01 — Personal Lens</p>
+        <div class="stmt-bar"></div>
+        <h3 class="stmt-heading">Who I Am</h3>
+        <p class="stmt-body">Shaped by lived emotional contrast — family conflict, isolation, and connection. I exist between loneliness and solitude. This inner contradiction strongly influences the characters I create. My stories are built on emotional ambiguity, not certainty.</p>
+      </div>
+      <div class="stmt-card">
+        <p class="stmt-num">02 — Writer's Note</p>
+        <div class="stmt-bar"></div>
+        <h3 class="stmt-heading">Why I Write</h3>
+        <p class="stmt-body">I began writing to prevent my daydreams from disappearing. The response expanded my imagination further rather than grounding me. Writing, for me, is not an escape from thinking — it is an extension of it.</p>
+      </div>
+      <div class="stmt-card">
+        <p class="stmt-num">03 — Philosophy</p>
+        <div class="stmt-bar"></div>
+        <h3 class="stmt-heading">How I Build Narratives</h3>
+        <p class="stmt-body">Stories are built from emotion first, structure second. I am drawn to war films and biopics because they compress the full range of human emotion into moments of decision. A character is defined not by intent, but by what they choose when outcomes are uncertain.</p>
+      </div>
+      <div class="stmt-card">
+        <p class="stmt-num">04 — Design Ethos</p>
+        <div class="stmt-bar"></div>
+        <h3 class="stmt-heading">Consequence-Driven</h3>
+        <p class="stmt-body">Choices must matter. I design narratives where choice defines character, emotion drives mechanics, and past, present, and future coexist. When a path is taken, something else must be lost.</p>
+      </div>
+    </div>
+
+    <div class="statement-quote reveal">
+      <blockquote>
+        "My goal is not to create <em>perfect</em> stories —<br>but <em>honest</em> ones."
+      </blockquote>
+      <cite>— Janeshwaran R</cite>
+    </div>
+  </div>
 </section>
 
-<section id="contact" style="position:relative;overflow:hidden;background:var(--bg);">
-<video autoplay loop muted playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.48;z-index:0;" src="https://github.com/Janeshobito/Janeshobito.github.io/blob/main/myFolder/campfire-watermarked_w7o6vg.mp4?raw=true"></video>
-<div style="position:absolute;inset:0;background:rgba(10,10,11,0.82);z-index:1;"></div>
-<div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 0%, var(--bg) 100%);z-index:1;"></div>
-<div style="position:relative;z-index:2;">
-<h2 class="text-reveal"><span>LET'S CREATE SOMETHING DARK</span></h2>
-<div class="social-icons fade-in" style="display:flex;gap:50px;justify-content:center;margin-top:60px">
-<a href="https://www.artstation.com/janeshobito283" target="_blank"><i class="fab fa-artstation"></i></a>
-<a href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin"></i></a>
-<a href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
-<a href="mailto:janeshwaranboito283@gmail.com"><i class="fas fa-envelope"></i></a>
-</div>
-<div style="margin-top:50px;color:#ccc;font-size:18px">
-<p><a href="mailto:janeshwaranboito283@gmail.com" style="color:var(--accent);text-decoration:none">janeshwaranboito283@gmail.com</a></p>
-<p>+91 63799 89918 • Chennai, Tamil Nadu, India</p>
-</div>
-</div>
+<!-- =============================================
+     CONTACT
+     ============================================= -->
+<section class="section" id="contact">
+  <video class="section-bg-video" autoplay loop muted playsinline>
+    <source src="https://github.com/Janeshobito/Janeshobito.github.io/blob/main/myFolder/campfire-watermarked_w7o6vg.mp4?raw=true" type="video/mp4">
+  </video>
+  <div class="section-overlay" style="background:rgba(8,8,9,0.85);"></div>
+  <div class="section-grad-top"></div>
+  <div class="section-grad-bot"></div>
+
+  <div class="section-inner">
+    <p class="section-label reveal">Chapter 05</p>
+
+    <div class="contact-layout">
+      <div>
+        <h2 class="contact-heading reveal">Let's<br>Create<br><em>Something</em><br>Dark.</h2>
+        <p class="contact-sub reveal d1">Open to collaborations, freelance work, and conversations about game narrative, 3D art, and world-building.</p>
+        <div class="socials reveal d2">
+          <a class="social-btn" href="https://www.artstation.com/janeshobito283" target="_blank"><i class="fab fa-artstation"></i></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          <a class="social-btn" href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
+          <a class="social-btn" href="mailto:janeshwaranboito283@gmail.com"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+      <div class="contact-list">
+        <a class="contact-row reveal d1" href="mailto:janeshwaranboito283@gmail.com">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <p class="contact-label">Email</p>
+            <p class="contact-value">janeshwaranboito283@gmail.com</p>
+          </div>
+        </a>
+        <div class="contact-row reveal d2">
+          <div class="contact-icon"><i class="fas fa-phone"></i></div>
+          <div>
+            <p class="contact-label">Phone</p>
+            <p class="contact-value">+91 63799 89918</p>
+          </div>
+        </div>
+        <div class="contact-row reveal d3">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <p class="contact-label">Location</p>
+            <p class="contact-value">Chennai, Tamil Nadu, India</p>
+          </div>
+        </div>
+        <a class="contact-row reveal d4" href="https://www.artstation.com/janeshobito283" target="_blank">
+          <div class="contact-icon"><i class="fab fa-artstation"></i></div>
+          <div>
+            <p class="contact-label">ArtStation</p>
+            <p class="contact-value">janeshobito283</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </section>
 
-</div> <script>
-function triggerSlash() {
-    // Sharp blade sound
-    const audio = new Audio('https://www.fesliyanstudios.com/play-mp3/6373'); 
-    audio.volume = 0.5;
-    audio.play();
-    document.body.classList.add('slashed');
-}
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Janeshwaran R</span>
+  <a href="#">↑ Back to top</a>
+</footer>
 
-// ORIGINAL CURSOR LOGIC
-const cursor = document.getElementById('cursor');
-const trail = document.getElementById('trail');
-let mx = 0, my = 0, cx = 0, cy = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-function animate() {
- cx += (mx - cx) * 0.16;
- cy += (my - cy) * 0.16;
- cursor.style.left = cx + 'px';
- cursor.style.top = cy + 'px';
- trail.style.left = mx + 'px';
- trail.style.top = my + 'px';
- requestAnimationFrame(animate);
-}
-animate();
-
-document.querySelectorAll('a, .big-btn, img, .resume-btn, .cv-btn, .init-btn, .pill').forEach(el => {
- el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
- el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+<script>
+/* ------- LOADER ------- */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.body.classList.add('loaded');
+  }, 2200);
 });
 
-// SCROLL OBSERVER
+/* ------- CURSOR ------- */
+const cur = document.getElementById('cur');
+const curRing = document.getElementById('cur-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function loop() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  cur.style.left = mx + 'px';
+  cur.style.top  = my + 'px';
+  curRing.style.left = rx + 'px';
+  curRing.style.top  = ry + 'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a, button, .proj-card, .novel-card, .tag, .stmt-card').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('on-link'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('on-link'));
+});
+
+/* ------- NAV SCROLL ------- */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ------- SCROLL REVEAL ------- */
 const observer = new IntersectionObserver(entries => {
- entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('show'); });
-}, { threshold: 0.15 });
-document.querySelectorAll('h2, .fade-in, .intro-block, .about-grid').forEach(el => observer.observe(el));
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('up'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ------- ACTIVE NAV LINK ------- */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link:not(.cta)');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 160) current = s.id;
+  });
+  navLinks.forEach(l => {
+    l.style.color = l.getAttribute('href') === '#' + current ? 'var(--white)' : '';
+  });
+}, { passive: true });
 </script>
 </body>
 </html>
