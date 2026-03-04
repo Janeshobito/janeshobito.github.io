@@ -1,634 +1,1212 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Projects — Janeshwaran R</title>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    :root {
-      --bg: #0a0a0b;
-      --accent: #e53935;
-      --glow: rgba(229,57,53,0.4);
-      --dark: #0f1117;
-      --border: #2a2f3a;
-      --text: #d1d5e0;
-      --text-light: #a0a8c0;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body {
-      height: 100%;
-      background: #000;
-      color: #fff;
-      font-family: Montserrat, sans-serif;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-    html { scroll-behavior: smooth; }
-    #video-bg, #video-overlay, .blobs, #cursor, #trail {
-      pointer-events: none;
-    }
-    #video-bg {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      z-index: -2;
-    }
-    #video-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.32);
-      z-index: -1;
-    }
-    .blobs { position: fixed; inset: 0; overflow: hidden; z-index: 0; }
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(130px);
-      opacity: 0.25;
-      animation: drift 30s infinite linear;
-    }
-    .blob:nth-child(1) { width:800px; height:800px; background:#e53935; top:-20%; left:-15%; }
-    .blob:nth-child(2) { width:600px; height:600px; background:#8b5cf6; bottom:-10%; right:-10%; }
-    .blob:nth-child(3) { width:700px; height:700px; background:#00e5ff; top:40%; left:30%; }
-    @keyframes drift {
-      0%,100% { transform: translate(0,0); }
-      50% { transform: translate(200px,180px) rotate(180deg); }
-    }
-    #cursor {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 2px solid var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%,-50%);
-      transition: .12s;
-      backdrop-filter: invert(1);
-      mix-blend-mode: difference;
-    }
-    #cursor.hover {
-      transform: translate(-50%,-50%) scale(2.2);
-      background: var(--accent);
-    }
-    #trail {
-      position: fixed;
-      width: 10px; height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      opacity: 0.6;
-    }
-    .nav {
-      position: fixed;
-      top: 20px; left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      display: flex; gap: 16px;
-      padding: 12px 30px;
-      background: rgba(10,10,11,0.9);
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-    }
-    .pill {
-      color: #bbb;
-      text-decoration: none;
-      padding: 8px 18px;
-      border-radius: 30px;
-      font-size: 14px;
-      transition: 0.4s;
-    }
-    .pill:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.1);
-    }
-    .main-content {
-      position: relative;
-      z-index: 10;
-      min-height: 100vh;
-      padding-top: 120px;
-      padding-bottom: 60px;
-    }
-    .section-title {
-      font-family: Anton;
-      font-size: 58px;
-      text-align: center;
-      margin: 80px 0 60px;
-      color: var(--accent);
-      letter-spacing: 2px;
-    }
-    .section-subtitle {
-      font-size: 20px;
-      color: #aaa;
-      text-align: center;
-      margin-bottom: 60px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.5;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 40px;
-      max-width: 1400px;
-      margin: auto;
-      padding: 0 20px;
-    }
-    .concept-grid {
-      max-width: 1400px;
-      margin: 0 auto;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      justify-content: center;
-    }
-    .concept-title {
-      font-size: 48px;
-      margin: 60px 0 40px;
-    }
-    .concept-subtitle {
-      font-size: 18px;
-      margin-bottom: 50px;
-    }
-    .card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: 0.6s;
-      backdrop-filter: blur(10px);
-    }
-    .card:hover {
-      transform: translateY(-20px) scale(1.04);
-      box-shadow: 0 40px 100px var(--glow);
-    }
-    .card img {
-      width: 100%;
-      height: 320px;
-      object-fit: cover;
-      transition: 0.6s;
-    }
-    .card:hover img { transform: scale(1.1); }
-    .card h3 {
-      font-family: Anton;
-      font-size: 28px;
-      margin: 16px 20px 8px;
-    }
-    .card .genre-engine {
-      color: var(--text-light);
-      font-size: 13px;
-      margin: 0 20px 12px;
-      font-style: italic;
-    }
-    .card p {
-      color: #ccc;
-      margin: 0 20px 20px;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    .btn {
-      display: block;
-      margin: 12px auto;
-      width: 85%;
-      padding: 14px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50px;
-      font-weight: 700;
-      text-decoration: none;
-      text-align: center;
-      transition: 0.4s;
-      border: none;
-      cursor: pointer;
-      font-family: Montserrat;
-    }
-    .btn:hover {
-      background: #c62828;
-      transform: scale(1.05);
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(60px);
-      transition: 1.2s;
-    }
-    .fade-in.show {
-      opacity: 1;
-      transform: none;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.88);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(10px);
-      padding: 20px;
-    }
-    .modal-content {
-      background: var(--dark);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      width: 100%;
-      max-width: 1180px;
-      max-height: 88vh;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-    }
-    .modal-header {
-      padding: 24px 32px 16px;
-      text-align: center;
-      border-bottom: 1px solid #1e222c;
-      position: relative;
-    }
-    .modal-header h2 {
-      font-family: 'Anton', sans-serif;
-      font-size: 2.1rem;
-      color: var(--accent);
-      margin: 0 0 6px;
-      letter-spacing: 1.5px;
-    }
-    .modal-subtitle {
-      color: var(--text-light);
-      font-size: 1.05rem;
-      margin: 0;
-    }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: #8892b0;
-      font-size: 2.2rem;
-      font-weight: 300;
-      cursor: pointer;
-      line-height: 1;
-      transition: color 0.2s;
-    }
-    .modal-close:hover { color: var(--accent); }
-    .table-container {
-      padding: 0 32px 32px;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .beat-sheet-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.94rem;
-      color: var(--text);
-    }
-    .beat-sheet-table th,
-    .beat-sheet-table td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid #1e222c;
-    }
-    .beat-sheet-table th {
-      background: #161a24;
-      color: #e2e8f0;
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 0.82rem;
-      letter-spacing: 0.6px;
-      white-space: nowrap;
-    }
-    .beat-sheet-table td:nth-child(1) { width: 14%; font-weight: 500; color: var(--text-light); }
-    .beat-sheet-table td:nth-child(2) { width: 11%; color: #cbd5e1; }
-    .beat-sheet-table tr:nth-child(even) { background: rgba(20,25,35,0.4); }
-    .beat-sheet-table tr:hover { background: rgba(229,57,53,0.08); }
-    .buttons-container {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin: 20px 0;
-      flex-wrap: wrap;
-      padding: 0 20px;
-    }
-    .video-container {
-      padding: 0 32px 32px;
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      background: #000;
-    }
-    .video-container video {
-      width: 100%;
-      max-height: 60vh;
-      object-fit: contain;
-    }
-    @media (max-width: 768px) {
-      .modal-content { max-height: 92vh; }
-      .table-container { padding: 0 16px 24px; }
-      .beat-sheet-table th, .beat-sheet-table td { padding: 12px 10px; font-size: 0.88rem; }
-      .section-title { font-size: 42px; margin: 60px 0 40px; }
-      .main-content { padding-top: 100px; }
-      .concept-grid { max-width: 100%; padding: 0 15px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projects — Janeshwaran R</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ══════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════ */
+:root{
+  --bg:     #060608;
+  --card:   rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.07);
+  --bdr-r:  rgba(229,57,53,0.42);
+  --red:    #e53935;
+  --red-s:  rgba(229,57,53,0.09);
+  --white:  #ededeb;
+  --muted:  #656878;
+  --dim:    #1e2130;
+  --fd: 'Oswald', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--fb);
+     font-weight:300;overflow-x:hidden;cursor:none}
+
+/* ══════════════════════════════════════════════
+   CURSOR SYSTEM
+══════════════════════════════════════════════ */
+#cur{position:fixed;width:8px;height:8px;background:var(--red);
+     border-radius:50%;pointer-events:none;z-index:999999;
+     transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s}
+#cur-ring{position:fixed;width:34px;height:34px;
+          border:1px solid rgba(229,57,53,0.5);border-radius:50%;
+          pointer-events:none;z-index:999998;transform:translate(-50%,-50%);
+          transition:transform .08s,border-color .3s,width .2s,height .2s}
+body.hov #cur{width:12px;height:12px;background:#ff6b6b}
+body.hov #cur-ring{transform:translate(-50%,-50%) scale(2.2);border-color:var(--red)}
+body.clicking #cur{transform:translate(-50%,-50%) scale(.4)}
+
+/* cursor trail canvas */
+#trail-cv{position:fixed;inset:0;pointer-events:none;z-index:2}
+
+/* aurora */
+#aurora{position:fixed;width:520px;height:520px;border-radius:50%;
+        pointer-events:none;z-index:1;
+        background:radial-gradient(circle,rgba(229,57,53,.1) 0%,rgba(180,20,20,.04) 45%,transparent 68%);
+        transform:translate(-50%,-50%);filter:blur(3px);will-change:left,top}
+
+/* ══════════════════════════════════════════════
+   THREE.JS CANVAS — FULL SCREEN BG
+══════════════════════════════════════════════ */
+#three-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:9000;
+     display:flex;align-items:center;justify-content:space-between;
+     padding:18px 52px;transition:background .4s,padding .4s}
+.nav.bg{background:rgba(6,6,8,.95);backdrop-filter:blur(22px);
+        border-bottom:1px solid var(--border);padding-top:14px;padding-bottom:14px}
+.nav-logo{font-family:var(--fd);font-size:19px;font-weight:700;
+          letter-spacing:4px;color:var(--white);text-decoration:none}
+.nav-logo span{color:var(--red)}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);
+    text-decoration:none;padding:8px 16px;border-radius:3px;transition:color .3s}
+.nl:hover{color:var(--white)}
+.nl.act{color:var(--white)}
+.nl.cta{color:var(--white);border:1px solid var(--bdr-r);padding:8px 22px;
+        margin-left:8px;transition:background .3s,border-color .3s}
+.nl.cta:hover{background:var(--red-s);border-color:var(--red)}
+
+/* ══════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════ */
+.hero{height:100vh;min-height:700px;position:relative;
+      overflow:hidden;display:flex;align-items:flex-end}
+.hero-vid{position:absolute;inset:0;width:100%;height:120%;
+          object-fit:cover;opacity:.38;top:-10%;will-change:transform}
+.hero-vig{position:absolute;inset:0;z-index:1;
+          background:radial-gradient(ellipse at 60% 40%,transparent 20%,rgba(6,6,8,.8) 75%)}
+.hero-fade{position:absolute;bottom:0;left:0;right:0;height:55%;
+           background:linear-gradient(to bottom,transparent,var(--bg));z-index:1}
+
+/* scan line overlay for game aesthetic */
+.hero-scanlines{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px)}
+
+/* big red ghost text */
+.hero-ghost{position:absolute;right:-20px;top:50%;transform:translateY(-52%);
+            font-family:var(--fd);font-size:clamp(120px,18vw,270px);font-weight:700;
+            letter-spacing:-6px;line-height:.9;text-transform:uppercase;
+            color:transparent;-webkit-text-stroke:1px rgba(229,57,53,.07);
+            z-index:1;pointer-events:none;user-select:none}
+
+.hero-content{position:relative;z-index:3;padding:0 52px 88px;max-width:980px}
+
+/* HUD tag */
+.hud-tag{display:inline-flex;align-items:center;gap:10px;
+         font-family:var(--fd);font-size:10px;letter-spacing:6px;
+         text-transform:uppercase;color:var(--red);margin-bottom:16px;
+         opacity:0;animation:au .6s ease .1s forwards}
+.hud-tag::before,.hud-tag::after{content:'';display:inline-block;
+  width:20px;height:1px;background:var(--red)}
+.hud-dot{width:5px;height:5px;background:var(--red);border-radius:50%;
+         animation:blink 1.4s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* GLITCH TITLE */
+.glitch-wrap{position:relative;opacity:0;animation:au .9s ease .25s forwards}
+.glitch{
+  font-family:var(--fd);font-size:clamp(60px,11vw,150px);
+  font-weight:700;line-height:.86;letter-spacing:2px;
+  text-transform:uppercase;color:var(--white);
+  position:relative;display:inline-block;
+}
+.glitch em{font-style:normal;-webkit-text-stroke:1px rgba(255,255,255,.28);color:transparent}
+.glitch::before,.glitch::after{
+  content:attr(data-text);
+  position:absolute;top:0;left:0;
+  font-family:var(--fd);font-size:inherit;font-weight:inherit;
+  line-height:inherit;letter-spacing:inherit;text-transform:inherit;
+  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
+  pointer-events:none;
+}
+.glitch::before{
+  color:#ff4444;left:2px;
+  animation:glitch-a 4.5s infinite steps(1);
+}
+.glitch::after{
+  color:#00e5ff;left:-2px;
+  animation:glitch-b 4.5s infinite steps(1);
+}
+@keyframes glitch-a{
+  0%,90%,100%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:none}
+  91%{clip-path:polygon(0 12%,100% 12%,100% 28%,0 28%);transform:translateX(3px)}
+  92%{clip-path:polygon(0 55%,100% 55%,100% 70%,0 70%);transform:translateX(-2px)}
+  93%{clip-path:polygon(0 80%,100% 80%,100% 90%,0 90%);transform:translateX(4px)}
+  94%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:none}
+}
+@keyframes glitch-b{
+  0%,90%,100%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:none}
+  91%{clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%);transform:translateX(-3px)}
+  93%{clip-path:polygon(0 20%,100% 20%,100% 35%,0 35%);transform:translateX(2px)}
+  94%{clip-path:polygon(0 0,0 0,0 0,0 0);transform:none}
+}
+
+.hero-sub{font-size:15px;line-height:1.78;color:var(--muted);
+          max-width:540px;margin:24px 0 36px;
+          opacity:0;animation:au .7s ease .5s forwards}
+.hero-sub strong{color:rgba(255,255,255,.6);font-weight:400}
+
+/* stat counters */
+.hero-stats{display:flex;gap:44px;flex-wrap:wrap;
+            opacity:0;animation:au .7s ease .65s forwards}
+.stat-n{font-family:var(--fd);font-size:44px;font-weight:700;
+        color:var(--red);line-height:1}
+.stat-l{font-size:9px;letter-spacing:4px;text-transform:uppercase;
+        color:var(--muted);margin-top:5px}
+
+@keyframes au{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* scroll cue */
+.scue{position:absolute;bottom:32px;right:52px;z-index:3;
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      font-size:9px;letter-spacing:4px;color:var(--dim);text-transform:uppercase;
+      opacity:0;animation:au .5s ease .95s forwards}
+.scue-line{width:1px;height:44px;
+           background:linear-gradient(to bottom,var(--red),transparent);
+           animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.2;transform:scaleY(.5)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ══════════════════════════════════════════════
+   SECTION SKELETON
+══════════════════════════════════════════════ */
+.sec{position:relative;overflow:hidden}
+.sbv{position:absolute;inset:0;width:100%;height:120%;
+     object-fit:cover;z-index:0;pointer-events:none;
+     will-change:transform;top:-10%;opacity:.22}
+.sov{position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(6,6,8,.9)}
+.sgt{position:absolute;top:0;left:0;right:0;height:28%;
+     background:linear-gradient(to bottom,var(--bg),transparent);z-index:2;pointer-events:none}
+.sgb{position:absolute;bottom:0;left:0;right:0;height:28%;
+     background:linear-gradient(to top,var(--bg),transparent);z-index:2;pointer-events:none}
+.si{position:relative;z-index:3;max-width:1300px;margin:0 auto;padding:110px 52px}
+
+.s-lbl{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--red);
+       margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.s-lbl::before{content:'';display:inline-block;width:22px;height:1px;background:var(--red)}
+.s-title{font-family:var(--fd);font-size:clamp(40px,6vw,80px);
+         font-weight:700;line-height:.93;letter-spacing:1px;
+         text-transform:uppercase;color:var(--white)}
+
+/* ══════════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════════ */
+.rv{opacity:0;transform:translateY(28px);
+    transition:opacity .9s ease,transform .9s cubic-bezier(.215,.61,.355,1)}
+.rv.up{opacity:1;transform:none}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
+.d4{transition-delay:.28s}.d5{transition-delay:.35s}.d6{transition-delay:.42s}
+
+/* ══════════════════════════════════════════════
+   FILTER TABS  —  HUD/game-menu style
+══════════════════════════════════════════════ */
+.filter-bar{display:flex;gap:0;margin-bottom:54px;
+            border:1px solid var(--border);border-radius:3px;overflow:hidden;
+            position:relative}
+
+/* animated sliding indicator */
+.filter-bar::after{content:'';
+  position:absolute;bottom:0;left:0;height:2px;
+  background:var(--red);transition:left .35s cubic-bezier(.77,0,.175,1),width .35s cubic-bezier(.77,0,.175,1)}
+
+.ftab{flex:1;padding:16px 10px;text-align:center;cursor:none;
+      font-family:var(--fd);font-size:11px;letter-spacing:4px;text-transform:uppercase;
+      color:var(--muted);border-right:1px solid var(--border);
+      transition:color .3s,background .3s;position:relative;
+      display:flex;flex-direction:column;align-items:center;gap:7px}
+.ftab:last-child{border-right:none}
+.ftab:hover{color:rgba(255,255,255,.7);background:rgba(229,57,53,.04)}
+.ftab.on{color:var(--white);background:rgba(229,57,53,.07)}
+.ftab-icon{font-size:17px;color:var(--red);opacity:.6;transition:opacity .3s,transform .3s}
+.ftab:hover .ftab-icon,.ftab.on .ftab-icon{opacity:1;transform:scale(1.1)}
+.ftab-count{position:absolute;top:9px;right:12px;
+            font-size:8px;letter-spacing:1px;color:var(--red);
+            background:var(--red-s);padding:2px 6px;border-radius:2px}
+
+/* ══════════════════════════════════════════════
+   CATEGORY SECTIONS
+══════════════════════════════════════════════ */
+.cat{display:none}
+.cat.on{display:block;animation:cat-in .5s cubic-bezier(.215,.61,.355,1) forwards}
+@keyframes cat-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.cat-hdr{margin-bottom:40px}
+.cat-hdr h3{font-family:var(--fd);font-size:clamp(32px,4.5vw,54px);
+            font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.cat-hdr p{font-size:14px;line-height:1.78;color:var(--muted);
+           max-width:700px;margin-top:10px}
+
+/* ══════════════════════════════════════════════
+   FEATURED SPLIT CARD
+══════════════════════════════════════════════ */
+.feat{display:grid;grid-template-columns:440px 1fr;gap:0;
+      border:1px solid var(--border);border-radius:3px;overflow:hidden;
+      margin-bottom:24px;transform-style:preserve-3d;
+      transition:border-color .4s,box-shadow .4s}
+.feat:hover{border-color:var(--bdr-r);
+            box-shadow:0 24px 70px rgba(229,57,53,.1)}
+.feat-img-w{position:relative;overflow:hidden;height:490px}
+.feat-img{width:100%;height:100%;object-fit:cover;filter:saturate(.45);
+          transition:transform .9s cubic-bezier(.215,.61,.355,1),filter .7s}
+.feat:hover .feat-img{transform:scale(1.06);filter:saturate(1)}
+.feat-badge{position:absolute;top:18px;left:18px;z-index:2;
+            font-size:9px;letter-spacing:5px;text-transform:uppercase;
+            padding:5px 13px;background:var(--red);color:#fff;
+            border-radius:2px;font-family:var(--fb);font-weight:500}
+/* corner hud brackets */
+.feat-img-w::before,.feat-img-w::after{content:'';position:absolute;z-index:2;
+  width:24px;height:24px;pointer-events:none}
+.feat-img-w::before{top:10px;right:10px;
+  border-top:2px solid rgba(229,57,53,.6);border-right:2px solid rgba(229,57,53,.6)}
+.feat-img-w::after{bottom:10px;left:10px;
+  border-bottom:2px solid rgba(229,57,53,.6);border-left:2px solid rgba(229,57,53,.6)}
+
+.feat-body{padding:50px 58px;display:flex;flex-direction:column;
+           justify-content:center;background:var(--card)}
+.feat-engine{font-size:10px;letter-spacing:5px;text-transform:uppercase;
+             color:var(--red);margin-bottom:14px;
+             display:flex;align-items:center;gap:10px}
+.feat-engine::before{content:'';display:inline-block;width:18px;height:1px;background:var(--red)}
+.feat-title{font-family:var(--fd);font-size:clamp(28px,3.5vw,50px);
+            font-weight:700;line-height:.95;letter-spacing:1px;
+            color:var(--white);margin-bottom:18px}
+.feat-rule{width:32px;height:1px;background:var(--red);margin:20px 0}
+.feat-desc{font-size:15px;line-height:1.88;color:#a0a2b2;margin-bottom:28px}
+.feat-meta{display:flex;gap:28px;margin-bottom:34px;flex-wrap:wrap}
+.feat-ml{font-size:9px;letter-spacing:4px;text-transform:uppercase;
+         color:var(--muted);margin-bottom:4px}
+.feat-mv{font-size:14px;font-weight:500}
+.feat-btns{display:flex;gap:9px;flex-wrap:wrap}
+
+/* ══════════════════════════════════════════════
+   PROJECT GRID
+══════════════════════════════════════════════ */
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.pg-3{grid-template-columns:repeat(3,1fr)}
+.pg-2{grid-template-columns:repeat(2,1fr)}
+
+/* ══════════════════════════════════════════════
+   3D MAGNETIC CARD
+══════════════════════════════════════════════ */
+.pc{position:relative;border-radius:3px;overflow:hidden;
+    border:1px solid var(--border);background:var(--card);
+    transform-style:preserve-3d;will-change:transform;
+    transition:border-color .4s,box-shadow .5s;cursor:none}
+.pc:hover{border-color:var(--bdr-r)}
+
+/* specular glint layer */
+.pc-glint{position:absolute;inset:0;z-index:10;pointer-events:none;
+          background:radial-gradient(circle at 50% 50%,
+            rgba(255,255,255,.1),transparent 55%);
+          opacity:0;transition:opacity .3s;border-radius:3px}
+.pc:hover .pc-glint{opacity:1}
+
+/* HUD corner brackets on cards */
+.pc::before,.pc::after{content:'';position:absolute;z-index:11;
+  width:14px;height:14px;pointer-events:none;opacity:0;
+  transition:opacity .3s}
+.pc::before{top:8px;right:8px;
+  border-top:1px solid var(--red);border-right:1px solid var(--red)}
+.pc::after{bottom:8px;left:8px;
+  border-bottom:1px solid var(--red);border-left:1px solid var(--red)}
+.pc:hover::before,.pc:hover::after{opacity:1}
+
+.pc-img-w{overflow:hidden;height:210px}
+.pc-img{width:100%;height:100%;object-fit:cover;display:block;
+        filter:saturate(.45);
+        transition:filter .6s,transform .65s cubic-bezier(.215,.61,.355,1)}
+.pc:hover .pc-img{filter:saturate(1);transform:scale(1.06)}
+
+.pc-body{padding:18px 22px 22px;position:relative;z-index:1}
+.pc-engine{font-size:9px;letter-spacing:3px;text-transform:uppercase;
+           color:var(--red);margin-bottom:7px}
+.pc-title{font-family:var(--fd);font-size:22px;font-weight:600;
+          letter-spacing:1px;color:var(--white);margin-bottom:8px}
+.pc-genre{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:10px}
+.pc-desc{font-size:13px;line-height:1.72;color:#8e91a4;margin-bottom:18px}
+.pc-btns{display:flex;gap:7px;flex-wrap:wrap}
+
+/* NO-IMAGE CARD variant */
+.pc-plain .pc-body{padding-top:26px}
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn-r,.btn-o{display:inline-flex;align-items:center;gap:8px;
+              font-family:var(--fb);font-size:10px;letter-spacing:3px;
+              text-transform:uppercase;font-weight:500;text-decoration:none;
+              border-radius:3px;transition:all .3s;cursor:none;border:none}
+.btn-r{padding:10px 22px;background:var(--red);color:#fff}
+.btn-r:hover{background:#c62828;transform:translateY(-2px)}
+.btn-o{padding:9px 20px;background:transparent;color:var(--muted);
+       border:1px solid var(--border)}
+.btn-o:hover{color:var(--white);border-color:rgba(255,255,255,.3)}
+
+/* ══════════════════════════════════════════════
+   AI TOOL BADGES
+══════════════════════════════════════════════ */
+.tool-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tbadge{font-size:8px;letter-spacing:2px;text-transform:uppercase;
+        padding:3px 9px;border:1px solid var(--bdr-r);
+        border-radius:2px;color:var(--red);background:var(--red-s)}
+
+/* ══════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════ */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);
+       z-index:99999;align-items:center;justify-content:center;
+       backdrop-filter:blur(18px);padding:20px}
+.modal-box{background:#0c0e15;border:1px solid #1a1e2a;border-radius:3px;
+           width:100%;max-width:1160px;max-height:90vh;overflow:hidden;
+           display:flex;flex-direction:column;
+           box-shadow:0 40px 100px rgba(0,0,0,.8);position:relative}
+/* red top accent */
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.modal-hdr{padding:22px 30px 16px;border-bottom:1px solid #191d28;
+           text-align:center;flex-shrink:0}
+.modal-hdr h2{font-family:var(--fd);font-size:1.9rem;color:var(--red);
+              letter-spacing:2px;margin-bottom:4px}
+.modal-hdr p{color:var(--muted);font-size:.95rem}
+.modal-x{position:absolute;top:14px;right:18px;background:none;border:none;
+          color:#555;font-size:2rem;line-height:1;cursor:pointer;
+          transition:color .2s}
+.modal-x:hover{color:var(--red)}
+.modal-body{overflow-y:auto;flex:1;padding:0 30px 30px}
+.modal-vid{flex:1;background:#000;display:flex;align-items:center;
+           justify-content:center;padding:0 28px 28px}
+.modal-vid video{width:100%;max-height:62vh;object-fit:contain}
+
+/* beat sheet table */
+.bst{width:100%;border-collapse:collapse;font-size:.9rem;color:#c8cce0}
+.bst th,.bst td{padding:13px 15px;text-align:left;border-bottom:1px solid #191d27}
+.bst th{background:#11141f;color:#e0e6f0;font-weight:600;
+        text-transform:uppercase;font-size:.78rem;letter-spacing:.6px;white-space:nowrap}
+.bst tr:nth-child(even){background:rgba(15,18,28,.5)}
+.bst tr:hover{background:rgba(229,57,53,.07)}
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+footer{border-top:1px solid var(--border);max-width:1300px;margin:0 auto;
+       padding:26px 52px;display:flex;justify-content:space-between;
+       align-items:center;font-size:11px;letter-spacing:2px;color:var(--dim)}
+footer a{color:var(--muted);text-decoration:none;transition:color .3s}
+footer a:hover{color:var(--white)}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media(max-width:1080px){
+  .feat{grid-template-columns:1fr}
+  .feat-img-w{height:300px}
+  .feat-body{padding:38px 34px}
+  .pg-3{grid-template-columns:repeat(2,1fr)}
+  .pg-2{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .si{padding:80px 22px}
+  .hero-content{padding:0 22px 56px}
+  .scue{right:22px}
+  .nav{padding:14px 22px}
+  .nav-links .nl:not(.cta){display:none}
+  .filter-bar{flex-wrap:wrap}
+  .ftab{min-width:48%;border-right:none;border-bottom:1px solid var(--border)}
+  .pg-3,.pg-2{grid-template-columns:1fr}
+  .hero-stats{gap:22px}
+  footer{padding:22px;flex-direction:column;gap:8px}
+}
+</style>
 </head>
 <body>
-  <video id="video-bg" autoplay muted loop playsinline preload="auto">
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="aurora"></div>
+<canvas id="trail-cv"></canvas>
+
+<!-- THREE.JS BG CANVAS -->
+<canvas id="three-canvas"></canvas>
+
+<!-- ══════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="index.html"><span>J</span>ANESHWARAN</a>
+  <div class="nav-links">
+    <a class="nl" href="index.html">Home</a>
+    <a class="nl" href="index.html#about">About</a>
+    <a class="nl act" href="#">Projects</a>
+    <a class="nl" href="novels.html">Novels</a>
+    <a class="nl cta" href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+<section class="hero">
+  <video class="hero-vid" data-parallax="0.3" autoplay loop muted playsinline>
     <source src="https://files.catbox.moe/y5phz1.mp4" type="video/mp4">
   </video>
-  <div id="video-overlay"></div>
-  <div id="cursor"></div>
-  <div id="trail"></div>
-  <div class="blobs">
-    <div class="blob"></div>
-    <div class="blob"></div>
-    <div class="blob"></div>
-  </div>
-  <nav class="nav">
-    <a href="index.html" class="pill">HOME</a>
-    <a href="index.html#about" class="pill">ABOUT</a>
-    <a href="projects.html" class="pill">PROJECTS</a>
-    <a href="novels.html" class="pill">NOVELS</a>
-    <a href="index.html#contact" class="pill">CONTACT</a>
-  </nav>
-  <main class="main-content">
-    <div class="fade-in">
-      <h2 class="section-title">GAME PROJECTS</h2>
-      <p class="section-subtitle">Fully playable games built from scratch</p>
-      <div class="grid">
-        <div class="card" data-tilt>
-          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png" alt="The Last Choice">
-          <h3>THE LAST CHOICE</h3>
-          <div class="genre-engine">Genre: Fantasy, Script-Based Interactive Game • Engine: Twine (Script Engine)</div>
-          <p>A dark narrative-driven adventure where every decision echoes forever.<br><br>In a fractured world where reality is slowly collapsing, a young brother embarks on a haunting journey to find his missing little sister...</p>
-          <div class="buttons-container">
-            <a href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" class="btn">PLAY ON ITCH.IO</a>
-            <button class="btn" onclick="openBeatSheetModal()">NARRATIVE BEAT SHEET</button>
-            <a href="https://janeshobito.github.io/myFolder/Mygames.html" target="_blank" class="btn">PLAY GAME</a>
-          </div>
-        </div>
-        <div class="card" data-tilt>
-          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png" alt="DREAM">
-          <h3>DREAM</h3>
-          <div class="genre-engine">Pixel Hardcore Platformer • Engine: Godot</div>
-          <p>A fast-paced 2D pixel platformer where a young girl is trapped inside a distorted dream world...</p>
-          <div class="buttons-container">
-            <a href="https://janeshwaran2829.itch.io/dream" target="_blank" class="btn">PLAY ON ITCH.IO</a>
-          </div>
-        </div>
-        <div class="card" data-tilt>
-          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket">
-          <h3>ROCKET THRUSTER LANDING</h3>
-          <p>Physics-based rocket landing challenge.</p>
-          <div class="buttons-container">
-            <a href="#" class="btn">JUST PLAY</a>
-          </div>
-        </div>
-        <div class="card" data-tilt>
-          <h3>WRATH OF THE NIGHT</h3>
-          <div class="genre-engine">Genre: Action, FPS, Adventure • Engine: Unity 3D</div>
-          <p>FPS shooter, environmental puzzle solver.<br><br>Wrath of the Night is a dark FPS survival-action game set in a cursed, abandoned world...</p>
-          <div class="buttons-container">
-            <button class="btn" onclick="openVideoModal('trailerModal')">WATCH TRAILER</button>
-            <button class="btn" onclick="openVideoModal('pitchModal')">WATCH GAME PITCH PPT</button>
-            <a href="https://janeshwaran2829.itch.io/wrath-of-the-night-game-book" target="_blank" class="btn">GAME BOOK</a>
-          </div>
-        </div>
-      </div>
+  <div class="hero-vig"></div>
+  <div class="hero-fade"></div>
+  <div class="hero-scanlines"></div>
+  <div class="hero-ghost" aria-hidden="true">PROJECTS</div>
+
+  <div class="hero-content">
+    <div class="hud-tag"><div class="hud-dot"></div>Portfolio Active<div class="hud-dot"></div></div>
+
+    <div class="glitch-wrap">
+      <h1 class="glitch" data-text="MY WORK">MY <em>WORK</em></h1>
     </div>
 
-    <div class="fade-in">
-      <h2 class="section-title">GAME BREAKDOWNS</h2>
-      <p class="section-subtitle">In-depth analysis of mechanics, narrative, and design</p>
-      <div class="grid">
-        <div class="card" data-tilt>
-          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Bully.png" alt="Bully">
-          <h3>BULLY — Game Breakdown</h3>
-          <p>Deep dive into mechanics, narrative structure, and world-building of Rockstar's classic.</p>
-          <div class="buttons-container">
-            <a href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
-          </div>
-        </div>
-        <div class="card" data-tilt>
-          <img src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/cover.png" alt="Prototype">
-          <h3>Prototype Breakdown</h3>
-          <p>Early-stage development insights and design decisions.</p>
-          <div class="buttons-container">
-            <a href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank" class="btn">VIEW BREAKDOWN</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="fade-in">
-      <h2 class="section-title concept-title">GAME CONCEPT BOOKS</h2>
-      <p class="section-subtitle concept-subtitle">Complete game design documents & concept books</p>
-      <div class="grid concept-grid">
-        <div class="card" data-tilt>
-          <h3>Mini Math Zoo</h3>
-          <div class="genre-engine">Project Type: Recruitment Design Task Submission • Genre: Children’s Educational / Early Math Learning / Puzzle • Platform: Mobile (Primary), PC (Expandable)</div>
-          <p>Mini Math Zoo is a story driven educational game concept reimagined as a zoo management adventure. Players become a Junior Zookeeper, sorting animals into habitats and counting them to keep the zoo running. The design focuses on pre-reader-friendly UI and emotional engagement.</p>
-          <div class="buttons-container">
-            <a href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/Mini%20Math%20Zoo%20Game%20Design%20Book%20Janeshwaran%20R_compressed.pdf" target="_blank" class="btn">VIEW BOOK</a>
-          </div>
-        </div>
-        <div class="card" data-tilt>
-          <h3>CALYNXX: THE LAST RIDE</h3>
-          <div class="genre-engine">Genre: Adventure / Exploration • Mobile/PC Concept Book</div>
-          <p>After a brutal medieval war, a loyal war horse named Calynxx begins a journey to find its master, not understanding that he has passed away. Created as a complete mobile game concept covering core mechanics and player progression.</p>
-          <div class="buttons-container">
-            <a href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/GAME%20DESIGN%20BOOK%20-%20JANESHWARAN%20RAMESH%20CALYNUX%20THE%20LAST%20RIDE_compressed.pdf" target="_blank" class="btn">VIEW CONCEPT BOOK</a>
-          </div>
-        </div>
-        <div class="card" data-tilt>
-          <h3>ESCAPE THE DREAM</h3>
-          <div class="genre-engine">Genre: Sci-Fi, Psychological Thriller, Platformer • Platform: PC/Mobile • Mode: Singleplayer</div>
-          <p>Set in a dystopian 2050, players control Elara Voss, a hacker fighting to break free from a super AI's simulated reality. This "Escape Room" inspired 2D narrative platformer blends cyber-noir aesthetics with complex puzzles like binary logic and circuit repair, featuring multiple endings based on moral choices.</p>
-          <div class="buttons-container">
-            <a href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/escape%20the%20dream%20game%20design%20doc_compressed.pdf" target="_blank" class="btn">VIEW DESIGN BOOK</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="fade-in">
-      <h2 class="section-title">AI GEN CREATION</h2>
-      <p class="section-subtitle">I create and explore cutting-edge AI video and image tools, constantly experimenting with new techniques and visual styles. Here are some of my recent works that showcase my creativity and passion for AI-driven content creation.</p>
-      <div class="grid">
-        <div class="card" data-tilt>
-          <h3>PIXEL HORSE GAME TRAILER</h3>
-          <div class="genre-engine">Tool: Gemini AI</div>
-          <p>A Trailer For My New 2d Pixel Story Platformer Game</p>
-          <div class="buttons-container">
-            <button class="btn" onclick="openVideoModal('pixelHorseModal')">VIEW VIDEO</button>
-          </div>
-        </div>
-
-        <div class="card" data-tilt>
-          <h3>THE LAST DESIRE I WISH DIDN'T HAPPEN</h3>
-          <div class="genre-engine">Tool: Gemini AI</div>
-          <p>Trailer for new launching novel</p>
-          <div class="buttons-container">
-            <button class="btn" onclick="openVideoModal('lastDesireModal')">VIEW VIDEO</button>
-          </div>
-        </div>
-
-        <div class="card" data-tilt>
-          <h3>BEAST REBIRTH ASCENDING AS ALIEN X</h3>
-          <div class="genre-engine">Tools: Gemini Ai, Sora Ai, ChatGPT</div>
-          <p>Trailer for new coming Novel</p>
-          <div class="buttons-container">
-            <button class="btn" onclick="openVideoModal('beastRebirthModal')">VIEW VIDEO</button>
-          </div>
-        </div>
-
-        <div class="card" data-tilt>
-          <h3>F1 JET CHAPTER 8: THE ABSENCE</h3>
-          <div class="genre-engine">Tools: Gemini Ai, Boba Ai, ChatGPT</div>
-          <p>Particular Scene of Novel Chapter 8</p>
-          <div class="buttons-container">
-            <button class="btn" onclick="openVideoModal('f1Jet1')">VIDEO 1</button>
-            <button class="btn" onclick="openVideoModal('f1Jet2')">VIDEO 2</button>
-            <button class="btn" onclick="openVideoModal('f1Jet3')">VIDEO 3</button>
-          </div>
-        </div>
-
-        <div class="card" data-tilt>
-          <h3>WOMAN STANDING ON THE HILL</h3>
-          <div class="genre-engine">Tools: ChatGpt, Gemini Ai, Boba Ai</div>
-          <p>A woman on a hill chilling and enjoying nature (Anime Style)</p>
-          <div class="buttons-container">
-            <button class="btn" onclick="openVideoModal('hillWoman1')">VIEW 1</button>
-            <button class="btn" onclick="openVideoModal('hillWoman2')">VIEW 2</button>
-            <button class="btn" onclick="openVideoModal('hillWoman3')">VIEW 3</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <div id="beatSheetModal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeBeatSheetModal()" aria-label="Close">×</button>
-      <header class="modal-header">
-        <h2>THE LAST CHOICE</h2>
-        <p class="modal-subtitle">Narrative Beat Sheet</p>
-      </header>
-      <div class="table-container">
-        <table class="beat-sheet-table">
-          <thead>
-            <tr>
-              <th>Scene / Passage</th>
-              <th>Character</th>
-              <th>Dialogue / Action</th>
-              <th>Emotion / Tone</th>
-              <th>SFX / Visual Cue</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Start / AnswerCall</td><td>Ruby</td><td>"David! Where are you? We need to talk urgently..."</td><td>Panicked, Breathless</td><td>Phone ringing, muffled city noise</td></tr>
-            <tr><td>AnswerCall</td><td>David</td><td>"I am at New York City, 'Main Street'."</td><td>Calm, Casual</td><td>High-angle shot of NYC traffic</td></tr>
-            <tr><td>AnswerCall</td><td>Ruby</td><td>"David, while coming, buy some chicken and come to cook for dinner."</td><td>Domestic, Hurried</td><td>Sound of wind on the phone line</td></tr>
-            <tr><td>Enter Store</td><td>Cashier</td><td>"That will be $5.99. Cash or card?"</td><td>Monotonous, Bored</td><td>Scanned beep, hum of fridge</td></tr>
-            <tr><td>Pick up Phone</td><td>Narrator</td><td>(David crosses the threshold... a wet, chewing sound slices the air.)</td><td>Dread, Suspense</td><td>Heavy heartbeat, squelching sound</td></tr>
-            <tr><td>Check the Room</td><td>David</td><td>"Ruby...?" (Thinking: Move. Just move...)</td><td>Paralyzed Terror</td><td>Flash of fluorescent lights flicking on</td></tr>
-            <tr><td>Baseball Bat</td><td>Werewolf</td><td>[Deep, guttural snarl/growl]</td><td>Primal Fury</td><td>Claws clicking on tile floor</td></tr>
-            <tr><td>FightWerewolfBat</td><td>David</td><td>"I am sorry, Ruby... I couldn't find you..."</td><td>Defeated, Grief</td><td>Slow-motion fade to black</td></tr>
-            <tr><td>Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal, God-complex</td><td>—</td></tr>
-            <tr><td>Where am I</td><td>David</td><td>"Who am I? Interesting question, child. In human terms... I look like a dumb..."</td><td>Ethereal, God-Rage</td><td>Blinding white light, echo in bright sky</td></tr>
-            <tr><td>What Mistake</td><td>God</td><td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td><td>Amused, Cruel</td><td>Sound of thunder, Soft chuckle, magical shimmering</td></tr>
-            <tr><td>Be the Hero</td><td>God</td><td>"Now, you must level up and climb the Tower."</td><td>Commanding, Stoic</td><td>Digital "Ping" of a UI screen appearing</td></tr>
-            <tr><td>DodgeWolfJustice</td><td>David</td><td>"Come at me, motherfuckers. I'm David. I'm gonna survive this world no matter..."</td><td>Grit, Determined, Shock</td><td>Sound of heavy shovel hitting metal, splatter SFX</td></tr>
-            <tr><td>Execute</td><td>Man 1</td><td>"AH! MY HAND! AHHHHHH!"</td><td>Agony, Shock</td><td>Heavy SFX, splatter</td></tr>
-            <tr><td>WhatsYourName</td><td>Linda</td><td>"M-My... my parents... they're gone... they died..."</td><td>Heartbroken, Fragile</td><td>Sound of soft sobbing</td></tr>
-            <tr><td>WhatsYourName</td><td>David (Thinking)</td><td>(Thinking: Ruby... I couldn't protect you then. But maybe... I can protect her.)</td><td>Reflective, Protective</td><td>Visual: Flashback blur overlay</td></tr>
-            <tr><td>UseNewSkills</td><td>David</td><td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td><td>Darkly Confident</td><td>Shadowy aura visual effect</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <p class="hero-sub">
+      Games, breakdowns, concept books &amp; AI experiments.
+      Every project is a <strong>consequence of a choice made</strong> — in design, narrative, and craft.
+    </p>
+    <div class="hero-stats">
+      <div><div class="stat-n" data-target="4">0</div><div class="stat-l">Games Built</div></div>
+      <div><div class="stat-n" data-target="3">0</div><div class="stat-l">Concept Books</div></div>
+      <div><div class="stat-n" data-target="2">0</div><div class="stat-l">Breakdowns</div></div>
+      <div><div class="stat-n" data-target="5">0</div><div class="stat-l">AI Creations</div></div>
     </div>
   </div>
 
-  <div id="trailerModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('trailerModal')">×</button><header class="modal-header"><h2>WRATH OF THE NIGHT</h2><p class="modal-subtitle">Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Wrath%20of%20the%20Night%20Trailer.mp4" type="video/mp4"></video></div></div></div>
-  <div id="pitchModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('pitchModal')">×</button><header class="modal-header"><h2>WRATH OF THE NIGHT</h2><p class="modal-subtitle">Game Pitch PPT</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Video%20Project.mp4" type="video/mp4"></video></div></div></div>
-  <div id="pixelHorseModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('pixelHorseModal')">×</button><header class="modal-header"><h2>PIXEL HORSE</h2><p class="modal-subtitle">AI Generated Game Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Pixel_Horse_Biome_Transition_Video.mp4" type="video/mp4"></video></div></div></div>
-  <div id="lastDesireModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('lastDesireModal')">×</button><header class="modal-header"><h2>THE LAST DESIRE</h2><p class="modal-subtitle">Novel Launch Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%2045.mp4" type="video/mp4"></video></div></div></div>
-  <div id="beastRebirthModal" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('beastRebirthModal')">×</button><header class="modal-header"><h2>BEAST REBIRTH</h2><p class="modal-subtitle">Novel Trailer</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Cinematic_Manhwa_Intro_Prompt.mp4" type="video/mp4"></video></div></div></div>
-  <div id="f1Jet1" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('f1Jet1')">×</button><header class="modal-header"><h2>F1 JET</h2><p class="modal-subtitle">Chapter 8 Scene - Video 1</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%206.mp4" type="video/mp4"></video></div></div></div>
-  <div id="f1Jet2" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('f1Jet2')">×</button><header class="modal-header"><h2>F1 JET</h2><p class="modal-subtitle">Chapter 8 Scene - Video 2</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%203.mp4" type="video/mp4"></video></div></div></div>
-  <div id="f1Jet3" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('f1Jet3')">×</button><header class="modal-header"><h2>F1 JET</h2><p class="modal-subtitle">Chapter 8 Scene - Video 3</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%201.mp4" type="video/mp4"></video></div></div></div>
-  <div id="hillWoman1" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('hillWoman1')">×</button><header class="modal-header"><h2>HILL SIDE</h2><p class="modal-subtitle">Enjoying Nature - View 1</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/86c28cfa-0a27-44da-a736-341c8bad23fa_fullscreen.mp4" type="video/mp4"></video></div></div></div>
-  <div id="hillWoman2" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('hillWoman2')">×</button><header class="modal-header"><h2>HILL SIDE</h2><p class="modal-subtitle">Enjoying Nature - View 2</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/c6c8346c-7069-42c1-8776-f55fc010b8f0_fullscreen.mp4" type="video/mp4"></video></div></div></div>
-  <div id="hillWoman3" class="modal"><div class="modal-content"><button class="modal-close" onclick="closeVideoModal('hillWoman3')">×</button><header class="modal-header"><h2>HILL SIDE</h2><p class="modal-subtitle">Enjoying Nature - View 3</p></header><div class="video-container"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/fe4305d2-94ab-4d85-8b7b-04252903bb22_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+  <div class="scue"><div class="scue-line"></div><span>Scroll</span></div>
+</section>
 
-  <script>
-    function openBeatSheetModal() {
-      document.getElementById("beatSheetModal").style.display = "flex";
-      document.body.style.overflow = "hidden";
+<!-- ══════════════════════════════════════════
+     PROJECTS SECTION
+══════════════════════════════════════════════ -->
+<section class="sec" id="projects">
+  <video class="sbv" data-parallax="0.18" autoplay loop muted playsinline>
+    <source src="https://files.catbox.moe/o6icxy.mp4" type="video/mp4">
+  </video>
+  <div class="sov"></div><div class="sgt"></div><div class="sgb"></div>
+
+  <div class="si">
+    <p class="s-lbl rv">Portfolio</p>
+    <h2 class="s-title rv d1">All Projects</h2>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar rv d2" id="fbar">
+      <div class="ftab on" data-cat="games">
+        <i class="ftab-icon fas fa-gamepad"></i>
+        Game Projects
+        <span class="ftab-count">4</span>
+      </div>
+      <div class="ftab" data-cat="breakdowns">
+        <i class="ftab-icon fas fa-search-plus"></i>
+        Breakdowns
+        <span class="ftab-count">2</span>
+      </div>
+      <div class="ftab" data-cat="concepts">
+        <i class="ftab-icon fas fa-book-open"></i>
+        Concept Books
+        <span class="ftab-count">3</span>
+      </div>
+      <div class="ftab" data-cat="ai">
+        <i class="ftab-icon fas fa-robot"></i>
+        AI Gen
+        <span class="ftab-count">5</span>
+      </div>
+    </div>
+
+    <!-- ─── GAMES ─────────────────────────────── -->
+    <div class="cat on" id="cat-games">
+      <div class="cat-hdr">
+        <h3>Game Projects</h3>
+        <p>Fully playable games built from scratch — spanning narrative design, 3D environments, and physics-based development across Twine, Godot, and Unity.</p>
+      </div>
+
+      <!-- Featured -->
+      <div class="feat" id="feat-main">
+        <div class="feat-img-w">
+          <span class="feat-badge">Featured</span>
+          <img class="feat-img"
+               src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20at%2012-50-52%20(3)%20Janeshwaran%20R%20LinkedIn.png"
+               alt="The Last Choice">
+        </div>
+        <div class="feat-body">
+          <p class="feat-engine">Twine · Script-Based Narrative</p>
+          <h3 class="feat-title">THE LAST CHOICE</h3>
+          <div class="feat-rule"></div>
+          <p class="feat-desc">A dark narrative-driven adventure where every decision echoes forever. In a fractured world where reality is slowly collapsing, a young brother embarks on a haunting journey to find his missing sister — through werewolves, fractured realities, and choices with permanent consequences.</p>
+          <div class="feat-meta">
+            <div><p class="feat-ml">Engine</p><p class="feat-mv">Twine</p></div>
+            <div><p class="feat-ml">Genre</p><p class="feat-mv">Dark Fantasy</p></div>
+            <div><p class="feat-ml">Type</p><p class="feat-mv">Narrative</p></div>
+          </div>
+          <div class="feat-btns">
+            <a class="btn-r" href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank"><i class="fas fa-gamepad"></i> Play on Itch.io</a>
+            <button class="btn-r" onclick="openModal('beatSheetModal')"><i class="fas fa-scroll"></i> Beat Sheet</button>
+            <a class="btn-o" href="https://janeshobito.github.io/myFolder/Mygames.html" target="_blank">Play Game</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="pg">
+
+        <div class="pc" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-img-w">
+            <img class="pc-img"
+                 src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Screenshot%202025-11-22%20134919.png"
+                 alt="DREAM">
+          </div>
+          <div class="pc-body">
+            <p class="pc-engine">Godot Engine</p>
+            <h3 class="pc-title">DREAM</h3>
+            <p class="pc-genre">Pixel Hardcore Platformer</p>
+            <p class="pc-desc">A fast-paced 2D pixel platformer where a young girl is trapped inside a distorted dream world. Atmospheric, brutal, and emotional.</p>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshwaran2829.itch.io/dream" target="_blank"><i class="fas fa-gamepad"></i> Itch.io</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-img-w">
+            <img class="pc-img"
+                 src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg"
+                 alt="Rocket Thruster Landing">
+          </div>
+          <div class="pc-body">
+            <p class="pc-engine">Unity</p>
+            <h3 class="pc-title">ROCKET THRUSTER LANDING</h3>
+            <p class="pc-genre">Physics Simulation</p>
+            <p class="pc-desc">Physics-based rocket landing challenge. Navigate thrust vectors and gravity to achieve a precision touchdown.</p>
+            <div class="pc-btns">
+              <a class="btn-r" href="#"><i class="fas fa-play"></i> Play</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <p class="pc-engine">Unity 3D</p>
+            <h3 class="pc-title">WRATH OF THE NIGHT</h3>
+            <p class="pc-genre">Action · FPS · Adventure</p>
+            <p class="pc-desc">A dark FPS survival-action game set in a cursed, abandoned world. Shadows hold secrets — and something far worse. Environmental puzzle solving meets brutal combat.</p>
+            <div class="pc-btns">
+              <button class="btn-r" onclick="openModal('trailerModal')"><i class="fas fa-film"></i> Trailer</button>
+              <button class="btn-o" onclick="openModal('pitchModal')">Pitch PPT</button>
+              <a class="btn-o" href="https://janeshwaran2829.itch.io/wrath-of-the-night-game-book" target="_blank">Game Book</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── BREAKDOWNS ─────────────────────────── -->
+    <div class="cat" id="cat-breakdowns">
+      <div class="cat-hdr">
+        <h3>Game Breakdowns</h3>
+        <p>In-depth analysis of mechanics, narrative structure, and world-building from existing titles — understanding great games to build better ones.</p>
+      </div>
+      <div class="pg pg-2">
+
+        <div class="pc" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-img-w">
+            <img class="pc-img"
+                 src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/Bully.png"
+                 alt="Bully">
+          </div>
+          <div class="pc-body">
+            <p class="pc-engine">Analysis · Rockstar Games</p>
+            <h3 class="pc-title">BULLY</h3>
+            <p class="pc-genre">Game Breakdown</p>
+            <p class="pc-desc">Deep dive into mechanics, narrative structure, and world-building of Rockstar's classic — examining its open-world design and social simulation systems.</p>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank"><i class="fas fa-external-link-alt"></i> View Breakdown</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-img-w">
+            <img class="pc-img"
+                 src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/cover.png"
+                 alt="Prototype">
+          </div>
+          <div class="pc-body">
+            <p class="pc-engine">Analysis · Prototype</p>
+            <h3 class="pc-title">PROTOTYPE BREAKDOWN</h3>
+            <p class="pc-genre">Game Breakdown</p>
+            <p class="pc-desc">Early-stage development insights and design decisions — exploring how Prototype builds its open-world traversal and narrative mystery systems.</p>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank"><i class="fas fa-external-link-alt"></i> View Breakdown</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── CONCEPTS ───────────────────────────── -->
+    <div class="cat" id="cat-concepts">
+      <div class="cat-hdr">
+        <h3>Concept Books</h3>
+        <p>Complete game design documents — from children's educational titles to sci-fi psychological thrillers. Full mechanics, systems, and world-building documented.</p>
+      </div>
+      <div class="pg pg-3">
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <p class="pc-engine">Mobile · Educational</p>
+            <h3 class="pc-title">MINI MATH ZOO</h3>
+            <p class="pc-genre">Children's Educational · Puzzle · Recruitment Task</p>
+            <p class="pc-desc">Story-driven educational game reimagined as zoo management. Players become Junior Zookeeper — sorting animals and counting them. Pre-reader-friendly UI with emotional engagement.</p>
+            <div class="pc-btns" style="margin-top:16px">
+              <a class="btn-r" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/Mini%20Math%20Zoo%20Game%20Design%20Book%20Janeshwaran%20R_compressed.pdf" target="_blank"><i class="fas fa-file-pdf"></i> View Book</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <p class="pc-engine">Mobile / PC · Adventure</p>
+            <h3 class="pc-title">CALYNXX: THE LAST RIDE</h3>
+            <p class="pc-genre">Adventure · Exploration · Emotional</p>
+            <p class="pc-desc">After a brutal medieval war, a loyal war horse named Calynxx begins a journey to find its master — not knowing he has passed away. Full mobile concept covering core mechanics and progression.</p>
+            <div class="pc-btns" style="margin-top:16px">
+              <a class="btn-r" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/GAME%20DESIGN%20BOOK%20-%20JANESHWARAN%20RAMESH%20CALYNUX%20THE%20LAST%20RIDE_compressed.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Concept Book</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <p class="pc-engine">PC / Mobile · Sci-Fi</p>
+            <h3 class="pc-title">ESCAPE THE DREAM</h3>
+            <p class="pc-genre">Psychological Thriller · Platformer</p>
+            <p class="pc-desc">Dystopian 2050. Hacker Elara Voss fights to escape a super AI's simulated reality. Escape Room-inspired 2D narrative platformer — binary logic puzzles, cyber-noir aesthetics, multiple moral endings.</p>
+            <div class="pc-btns" style="margin-top:16px">
+              <a class="btn-r" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/escape%20the%20dream%20game%20design%20doc_compressed.pdf" target="_blank"><i class="fas fa-file-pdf"></i> Design Book</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ─── AI GEN ──────────────────────────────── -->
+    <div class="cat" id="cat-ai">
+      <div class="cat-hdr">
+        <h3>AI Gen Creation</h3>
+        <p>Experimenting with Gemini AI, Sora AI, Boba AI and ChatGPT — exploring creative pipelines and visual storytelling through cutting-edge AI tools.</p>
+      </div>
+      <div class="pg">
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="tool-badges"><span class="tbadge">Gemini AI</span></div>
+            <h3 class="pc-title">PIXEL HORSE</h3>
+            <p class="pc-genre">Game Trailer</p>
+            <p class="pc-desc">AI-generated trailer for a new 2D pixel story platformer game with biome transitions.</p>
+            <div class="pc-btns"><button class="btn-r" onclick="openModal('pixelHorseModal')"><i class="fas fa-play"></i> Watch</button></div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="tool-badges"><span class="tbadge">Gemini AI</span></div>
+            <h3 class="pc-title">THE LAST DESIRE</h3>
+            <p class="pc-genre">Novel Launch Trailer</p>
+            <p class="pc-desc">Cinematic trailer for the upcoming novel — "The Last Desire I Wish Didn't Happen."</p>
+            <div class="pc-btns"><button class="btn-r" onclick="openModal('lastDesireModal')"><i class="fas fa-play"></i> Watch</button></div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="tool-badges"><span class="tbadge">Gemini</span><span class="tbadge">Sora</span><span class="tbadge">ChatGPT</span></div>
+            <h3 class="pc-title">BEAST REBIRTH</h3>
+            <p class="pc-genre">Novel Trailer · Multi-Tool Pipeline</p>
+            <p class="pc-desc">Ascending as Alien X — cinematic novel trailer built across a three-AI pipeline for maximum visual impact.</p>
+            <div class="pc-btns"><button class="btn-r" onclick="openModal('beastRebirthModal')"><i class="fas fa-play"></i> Watch</button></div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="tool-badges"><span class="tbadge">Gemini</span><span class="tbadge">Boba AI</span><span class="tbadge">ChatGPT</span></div>
+            <h3 class="pc-title">F1 JET — CH.8</h3>
+            <p class="pc-genre">Novel Scene Visualization</p>
+            <p class="pc-desc">Visual recreation of Chapter 8: The Absence from Formula Jet Racing — three separate AI-generated cinematic angles.</p>
+            <div class="pc-btns">
+              <button class="btn-r" onclick="openModal('f1Jet1')"><i class="fas fa-play"></i> 1</button>
+              <button class="btn-o" onclick="openModal('f1Jet2')">2</button>
+              <button class="btn-o" onclick="openModal('f1Jet3')">3</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="tool-badges"><span class="tbadge">ChatGPT</span><span class="tbadge">Gemini</span><span class="tbadge">Boba AI</span></div>
+            <h3 class="pc-title">HILL SIDE</h3>
+            <p class="pc-genre">Anime Visual · Nature Scene</p>
+            <p class="pc-desc">A woman on a hilltop enjoying nature — three stylistic AI interpretations across different tools and anime aesthetics.</p>
+            <div class="pc-btns">
+              <button class="btn-r" onclick="openModal('hillWoman1')"><i class="fas fa-play"></i> 1</button>
+              <button class="btn-o" onclick="openModal('hillWoman2')">2</button>
+              <button class="btn-o" onclick="openModal('hillWoman3')">3</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /si -->
+</section>
+
+<footer>
+  <span>© 2025 Janeshwaran R</span>
+  <a href="index.html">← Back to Portfolio</a>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════ -->
+<div id="beatSheetModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h2>THE LAST CHOICE</h2><p>Narrative Beat Sheet</p>
+      <button class="modal-x" onclick="closeModal('beatSheetModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <table class="bst">
+        <thead><tr><th>Scene</th><th>Character</th><th>Dialogue / Action</th><th>Emotion</th><th>SFX / Visual</th></tr></thead>
+        <tbody>
+          <tr><td>Start / AnswerCall</td><td>Ruby</td><td>"David! Where are you? We need to talk urgently..."</td><td>Panicked, Breathless</td><td>Phone ringing, muffled city noise</td></tr>
+          <tr><td>AnswerCall</td><td>David</td><td>"I am at New York City, 'Main Street'."</td><td>Calm, Casual</td><td>High-angle shot of NYC traffic</td></tr>
+          <tr><td>AnswerCall</td><td>Ruby</td><td>"David, while coming, buy some chicken and come to cook for dinner."</td><td>Domestic, Hurried</td><td>Sound of wind on the phone line</td></tr>
+          <tr><td>Enter Store</td><td>Cashier</td><td>"That will be $5.99. Cash or card?"</td><td>Monotonous, Bored</td><td>Scanned beep, hum of fridge</td></tr>
+          <tr><td>Pick up Phone</td><td>Narrator</td><td>(David crosses the threshold... a wet, chewing sound slices the air.)</td><td>Dread, Suspense</td><td>Heavy heartbeat, squelching sound</td></tr>
+          <tr><td>Check the Room</td><td>David</td><td>"Ruby...?" (Thinking: Move. Just move...)</td><td>Paralyzed Terror</td><td>Fluorescent lights flicking on</td></tr>
+          <tr><td>Baseball Bat</td><td>Werewolf</td><td>[Deep, guttural snarl/growl]</td><td>Primal Fury</td><td>Claws clicking on tile floor</td></tr>
+          <tr><td>FightWerewolfBat</td><td>David</td><td>"I am sorry, Ruby... I couldn't find you..."</td><td>Defeated, Grief</td><td>Slow-motion fade to black</td></tr>
+          <tr><td>Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal, God-complex</td><td>—</td></tr>
+          <tr><td>Where am I</td><td>David</td><td>"Who am I? Interesting question, child..."</td><td>Ethereal, God-Rage</td><td>Blinding white light, echo</td></tr>
+          <tr><td>What Mistake</td><td>God</td><td>"Mistake...? It's not a mistake. It was for entertainment, you see."</td><td>Amused, Cruel</td><td>Soft chuckle, magical shimmering</td></tr>
+          <tr><td>Be the Hero</td><td>God</td><td>"Now, you must level up and climb the Tower."</td><td>Commanding, Stoic</td><td>Digital "Ping" of a UI screen</td></tr>
+          <tr><td>DodgeWolfJustice</td><td>David</td><td>"Come at me... I'm David. I'm gonna survive this world no matter what."</td><td>Grit, Determined</td><td>Heavy shovel SFX, splatter</td></tr>
+          <tr><td>Execute</td><td>Man 1</td><td>"AH! MY HAND! AHHHHHH!"</td><td>Agony, Shock</td><td>Heavy SFX, splatter</td></tr>
+          <tr><td>WhatsYourName</td><td>Linda</td><td>"M-My... my parents... they're gone... they died..."</td><td>Heartbroken, Fragile</td><td>Soft sobbing</td></tr>
+          <tr><td>WhatsYourName</td><td>David (thinking)</td><td>(Ruby... I couldn't protect you then. But maybe... I can protect her.)</td><td>Reflective, Protective</td><td>Flashback blur overlay</td></tr>
+          <tr><td>UseNewSkills</td><td>David</td><td>"Useful. Strong. And every time I kill, I get stronger. Let's keep this going."</td><td>Darkly Confident</td><td>Shadowy aura effect</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Video modals -->
+<div id="trailerModal" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>WRATH OF THE NIGHT</h2><p>Official Trailer</p><button class="modal-x" onclick="closeModal('trailerModal')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Wrath%20of%20the%20Night%20Trailer.mp4" type="video/mp4"></video></div></div></div>
+<div id="pitchModal" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>WRATH OF THE NIGHT</h2><p>Game Pitch PPT</p><button class="modal-x" onclick="closeModal('pitchModal')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Video%20Project.mp4" type="video/mp4"></video></div></div></div>
+<div id="pixelHorseModal" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>PIXEL HORSE</h2><p>AI Generated Game Trailer</p><button class="modal-x" onclick="closeModal('pixelHorseModal')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Pixel_Horse_Biome_Transition_Video.mp4" type="video/mp4"></video></div></div></div>
+<div id="lastDesireModal" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>THE LAST DESIRE</h2><p>Novel Launch Trailer</p><button class="modal-x" onclick="closeModal('lastDesireModal')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%2045.mp4" type="video/mp4"></video></div></div></div>
+<div id="beastRebirthModal" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>BEAST REBIRTH</h2><p>Novel Trailer</p><button class="modal-x" onclick="closeModal('beastRebirthModal')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Cinematic_Manhwa_Intro_Prompt.mp4" type="video/mp4"></video></div></div></div>
+<div id="f1Jet1" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>F1 JET</h2><p>Chapter 8 — Video 1</p><button class="modal-x" onclick="closeModal('f1Jet1')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%206.mp4" type="video/mp4"></video></div></div></div>
+<div id="f1Jet2" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>F1 JET</h2><p>Chapter 8 — Video 2</p><button class="modal-x" onclick="closeModal('f1Jet2')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%203.mp4" type="video/mp4"></video></div></div></div>
+<div id="f1Jet3" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>F1 JET</h2><p>Chapter 8 — Video 3</p><button class="modal-x" onclick="closeModal('f1Jet3')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%201.mp4" type="video/mp4"></video></div></div></div>
+<div id="hillWoman1" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 1</p><button class="modal-x" onclick="closeModal('hillWoman1')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/86c28cfa-0a27-44da-a736-341c8bad23fa_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+<div id="hillWoman2" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 2</p><button class="modal-x" onclick="closeModal('hillWoman2')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/c6c8346c-7069-42c1-8776-f55fc010b8f0_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+<div id="hillWoman3" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 3</p><button class="modal-x" onclick="closeModal('hillWoman3')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/fe4305d2-94ab-4d85-8b7b-04252903bb22_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════ -->
+<script>
+/* ══════════════════════════════════════════════
+   THREE.JS  —  3D floating particle field
+   Particles form a sparse cloud that slowly
+   rotates. Mouse position tilts the whole scene.
+   Mouse proximity repels nearby particles.
+══════════════════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 80;
+
+  /* ── particle geometry ── */
+  const COUNT = 1800;
+  const geo   = new THREE.BufferGeometry();
+  const pos   = new Float32Array(COUNT * 3);
+  const col   = new Float32Array(COUNT * 3);
+  const sizes = new Float32Array(COUNT);
+
+  // home positions (sphere-like spread)
+  const home = new Float32Array(COUNT * 3);
+
+  for(let i=0; i<COUNT; i++){
+    const theta = Math.random() * Math.PI * 2;
+    const phi   = Math.acos(2*Math.random()-1);
+    const r     = 35 + Math.random() * 55;
+    const x = r*Math.sin(phi)*Math.cos(theta);
+    const y = r*Math.sin(phi)*Math.sin(theta);
+    const z = (Math.random()-0.5)*60;
+    pos[i*3]=home[i*3]=x;
+    pos[i*3+1]=home[i*3+1]=y;
+    pos[i*3+2]=home[i*3+2]=z;
+
+    // colour: mostly dim red, some bright red, a few white
+    const t = Math.random();
+    if(t < .55){      // dim red
+      col[i*3]=.35+Math.random()*.2; col[i*3+1]=.04; col[i*3+2]=.04;
+    } else if(t<.8){ // bright red
+      col[i*3]=.9; col[i*3+1]=.22; col[i*3+2]=.2;
+    } else {          // white
+      const w=.5+Math.random()*.5;
+      col[i*3]=w; col[i*3+1]=w; col[i*3+2]=w;
     }
-    function closeBeatSheetModal() {
-      document.getElementById("beatSheetModal").style.display = "none";
-      document.body.style.overflow = "";
-    }
-    function openVideoModal(modalId) {
-      document.getElementById(modalId).style.display = "flex";
-      document.body.style.overflow = "hidden";
-    }
-    function closeVideoModal(modalId) {
-      const modal = document.getElementById(modalId);
-      modal.style.display = "none";
-      document.body.style.overflow = "";
-      const video = modal.querySelector('video');
-      if (video) video.pause();
-    }
-    window.onclick = function(event) {
-      if (event.target.classList.contains('modal')) {
-        event.target.style.display = "none";
-        document.body.style.overflow = "";
-        const video = event.target.querySelector('video');
-        if (video) video.pause();
+    sizes[i] = Math.random()*2.2+.4;
+  }
+
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+  geo.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
+
+  const mat = new THREE.ShaderMaterial({
+    vertexColors: true,
+    transparent:  true,
+    depthWrite:   false,
+    vertexShader:`
+      attribute float size;
+      varying vec3 vColor;
+      varying float vAlpha;
+      uniform float uTime;
+      void main(){
+        vColor = color;
+        // soft twinkle
+        vAlpha = 0.55 + 0.45*sin(uTime*1.8 + position.x*0.08 + position.y*0.06);
+        vec4 mvPos = modelViewMatrix * vec4(position,1.0);
+        gl_PointSize = size * (220.0 / -mvPos.z);
+        gl_Position  = projectionMatrix * mvPos;
+      }`,
+    fragmentShader:`
+      varying vec3 vColor;
+      varying float vAlpha;
+      void main(){
+        float d = length(gl_PointCoord - vec2(.5));
+        if(d > .5) discard;
+        float a = smoothstep(.5,.0,d) * vAlpha;
+        gl_FragColor = vec4(vColor, a);
+      }`,
+    uniforms:{ uTime:{ value:0 } }
+  });
+
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  /* ── mouse ── */
+  let targetRX=0, targetRY=0;
+  let normMX=0, normMY=0; // -1..1
+  document.addEventListener('mousemove', e=>{
+    normMX = (e.clientX/window.innerWidth)*2 - 1;
+    normMY = -((e.clientY/window.innerHeight)*2 - 1);
+    targetRY = normMX * 0.35;
+    targetRX = normMY * 0.2;
+  });
+
+  /* ── mouse repulsion in 3D ── */
+  // project mouse to world Z=0 plane
+  const raycaster = new THREE.Raycaster();
+  const mouse3D   = new THREE.Vector2();
+  const planeZ    = new THREE.Plane(new THREE.Vector3(0,0,1), 0);
+  const mouseWorld = new THREE.Vector3();
+
+  function updateMouseWorld(){
+    mouse3D.set(normMX, normMY);
+    raycaster.setFromCamera(mouse3D, camera);
+    raycaster.ray.intersectPlane(planeZ, mouseWorld);
+  }
+
+  /* ── velocity for repulsion ── */
+  const vel = new Float32Array(COUNT * 3);
+
+  /* ── resize ── */
+  window.addEventListener('resize', ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  /* ── animate ── */
+  let t=0, curRX=0, curRY=0;
+  const REPEL_R=22, REPEL_F=0.55, RETURN=0.032, DAMP=0.82;
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    t += 0.006;
+    mat.uniforms.uTime.value = t;
+
+    // smooth camera tilt
+    curRX += (targetRX - curRX) * 0.04;
+    curRY += (targetRY - curRY) * 0.04;
+    points.rotation.x = curRX;
+    points.rotation.y = curRY + t*0.04; // slow auto-spin
+
+    // repulsion
+    updateMouseWorld();
+    const pa = geo.attributes.position.array;
+    for(let i=0; i<COUNT; i++){
+      const ix=i*3, iy=i*3+1, iz=i*3+2;
+      // vector from mouse to particle (world space, approx ignoring rotation)
+      const dx = pa[ix] - mouseWorld.x;
+      const dy = pa[iy] - mouseWorld.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < REPEL_R && dist > 0.01){
+        const force = (REPEL_R-dist)/REPEL_R * REPEL_F;
+        vel[ix] += (dx/dist)*force;
+        vel[iy] += (dy/dist)*force;
       }
-    };
-    const cursor = document.getElementById('cursor');
-    const trail = document.getElementById('trail');
-    let mx = 0, my = 0, cx = 0, cy = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    function animate() {
-      cx += (mx - cx) * 0.15;
-      cy += (my - cy) * 0.15;
-      cursor.style.left = cx + 'px';
-      cursor.style.top = cy + 'px';
-      trail.style.left = mx + 'px';
-      trail.style.top = my + 'px';
-      requestAnimationFrame(animate);
+      // spring back to home
+      vel[ix] += (home[ix] - pa[ix]) * RETURN;
+      vel[iy] += (home[iy] - pa[iy]) * RETURN;
+      vel[iz] += (home[iz] - pa[iz]) * RETURN;
+      vel[ix] *= DAMP; vel[iy] *= DAMP; vel[iz] *= DAMP;
+      pa[ix] += vel[ix];
+      pa[iy] += vel[iy];
+      pa[iz] += vel[iz];
     }
-    animate();
-    document.querySelectorAll('a, .btn, .card').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    geo.attributes.position.needsUpdate = true;
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ══════════════════════════════════════════════
+   CURSOR + AURORA + TRAIL
+══════════════════════════════════════════════ */
+const cur    = document.getElementById('cur');
+const ring   = document.getElementById('cur-ring');
+const aurora = document.getElementById('aurora');
+let mx=0, my=0, rx=0, ry=0, ax=innerWidth/2, ay=innerHeight/2;
+
+document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+document.addEventListener('mousedown', ()=>document.body.classList.add('clicking'));
+document.addEventListener('mouseup',   ()=>document.body.classList.remove('clicking'));
+
+(function tick(){
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  ax+=(mx-ax)*.025; ay+=(my-ay)*.025;
+  aurora.style.left=ax+'px'; aurora.style.top=ay+'px';
+  requestAnimationFrame(tick);
+})();
+
+document.querySelectorAll('a,button,.pc,.feat,.ftab').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+/* cursor trail */
+(function(){
+  const cv=document.getElementById('trail-cv');
+  const ctx=cv.getContext('2d');
+  let W,H; const pts=[];
+  const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
+  rs(); window.addEventListener('resize',rs);
+  document.addEventListener('mousemove',()=>{
+    for(let i=0;i<2;i++) pts.push({
+      x:mx,y:my,vx:(Math.random()-.5)*1.6,
+      vy:(Math.random()-.5)*1.6-.4,
+      r:Math.random()*2.2+.5,life:1,
+      decay:Math.random()*.065+.025
     });
-    document.querySelectorAll('[data-tilt]').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const rotY = (x - rect.width / 2) / 12;
-        const rotX = (rect.height / 2 - y) / 12;
-        card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.05)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) scale(1)';
-      });
+  });
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=pts.length-1;i>=0;i--){
+      const p=pts[i];
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.04; p.life-=p.decay;
+      if(p.life<=0){pts.splice(i,1);continue}
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);
+      ctx.fillStyle=`rgba(229,57,53,${p.life*.8})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ══════════════════════════════════════════════
+   NAV SCROLL
+══════════════════════════════════════════════ */
+const navEl=document.getElementById('nav');
+window.addEventListener('scroll',()=>navEl.classList.toggle('bg',scrollY>50),{passive:true});
+
+/* ══════════════════════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════════════════════ */
+const rObs=new IntersectionObserver(entries=>
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('up')}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>rObs.observe(el));
+
+/* ══════════════════════════════════════════════
+   COUNTER ANIMATION
+══════════════════════════════════════════════ */
+const counters=document.querySelectorAll('.stat-n[data-target]');
+const cObs=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(!e.isIntersecting) return;
+  cObs.unobserve(e.target);
+  const target=+e.target.dataset.target;
+  let n=0;
+  const step=()=>{
+    n=Math.min(n+1,target);
+    e.target.textContent=n+(target>=5?'+':'');
+    if(n<target) requestAnimationFrame(step);
+  };
+  setTimeout(step, 800);
+}),{threshold:.5});
+counters.forEach(c=>cObs.observe(c));
+
+/* ══════════════════════════════════════════════
+   FILTER TABS
+══════════════════════════════════════════════ */
+const tabs=document.querySelectorAll('.ftab');
+const catMap={
+  games:'cat-games', breakdowns:'cat-breakdowns',
+  concepts:'cat-concepts', ai:'cat-ai'
+};
+
+function setTab(key){
+  tabs.forEach(t=>{
+    t.classList.toggle('on', t.dataset.cat===key);
+  });
+  Object.entries(catMap).forEach(([k,id])=>{
+    const el=document.getElementById(id);
+    el.classList.toggle('on', k===key);
+  });
+  // reattach tilt listeners for newly visible cards
+  setTimeout(initTilt, 50);
+}
+
+tabs.forEach(tab=>tab.addEventListener('click',()=>setTab(tab.dataset.cat)));
+
+/* ══════════════════════════════════════════════
+   3D MAGNETIC TILT CARDS
+══════════════════════════════════════════════ */
+function initTilt(){
+  document.querySelectorAll('[data-tilt]').forEach(card=>{
+    // de-dupe
+    if(card._tiltReady) return;
+    card._tiltReady=true;
+    const glint=card.querySelector('.pc-glint');
+    card.addEventListener('mousemove', e=>{
+      const r=card.getBoundingClientRect();
+      const xN=(e.clientX-r.left)/r.width;
+      const yN=(e.clientY-r.top)/r.height;
+      const rY=(xN-.5)*20;
+      const rX=-(yN-.5)*13;
+      card.style.transform=`perspective(800px) rotateX(${rX}deg) rotateY(${rY}deg) scale(1.04) translateZ(6px)`;
+      card.style.boxShadow=`${-rY*.5}px ${rX*.5}px 36px rgba(229,57,53,0.15), 0 8px 32px rgba(0,0,0,.4)`;
+      if(glint){
+        glint.style.background=`radial-gradient(circle at ${xN*100}% ${yN*100}%,rgba(255,255,255,.14),transparent 52%)`;
+        glint.style.opacity='1';
+      }
     });
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('show');
-      });
-    }, { threshold: 0.15 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-  </script>
+    card.addEventListener('mouseleave',()=>{
+      card.style.transform='perspective(800px) rotateX(0) rotateY(0) scale(1) translateZ(0)';
+      card.style.boxShadow='';
+      if(glint) glint.style.opacity='0';
+    });
+  });
+
+  // featured card tilt (gentler)
+  const fc=document.getElementById('feat-main');
+  if(fc && !fc._tiltReady){
+    fc._tiltReady=true;
+    fc.addEventListener('mousemove', e=>{
+      const r=fc.getBoundingClientRect();
+      const xN=(e.clientX-r.left)/r.width;
+      const yN=(e.clientY-r.top)/r.height;
+      fc.style.transform=`perspective(1200px) rotateX(${-(yN-.5)*5}deg) rotateY(${(xN-.5)*8}deg)`;
+    });
+    fc.addEventListener('mouseleave',()=>fc.style.transform='');
+  }
+}
+initTilt();
+
+/* ══════════════════════════════════════════════
+   PARALLAX
+══════════════════════════════════════════════ */
+const pEls=document.querySelectorAll('[data-parallax]');
+function rP(){
+  pEls.forEach(el=>{
+    const r=el.parentElement.getBoundingClientRect();
+    el.style.transform=`translateY(${-(r.top*parseFloat(el.dataset.parallax))}px)`;
+  });
+}
+window.addEventListener('scroll',rP,{passive:true}); rP();
+
+/* ══════════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════════ */
+function openModal(id){
+  document.getElementById(id).style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  const m=document.getElementById(id);
+  m.style.display='none';
+  document.body.style.overflow='';
+  const v=m.querySelector('video');
+  if(v) v.pause();
+}
+document.querySelectorAll('.modal').forEach(m=>{
+  m.addEventListener('click',e=>{
+    if(e.target!==m) return;
+    m.style.display='none';
+    document.body.style.overflow='';
+    const v=m.querySelector('video');
+    if(v) v.pause();
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.querySelectorAll('.modal').forEach(m=>{
+    if(m.style.display==='flex'){
+      m.style.display='none';
+      document.body.style.overflow='';
+      const v=m.querySelector('video'); if(v) v.pause();
+    }
+  });
+});
+</script>
 </body>
 </html>
