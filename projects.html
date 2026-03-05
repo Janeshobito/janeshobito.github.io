@@ -339,6 +339,13 @@ body.clicking #cur{transform:translate(-50%,-50%) scale(.4)}
 /* NO-IMAGE CARD variant */
 .pc-plain .pc-body{padding-top:26px}
 
+/* DEMO badge */
+.pc-demo-badge{display:inline-flex;align-items:center;gap:6px;
+  font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--red);border:1px solid var(--bdr-r);
+  background:var(--red-s);padding:3px 10px;border-radius:2px;
+  margin-bottom:10px;}
+
 /* ══════════════════════════════════════════════
    BUTTONS
 ══════════════════════════════════════════════ */
@@ -477,7 +484,7 @@ footer a:hover{color:var(--white)}
       Every project is a <strong>consequence of a choice made</strong> — in design, narrative, and craft.
     </p>
     <div class="hero-stats">
-      <div><div class="stat-n" data-target="4">0</div><div class="stat-l">Games Built</div></div>
+      <div><div class="stat-n" data-target="6">0</div><div class="stat-l">Games Built</div></div>
       <div><div class="stat-n" data-target="3">0</div><div class="stat-l">Concept Books</div></div>
       <div><div class="stat-n" data-target="2">0</div><div class="stat-l">Breakdowns</div></div>
       <div><div class="stat-n" data-target="5">0</div><div class="stat-l">AI Creations</div></div>
@@ -505,7 +512,7 @@ footer a:hover{color:var(--white)}
       <div class="ftab on" data-cat="games">
         <i class="ftab-icon fas fa-gamepad"></i>
         Game Projects
-        <span class="ftab-count">4</span>
+        <span class="ftab-count">6</span>
       </div>
       <div class="ftab" data-cat="breakdowns">
         <i class="ftab-icon fas fa-search-plus"></i>
@@ -528,7 +535,7 @@ footer a:hover{color:var(--white)}
     <div class="cat on" id="cat-games">
       <div class="cat-hdr">
         <h3>Game Projects</h3>
-        <p>Fully playable games built from scratch — spanning narrative design, 3D environments, and physics-based development across Twine, Godot, and Unity.</p>
+        <p>Fully playable games built from scratch — spanning narrative design, 3D environments, and physics-based development across Twine, Godot, Unity, and HTML.</p>
       </div>
 
       <!-- Featured -->
@@ -607,6 +614,36 @@ footer a:hover{color:var(--white)}
               <button class="btn-r" onclick="openModal('trailerModal')"><i class="fas fa-film"></i> Trailer</button>
               <button class="btn-o" onclick="openModal('pitchModal')">Pitch PPT</button>
               <a class="btn-o" href="https://janeshwaran2829.itch.io/wrath-of-the-night-game-book" target="_blank">Game Book</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── NEW CARD 1: ESCAPE THE DREAM DEMO ── -->
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="pc-demo-badge"><i class="fas fa-flask"></i> Playable Demo</div>
+            <p class="pc-engine">HTML · Claude AI · Escape Room</p>
+            <h3 class="pc-title">ESCAPE THE DREAM</h3>
+            <p class="pc-genre">Psychological · Thriller · Platformer · Escape</p>
+            <p class="pc-desc">Demo game built using HTML + Claude AI for the Escape the Dream concept book. Play as Elara Voss — a hacker trapped inside a super-AI's simulated reality. Solve glitch puzzles, exploit the dream's flaws, and breach the portal to wake up.</p>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/html%20game%20dream/file%20game/" target="_blank"><i class="fas fa-gamepad"></i> Play Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── NEW CARD 2: MINI MATH ZOO DEMO ── -->
+        <div class="pc pc-plain" data-tilt>
+          <div class="pc-glint"></div>
+          <div class="pc-body">
+            <div class="pc-demo-badge"><i class="fas fa-flask"></i> Playable Demo</div>
+            <p class="pc-engine">HTML · VibeCoding · Claude AI</p>
+            <h3 class="pc-title">MINI MATH ZOO</h3>
+            <p class="pc-genre">Educational Game · Children's</p>
+            <p class="pc-desc">Demo game built using HTML + VibeCoding + Claude AI for the Mini Math Zoo concept book. Step into Sunshine Zoo as Junior Zookeeper — sort escaped animals, tap to count them, then compare the groups to open the zoo gates!</p>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/html%20game%20dream/file%20game/mini_math_zoo.html" target="_blank"><i class="fas fa-gamepad"></i> Play Demo</a>
             </div>
           </div>
         </div>
@@ -848,9 +885,6 @@ footer a:hover{color:var(--white)}
 <script>
 /* ══════════════════════════════════════════════
    THREE.JS  —  3D floating particle field
-   Particles form a sparse cloud that slowly
-   rotates. Mouse position tilts the whole scene.
-   Mouse proximity repels nearby particles.
 ══════════════════════════════════════════════ */
 (function(){
   const canvas = document.getElementById('three-canvas');
@@ -863,15 +897,12 @@ footer a:hover{color:var(--white)}
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
   camera.position.z = 80;
 
-  /* ── particle geometry ── */
   const COUNT = 1800;
   const geo   = new THREE.BufferGeometry();
   const pos   = new Float32Array(COUNT * 3);
   const col   = new Float32Array(COUNT * 3);
   const sizes = new Float32Array(COUNT);
-
-  // home positions (sphere-like spread)
-  const home = new Float32Array(COUNT * 3);
+  const home  = new Float32Array(COUNT * 3);
 
   for(let i=0; i<COUNT; i++){
     const theta = Math.random() * Math.PI * 2;
@@ -883,17 +914,10 @@ footer a:hover{color:var(--white)}
     pos[i*3]=home[i*3]=x;
     pos[i*3+1]=home[i*3+1]=y;
     pos[i*3+2]=home[i*3+2]=z;
-
-    // colour: mostly dim red, some bright red, a few white
     const t = Math.random();
-    if(t < .55){      // dim red
-      col[i*3]=.35+Math.random()*.2; col[i*3+1]=.04; col[i*3+2]=.04;
-    } else if(t<.8){ // bright red
-      col[i*3]=.9; col[i*3+1]=.22; col[i*3+2]=.2;
-    } else {          // white
-      const w=.5+Math.random()*.5;
-      col[i*3]=w; col[i*3+1]=w; col[i*3+2]=w;
-    }
+    if(t < .55){ col[i*3]=.35+Math.random()*.2; col[i*3+1]=.04; col[i*3+2]=.04; }
+    else if(t<.8){ col[i*3]=.9; col[i*3+1]=.22; col[i*3+2]=.2; }
+    else { const w=.5+Math.random()*.5; col[i*3]=w; col[i*3+1]=w; col[i*3+2]=w; }
     sizes[i] = Math.random()*2.2+.4;
   }
 
@@ -902,25 +926,18 @@ footer a:hover{color:var(--white)}
   geo.setAttribute('size',     new THREE.BufferAttribute(sizes, 1));
 
   const mat = new THREE.ShaderMaterial({
-    vertexColors: true,
-    transparent:  true,
-    depthWrite:   false,
+    vertexColors: true, transparent: true, depthWrite: false,
     vertexShader:`
-      attribute float size;
-      varying vec3 vColor;
-      varying float vAlpha;
-      uniform float uTime;
+      attribute float size; varying vec3 vColor; varying float vAlpha; uniform float uTime;
       void main(){
         vColor = color;
-        // soft twinkle
         vAlpha = 0.55 + 0.45*sin(uTime*1.8 + position.x*0.08 + position.y*0.06);
         vec4 mvPos = modelViewMatrix * vec4(position,1.0);
         gl_PointSize = size * (220.0 / -mvPos.z);
         gl_Position  = projectionMatrix * mvPos;
       }`,
     fragmentShader:`
-      varying vec3 vColor;
-      varying float vAlpha;
+      varying vec3 vColor; varying float vAlpha;
       void main(){
         float d = length(gl_PointCoord - vec2(.5));
         if(d > .5) discard;
@@ -933,9 +950,7 @@ footer a:hover{color:var(--white)}
   const points = new THREE.Points(geo, mat);
   scene.add(points);
 
-  /* ── mouse ── */
-  let targetRX=0, targetRY=0;
-  let normMX=0, normMY=0; // -1..1
+  let targetRX=0, targetRY=0, normMX=0, normMY=0;
   document.addEventListener('mousemove', e=>{
     normMX = (e.clientX/window.innerWidth)*2 - 1;
     normMY = -((e.clientY/window.innerHeight)*2 - 1);
@@ -943,50 +958,37 @@ footer a:hover{color:var(--white)}
     targetRX = normMY * 0.2;
   });
 
-  /* ── mouse repulsion in 3D ── */
-  // project mouse to world Z=0 plane
   const raycaster = new THREE.Raycaster();
   const mouse3D   = new THREE.Vector2();
   const planeZ    = new THREE.Plane(new THREE.Vector3(0,0,1), 0);
   const mouseWorld = new THREE.Vector3();
-
   function updateMouseWorld(){
     mouse3D.set(normMX, normMY);
     raycaster.setFromCamera(mouse3D, camera);
     raycaster.ray.intersectPlane(planeZ, mouseWorld);
   }
 
-  /* ── velocity for repulsion ── */
   const vel = new Float32Array(COUNT * 3);
-
-  /* ── resize ── */
   window.addEventListener('resize', ()=>{
     camera.aspect = window.innerWidth/window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  /* ── animate ── */
   let t=0, curRX=0, curRY=0;
   const REPEL_R=22, REPEL_F=0.55, RETURN=0.032, DAMP=0.82;
-
   (function loop(){
     requestAnimationFrame(loop);
     t += 0.006;
     mat.uniforms.uTime.value = t;
-
-    // smooth camera tilt
     curRX += (targetRX - curRX) * 0.04;
     curRY += (targetRY - curRY) * 0.04;
     points.rotation.x = curRX;
-    points.rotation.y = curRY + t*0.04; // slow auto-spin
-
-    // repulsion
+    points.rotation.y = curRY + t*0.04;
     updateMouseWorld();
     const pa = geo.attributes.position.array;
     for(let i=0; i<COUNT; i++){
       const ix=i*3, iy=i*3+1, iz=i*3+2;
-      // vector from mouse to particle (world space, approx ignoring rotation)
       const dx = pa[ix] - mouseWorld.x;
       const dy = pa[iy] - mouseWorld.y;
       const dist = Math.sqrt(dx*dx + dy*dy);
@@ -995,14 +997,11 @@ footer a:hover{color:var(--white)}
         vel[ix] += (dx/dist)*force;
         vel[iy] += (dy/dist)*force;
       }
-      // spring back to home
       vel[ix] += (home[ix] - pa[ix]) * RETURN;
       vel[iy] += (home[iy] - pa[iy]) * RETURN;
       vel[iz] += (home[iz] - pa[iz]) * RETURN;
       vel[ix] *= DAMP; vel[iy] *= DAMP; vel[iz] *= DAMP;
-      pa[ix] += vel[ix];
-      pa[iy] += vel[iy];
-      pa[iz] += vel[iz];
+      pa[ix] += vel[ix]; pa[iy] += vel[iy]; pa[iz] += vel[iz];
     }
     geo.attributes.position.needsUpdate = true;
     renderer.render(scene, camera);
@@ -1035,7 +1034,6 @@ document.querySelectorAll('a,button,.pc,.feat,.ftab').forEach(el=>{
   el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
 });
 
-/* cursor trail */
 (function(){
   const cv=document.getElementById('trail-cv');
   const ctx=cv.getContext('2d');
@@ -1104,19 +1102,13 @@ const catMap={
   games:'cat-games', breakdowns:'cat-breakdowns',
   concepts:'cat-concepts', ai:'cat-ai'
 };
-
 function setTab(key){
-  tabs.forEach(t=>{
-    t.classList.toggle('on', t.dataset.cat===key);
-  });
+  tabs.forEach(t=>t.classList.toggle('on', t.dataset.cat===key));
   Object.entries(catMap).forEach(([k,id])=>{
-    const el=document.getElementById(id);
-    el.classList.toggle('on', k===key);
+    document.getElementById(id).classList.toggle('on', k===key);
   });
-  // reattach tilt listeners for newly visible cards
   setTimeout(initTilt, 50);
 }
-
 tabs.forEach(tab=>tab.addEventListener('click',()=>setTab(tab.dataset.cat)));
 
 /* ══════════════════════════════════════════════
@@ -1124,7 +1116,6 @@ tabs.forEach(tab=>tab.addEventListener('click',()=>setTab(tab.dataset.cat)));
 ══════════════════════════════════════════════ */
 function initTilt(){
   document.querySelectorAll('[data-tilt]').forEach(card=>{
-    // de-dupe
     if(card._tiltReady) return;
     card._tiltReady=true;
     const glint=card.querySelector('.pc-glint');
@@ -1132,8 +1123,7 @@ function initTilt(){
       const r=card.getBoundingClientRect();
       const xN=(e.clientX-r.left)/r.width;
       const yN=(e.clientY-r.top)/r.height;
-      const rY=(xN-.5)*20;
-      const rX=-(yN-.5)*13;
+      const rY=(xN-.5)*20, rX=-(yN-.5)*13;
       card.style.transform=`perspective(800px) rotateX(${rX}deg) rotateY(${rY}deg) scale(1.04) translateZ(6px)`;
       card.style.boxShadow=`${-rY*.5}px ${rX*.5}px 36px rgba(229,57,53,0.15), 0 8px 32px rgba(0,0,0,.4)`;
       if(glint){
@@ -1147,15 +1137,12 @@ function initTilt(){
       if(glint) glint.style.opacity='0';
     });
   });
-
-  // featured card tilt (gentler)
   const fc=document.getElementById('feat-main');
   if(fc && !fc._tiltReady){
     fc._tiltReady=true;
     fc.addEventListener('mousemove', e=>{
       const r=fc.getBoundingClientRect();
-      const xN=(e.clientX-r.left)/r.width;
-      const yN=(e.clientY-r.top)/r.height;
+      const xN=(e.clientX-r.left)/r.width, yN=(e.clientY-r.top)/r.height;
       fc.style.transform=`perspective(1200px) rotateX(${-(yN-.5)*5}deg) rotateY(${(xN-.5)*8}deg)`;
     });
     fc.addEventListener('mouseleave',()=>fc.style.transform='');
