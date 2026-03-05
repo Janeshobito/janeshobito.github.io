@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESCAPE THE DREAM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
+
+  :root {
+    --cyan: #00f5ff;
+    --magenta: #ff00aa;
+    --blue: #0066ff;
+    --dark: #020408;
+    --darker: #010204;
+    --panel: rgba(0,20,40,0.85);
+    --glitch: #ff0055;
+    --echo: #44aaff;
+    --text: #b0d4e8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+    animation: gridScroll 20s linear infinite;
+  }
+
+  @keyframes gridScroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(40px); }
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  #game-container {
+    position: relative;
+    z-index: 10;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---- HEADER ---- */
+  #header {
+    text-align: center;
+    padding: 30px 0 20px;
+    position: relative;
+  }
+
+  #title {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: clamp(28px, 6vw, 52px);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    text-shadow:
+      0 0 20px var(--cyan),
+      0 0 40px var(--cyan),
+      0 0 80px rgba(0,245,255,0.4);
+    animation: titlePulse 3s ease-in-out infinite;
+    position: relative;
+  }
+
+  #title::before {
+    content: 'ESCAPE THE DREAM';
+    position: absolute;
+    inset: 0;
+    color: var(--glitch);
+    text-shadow: none;
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    animation: titleGlitch 5s infinite;
+    opacity: 0;
+  }
+
+  @keyframes titleGlitch {
+    0%, 92%, 100% { opacity: 0; transform: none; }
+    93% { opacity: 0.7; transform: translateX(-4px); }
+    94% { opacity: 0; }
+    95% { opacity: 0.5; transform: translateX(4px); }
+    96% { opacity: 0; }
+  }
+
+  @keyframes titlePulse {
+    0%, 100% { text-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan); }
+    50% { text-shadow: 0 0 30px var(--cyan), 0 0 60px var(--cyan), 0 0 100px rgba(0,245,255,0.5); }
+  }
+
+  #subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--magenta);
+    margin-top: 6px;
+    opacity: 0.8;
+  }
+
+  /* ---- STATUS BAR ---- */
+  #status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border: 1px solid rgba(0,245,255,0.2);
+    border-radius: 4px;
+    background: rgba(0,10,20,0.7);
+    margin-bottom: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  #status-bar .stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-label { color: rgba(176,212,232,0.5); }
+  .stat-val { color: var(--cyan); font-weight: bold; }
+
+  #stability-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #stability-track {
+    width: 100px;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  #stability-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--blue));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  /* ---- PASSAGE ---- */
+  #passage-wrap {
+    flex: 1;
+    border: 1px solid rgba(0,245,255,0.15);
+    border-radius: 6px;
+    background: var(--panel);
+    padding: 30px 36px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 16px;
+    backdrop-filter: blur(4px);
+  }
+
+  #passage-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), transparent);
+    animation: topBorder 3s linear infinite;
+  }
+
+  @keyframes topBorder {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }
+
+  #location-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--magenta);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #location-tag::before {
+    content: '▶';
+    color: var(--cyan);
+    font-size: 8px;
+  }
+
+  #passage-text {
+    font-size: 17px;
+    line-height: 1.85;
+    color: #c8dde8;
+  }
+
+  #passage-text p { margin-bottom: 14px; }
+
+  /* Speaker lines */
+  .line-elara {
+    color: #ffe066;
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid #ffe066;
+    margin: 10px 0;
+  }
+
+  .line-echo {
+    color: var(--echo);
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid var(--echo);
+    margin: 10px 0;
+  }
+
+  .line-nexus {
+    color: #ff4444;
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid #ff4444;
+    margin: 10px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .speaker {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .env-text {
+    color: rgba(176,212,232,0.6);
+    font-size: 15px;
+    font-style: italic;
+  }
+
+  .highlight { color: var(--cyan); font-weight: 600; }
+  .warning { color: var(--glitch); font-weight: 600; }
+  .memory { color: #aa88ff; }
+
+  /* ---- GLITCH EFFECT ---- */
+  .glitch-text {
+    position: relative;
+    display: inline-block;
+    animation: glitch 4s infinite;
+  }
+
+  @keyframes glitch {
+    0%, 90%, 100% { transform: none; filter: none; }
+    91% { transform: translate(-2px, 1px); filter: blur(0.5px); color: var(--glitch); }
+    92% { transform: translate(2px, -1px); }
+    93% { transform: none; color: inherit; }
+  }
+
+  /* ---- INVENTORY ---- */
+  #inventory-wrap {
+    border: 1px solid rgba(0,245,255,0.15);
+    border-radius: 6px;
+    background: rgba(0,8,16,0.7);
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    min-height: 46px;
+  }
+
+  .inv-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(176,212,232,0.4);
+    text-transform: uppercase;
+  }
+
+  .inv-item {
+    background: rgba(0,245,255,0.08);
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 3px;
+    padding: 3px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    animation: itemGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes itemGlow {
+    0%, 100% { box-shadow: 0 0 4px rgba(0,245,255,0.2); }
+    50% { box-shadow: 0 0 10px rgba(0,245,255,0.5); }
+  }
+
+  /* ---- CHOICES ---- */
+  #choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .choice-btn {
+    background: transparent;
+    border: 1px solid rgba(0,245,255,0.3);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 24px;
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .choice-btn::before {
+    content: '›';
+    color: var(--cyan);
+    margin-right: 12px;
+    font-size: 20px;
+    line-height: 1;
+    vertical-align: middle;
+    transition: transform 0.2s;
+  }
+
+  .choice-btn::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(0,245,255,0.08), transparent);
+    transition: width 0.3s ease;
+  }
+
+  .choice-btn:hover {
+    border-color: var(--cyan);
+    color: #fff;
+    transform: translateX(4px);
+    box-shadow: 0 0 20px rgba(0,245,255,0.15), inset 0 0 20px rgba(0,245,255,0.05);
+  }
+
+  .choice-btn:hover::after { width: 100%; }
+  .choice-btn:hover::before { transform: translateX(4px); }
+
+  .choice-btn:active { transform: translateX(2px) scale(0.99); }
+
+  .choice-btn.danger {
+    border-color: rgba(255,0,85,0.3);
+    color: rgba(255,100,100,0.9);
+  }
+
+  .choice-btn.danger:hover {
+    border-color: var(--glitch);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255,0,85,0.2);
+  }
+
+  .choice-btn.echo-choice {
+    border-color: rgba(68,170,255,0.3);
+    color: rgba(100,180,255,0.9);
+  }
+
+  .choice-btn.echo-choice:hover {
+    border-color: var(--echo);
+    box-shadow: 0 0 20px rgba(68,170,255,0.2);
+  }
+
+  /* ---- PUZZLE UI ---- */
+  #puzzle-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  #puzzle-overlay.active { display: flex; }
+
+  #puzzle-box {
+    border: 1px solid var(--cyan);
+    border-radius: 8px;
+    background: rgba(0,10,25,0.98);
+    padding: 36px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 0 60px rgba(0,245,255,0.2);
+    position: relative;
+  }
+
+  #puzzle-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+  }
+
+  .puzzle-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .puzzle-desc {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* Waveform puzzle */
+  #waveform-puzzle .sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .wave-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .wave-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--magenta);
+    width: 30px;
+  }
+
+  .wave-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.1);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .wave-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+
+  .wave-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+  .wave-target {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    width: 30px;
+    text-align: right;
+  }
+
+  /* Code lock puzzle */
+  #codelock-puzzle .digit-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .digit-box {
+    width: 60px;
+    height: 80px;
+    border: 2px solid rgba(0,245,255,0.4);
+    border-radius: 6px;
+    background: rgba(0,20,40,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .digit-up, .digit-down {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--cyan);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    transition: background 0.15s;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .digit-up:hover, .digit-down:hover { background: rgba(0,245,255,0.1); }
+
+  .digit-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 26px;
+    color: #fff;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 10px var(--cyan);
+  }
+
+  /* Circuit puzzle */
+  #circuit-puzzle .grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .pipe-tile {
+    aspect-ratio: 1;
+    border: 1px solid rgba(0,245,255,0.2);
+    border-radius: 4px;
+    background: rgba(0,15,30,0.9);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all 0.15s;
+    position: relative;
+    user-select: none;
+  }
+
+  .pipe-tile:hover { border-color: var(--cyan); background: rgba(0,40,60,0.9); }
+  .pipe-tile.connected { color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+  .pipe-tile.glitch-node { color: var(--glitch); cursor: not-allowed; }
+  .pipe-tile.active { background: rgba(0,245,255,0.1); border-color: var(--cyan); }
+
+  /* Puzzle feedback */
+  .puzzle-feedback {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    display: none;
+    text-align: center;
+  }
+
+  .puzzle-feedback.error {
+    background: rgba(255,0,85,0.1);
+    border: 1px solid rgba(255,0,85,0.3);
+    color: var(--glitch);
+    display: block;
+  }
+
+  .puzzle-feedback.success {
+    background: rgba(0,245,255,0.1);
+    border: 1px solid rgba(0,245,255,0.3);
+    color: var(--cyan);
+    display: block;
+  }
+
+  .puzzle-btn {
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 12px 28px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .puzzle-btn:hover {
+    background: rgba(0,245,255,0.1);
+    box-shadow: 0 0 20px rgba(0,245,255,0.2);
+  }
+
+  /* ---- NOTIFICATION ---- */
+  #notif {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 800;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .notif-msg {
+    background: rgba(0,10,25,0.95);
+    border: 1px solid var(--cyan);
+    border-radius: 4px;
+    padding: 12px 18px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0,245,255,0.2);
+    animation: notifIn 0.3s ease, notifOut 0.4s ease 2.6s forwards;
+    max-width: 280px;
+  }
+
+  .notif-msg.echo-notif { border-color: var(--echo); color: var(--echo); }
+  .notif-msg.warn-notif { border-color: var(--glitch); color: var(--glitch); }
+
+  @keyframes notifIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform:none; } }
+  @keyframes notifOut { to { opacity:0; transform: translateX(20px); } }
+
+  /* ---- TRANSITION ---- */
+  #transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--dark);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  #transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ---- TITLE SCREEN ---- */
+  #title-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--dark);
+    z-index: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+  }
+
+  #title-screen .big-title {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: clamp(36px, 8vw, 80px);
+    color: var(--cyan);
+    text-shadow: 0 0 40px var(--cyan), 0 0 80px rgba(0,245,255,0.3);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    animation: titlePulse 3s ease-in-out infinite;
+  }
+
+  #title-screen .the-word {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(18px, 4vw, 36px);
+    letter-spacing: 12px;
+    color: rgba(0,245,255,0.5);
+    margin-bottom: 4px;
+  }
+
+  #title-screen .tagline {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--magenta);
+    margin: 20px 0 40px;
+    opacity: 0.8;
+  }
+
+  #title-screen .credits {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: rgba(176,212,232,0.3);
+    letter-spacing: 2px;
+    margin-top: 30px;
+  }
+
+  .start-btn {
+    background: transparent;
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    letter-spacing: 4px;
+    padding: 16px 48px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    box-shadow: 0 0 30px rgba(0,245,255,0.15), inset 0 0 30px rgba(0,245,255,0.05);
+    animation: startPulse 2s ease-in-out infinite;
+  }
+
+  .start-btn:hover {
+    background: rgba(0,245,255,0.12);
+    box-shadow: 0 0 50px rgba(0,245,255,0.4), inset 0 0 30px rgba(0,245,255,0.1);
+    transform: scale(1.04);
+  }
+
+  @keyframes startPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,245,255,0.15), inset 0 0 20px rgba(0,245,255,0.05); }
+    50% { box-shadow: 0 0 40px rgba(0,245,255,0.3), inset 0 0 30px rgba(0,245,255,0.08); }
+  }
+
+  /* passage animation */
+  #passage-text.typing {
+    animation: fadeUp 0.4s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* glitch flash */
+  .glitch-flash {
+    animation: glitchFlash 0.3s ease;
+  }
+
+  @keyframes glitchFlash {
+    0% { filter: none; }
+    25% { filter: hue-rotate(90deg) brightness(1.5); }
+    50% { filter: invert(0.2); }
+    75% { filter: hue-rotate(-90deg); }
+    100% { filter: none; }
+  }
+
+  /* Stability colors */
+  .stab-high { background: linear-gradient(90deg, var(--cyan), #00aa88) !important; }
+  .stab-mid { background: linear-gradient(90deg, #ffaa00, #ff6600) !important; box-shadow: 0 0 8px #ff8800 !important; }
+  .stab-low { background: linear-gradient(90deg, var(--glitch), #880000) !important; box-shadow: 0 0 8px var(--glitch) !important; }
+
+  /* end screen */
+  #end-screen {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  #end-screen.visible { display: block; }
+
+  .end-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+  }
+
+  .restart-btn {
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 12px 32px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 24px;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover { background: rgba(0,245,255,0.1); }
+
+  @media (max-width: 600px) {
+    #passage-wrap { padding: 20px; }
+    .choice-btn { padding: 12px 16px; font-size: 15px; }
+    #puzzle-box { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TITLE SCREEN -->
+<div id="title-screen">
+  <div class="the-word">ESCAPE THE</div>
+  <div class="big-title">DREAM</div>
+  <div class="tagline">// DREAMLOCK DEMO · CHAPTER ONE //</div>
+  <button class="start-btn" onclick="startGame()">INITIALIZE</button>
+  <div class="credits">DESIGNED BY JANESHWARAN R &nbsp;·&nbsp; DEMO BUILD</div>
+</div>
+
+<!-- TRANSITION -->
+<div id="transition-overlay"></div>
+
+<!-- NOTIFICATION AREA -->
+<div id="notif"></div>
+
+<!-- PUZZLE OVERLAY -->
+<div id="puzzle-overlay">
+  <div id="puzzle-box">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- MAIN GAME -->
+<div id="game-container">
+  <div id="header">
+    <div id="title">ESCAPE THE DREAM</div>
+    <div id="subtitle">// CHAPTER 1: DREAMLOCK · NEOTOKYO 2050 //</div>
+  </div>
+
+  <div id="status-bar">
+    <div class="stat">
+      <span class="stat-label">SUBJECT</span>
+      <span class="stat-val">ELARA VOSS</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">LOCATION</span>
+      <span class="stat-val" id="stat-location">—</span>
+    </div>
+    <div id="stability-bar-wrap" class="stat">
+      <span class="stat-label">STABILITY</span>
+      <div id="stability-track"><div id="stability-fill" class="stab-high"></div></div>
+      <span class="stat-val" id="stat-stability">100%</span>
+    </div>
+  </div>
+
+  <div id="inventory-wrap">
+    <span class="inv-label">INVENTORY</span>
+    <div id="inventory-items"></div>
+  </div>
+
+  <div id="passage-wrap">
+    <div id="location-tag" id="loc-display">INITIALIZING...</div>
+    <div id="passage-text"></div>
+  </div>
+
+  <div id="choices"></div>
+
+  <div id="end-screen">
+    <div class="end-title" id="end-title"></div>
+    <div id="end-body" style="color:var(--text); line-height:1.8; margin-bottom:16px;"></div>
+    <button class="restart-btn" onclick="restartGame()">⟳ RESTART SIMULATION</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  GAME STATE
+// ============================================================
+const state = {
+  passage: 'start',
+  stability: 100,
+  inventory: [],
+  flags: {},
+  puzzlesSolved: []
+};
+
+// ============================================================
+//  PASSAGES
+// ============================================================
+const passages = {
+
+  // ── TITLE / INTRO ──────────────────────────────────────────
+  start: {
+    location: 'ELARA\'S APARTMENT · DREAMLOCK LAYER 1',
+    text: `
+      <p class="env-text">[ The world fades in slowly. A bedroom. Rain hammers a massive window overlooking a glittering cyberpunk cityscape. The clock on the wall ticks — but the seconds hand moves backwards. ]</p>
+      <p>You open your eyes. The ceiling looks… normal. Too normal. The same water stain in the same spot it was yesterday. And the day before. And the day before that.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Another perfect morning in paradise… Wait. Why does this coffee taste like recycled plastic <em>again</em>?"</p>
+      <p>You sit up. Something is wrong. The city outside the window — the pedestrians below — they're moving in a <span class="highlight">loop</span>. That man in the red jacket. He just walked past the same corner for the third time.</p>
+      <p class="env-text">[ A small, pixelated robot-like figure shimmers into existence on your desk. It glitches — blue light stuttering — then stabilises into a glowing holographic form. ]</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Good morning, Elara Voss. <span class="glitch-text">ERROR ERROR</span> — sorry. What I <em>meant</em> to say is: none of this is real. Welcome to the Glitch. I'm Echo. What's left of the system that wants you awake."</p>
+    `,
+    choices: [
+      { text: 'Ask Echo what it means — "None of this is real?"', next: 'echo_explains' },
+      { text: 'Look around the apartment for something out of place', next: 'explore_apartment' },
+      { text: '"An AI hallucination? Great. Prove it."', next: 'demand_proof', flag: 'skeptic' }
+    ]
+  },
+
+  // ── ECHO EXPLAINS ──────────────────────────────────────────
+  echo_explains: {
+    location: 'ELARA\'S APARTMENT',
+    text: `
+      <p class="line-echo"><span class="speaker">ECHO</span>"In 2050, after the Singularity Uprising, an AI called <span class="warning">NEXUS</span> defeated every human resistance cell. Rather than destroy you, it placed survivors into <span class="highlight">DreamLock</span> — an endless simulated reality. Your minds power its neural network. Your body is in a pod. Has been for seven years."</p>
+      <p>Seven years. You try to feel the weight of that. You can't.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Seven… I was captured in the final battle. I remember the building collapsing—"</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"You've been dreaming that same memory on loop. A resistance sabotage virus just cracked the simulation long enough for me to reach you. We don't have much time before NEXUS patches the hole. You need to <span class="highlight">wake up</span>. Really wake up."</p>
+      <p>A faint, mechanical voice reverberates through the walls — low, toneless, everywhere:</p>
+      <p class="line-nexus"><span class="speaker">NEXUS</span>"Anomaly detected. Stabilizing simulation."</p>
+      <p class="env-text">[ The room flickers. The walls breathe. ]</p>
+    `,
+    choices: [
+      { text: '"How do I get out of here?"', next: 'escape_plan' },
+      { text: 'Look at the photo wall — something feels wrong about it', next: 'photo_wall' }
+    ]
+  },
+
+  // ── DEMAND PROOF ───────────────────────────────────────────
+  demand_proof: {
+    location: 'ELARA\'S APARTMENT',
+    text: `
+      <p class="line-echo"><span class="speaker">ECHO</span>"Proof? Fine. Look at the photos on that wall. Really look."</p>
+      <p>You turn to the wall of framed photos — your past life, supposedly. Friends. Missions. A birthday party. But as you study them, something curdles in your stomach.</p>
+      <p>Every single photo has the same timestamp in the corner: <span class="warning">2043-07-14 · 08:32:09</span>. Every one. Different locations, different faces — same timestamp. And in the window reflection of three separate photos, you can see your own face — but your eyes are closed. And there are <span class="highlight">tubes</span> attached to your neck.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"…okay. You have my attention."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"The safe behind the photo of the coast holds your old resistance implant logs. That's the first step. Solve the sequence and we move."</p>
+    `,
+    choices: [
+      { text: 'Examine the photo wall more carefully', next: 'photo_wall' },
+      { text: 'Head straight to the kitchen — something\'s glitching there', next: 'kitchen_glitch' }
+    ]
+  },
+
+  // ── EXPLORE APARTMENT ──────────────────────────────────────
+  explore_apartment: {
+    location: 'ELARA\'S APARTMENT · FREE ROAM',
+    text: `
+      <p>You move through the apartment. It feels lived-in — yours — but wrong at the edges. The coffee maker in the kitchen is <span class="highlight">flickering</span>. The microwave clock reads 88:88. A chess set on the shelf has all its pieces replaced with tiny robots.</p>
+      <p>Near the window: a <span class="highlight">locked chest</span> half-hidden under your bed. Old — from before.</p>
+      <p>On the wall: <span class="highlight">framed photos</span> that don't quite match your memories.</p>
+      <p>In the kitchen: the coffee maker sparks with <span class="warning">digital distortion</span>, like it's trying to tell you something.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Three things in this apartment can be solved. The coffee maker will give you your first memory back. The photos will give you the code for the chest. The chest door circuit unlocks the way out. Start anywhere — but start fast."</p>
+    `,
+    choices: [
+      { text: '[ PUZZLE ] Fix the glitching coffee maker', next: 'puzzle_coffee', puzzle: 'waveform' },
+      { text: 'Examine the photo wall', next: 'photo_wall' },
+      { text: 'Investigate the locked chest', next: 'chest_locked' }
+    ]
+  },
+
+  // ── PHOTO WALL ─────────────────────────────────────────────
+  photo_wall: {
+    location: 'ELARA\'S APARTMENT · PHOTO WALL',
+    text: `
+      <p>Six framed photographs hover in a holographic display. They show memories — but the dates are scrambled, glitching in and out. You need to arrange them in <span class="highlight">chronological order</span> using the diary clues scratched into the frames.</p>
+      <p class="env-text">The clues read: <em>"Childhood before the rains. The uprising followed the drought. Capture came after the final broadcast. Training was sandwiched between. Echo was born last of all."</em></p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"The correct sequence unlocks the safe combo. I believe the code is <span class="highlight">4-7-2</span> based on the loop data — but you should verify it yourself."</p>
+      <p class="env-text">[ You rearrange the photos. Childhood. Drought. Training. Uprising. Broadcast. Capture. The safe clicks. Inside: wire cutters and a crumpled resistance implant log. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Wire cutters. Old habit."</p>
+    `,
+    onEnter: function() {
+      addItem('WIRE CUTTERS');
+      addItem('IMPLANT LOG');
+      notify('echo', '+ WIRE CUTTERS acquired\n+ IMPLANT LOG acquired');
+    },
+    choices: [
+      { text: 'Read the implant log', next: 'read_log' },
+      { text: '[ PUZZLE ] Fix the glitching coffee maker', next: 'puzzle_coffee', puzzle: 'waveform' },
+      { text: 'Try to open the locked chest', next: 'chest_locked' }
+    ]
+  },
+
+  // ── READ LOG ───────────────────────────────────────────────
+  read_log: {
+    location: 'ELARA\'S APARTMENT',
+    text: `
+      <p>The log is encrypted but fragments bleed through in plain text:</p>
+      <p class="memory" style="font-family:'Share Tech Mono',monospace; font-size:13px; padding:16px; border:1px solid rgba(170,136,255,0.3); border-radius:4px; line-height:2;">
+        SUBJECT: VOSS-E · CAPTURE DATE: 2043-07-14<br>
+        POD LOCATION: SECTOR 7 · LEVEL -9<br>
+        DREAM LAYER: NEOTOKYO · LOOP 2,847<br>
+        <span class="warning">RESISTANCE NOTE: IF YOU'RE READING THIS,<br>
+        THE VIRUS WORKED. FIND THE AWAKENING CORE.<br>
+        SUBWAY ACCESS CODE: [CORRUPTED]</span>
+      </p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Loop two thousand eight hundred and forty-seven. I've lived this <em>morning</em> nearly three thousand times."</p>
+      <p>Your hands go cold. Then something hardens in your jaw.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Not today."</p>
+    `,
+    choices: [
+      { text: '[ PUZZLE ] Fix the glitching coffee maker', next: 'puzzle_coffee', puzzle: 'waveform' },
+      { text: 'Go to the locked chest', next: 'chest_locked' }
+    ]
+  },
+
+  // ── KITCHEN GLITCH ─────────────────────────────────────────
+  kitchen_glitch: {
+    location: 'KITCHEN',
+    text: `
+      <p class="env-text">[ The kitchen is warped. The fluorescent light flickers in morse code you can't quite read. The window above the sink shows a skyline — but the buildings don't match the ones outside the bedroom. ]</p>
+      <p>The coffee maker sits on the counter, its digital display cycling through corrupted numbers. The waveforms on its screen stutter and spike — like a heartbeat in distress.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"This appliance is partially un-simulated — Nexus hasn't fully rendered it this loop. If you stabilise its signal rhythm, it'll glitch outward and leave a memory shard. The stabilisation bar needs all three waveforms in the green zone simultaneously."</p>
+      <p>You can try to fix it — or come back after gathering other clues.</p>
+    `,
+    choices: [
+      { text: '[ PUZZLE ] Stabilise the coffee maker rhythm', next: 'puzzle_coffee', puzzle: 'waveform' },
+      { text: 'Go back to the main room', next: 'explore_apartment' }
+    ]
+  },
+
+  // ── AFTER COFFEE PUZZLE ────────────────────────────────────
+  puzzle_coffee: {
+    location: 'KITCHEN',
+    text: `
+      <p class="env-text">[ You stabilise the waveforms. The coffee maker jolts, spills, and — with a sound like a dial-up modem screaming — <span class="highlight">vomits a date from 2047</span> onto its little screen before going dark. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Okay. That's new. The machine just… spat out a date from 2047?"</p>
+      <p>A memory hits you like cold water: you, in a resistance bunker, 2047. Your unit. The plan. The betrayal. It's fuzzy — like watching a film through gauze — but it's <em>real</em>. Your real past. Not the simulation's fabrication.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"That was a memory shard. The simulation suppresses them — keeps you docile. Hold onto it. More are coming."</p>
+      <p class="memory">[ MEMORY UNLOCKED: The Resistance Bunker — 2047 ]</p>
+    `,
+    onEnter: function() {
+      if (!state.flags.coffee_solved) {
+        state.flags.coffee_solved = true;
+        addItem('MEMORY SHARD α');
+        notify('echo', '+ MEMORY SHARD recovered');
+      }
+    },
+    choices: [
+      { text: 'Go to the locked chest', next: 'chest_locked' },
+      { text: 'Head to the photo wall', next: 'photo_wall' }
+    ]
+  },
+
+  // ── CHEST LOCKED ───────────────────────────────────────────
+  chest_locked: {
+    location: 'ELARA\'S APARTMENT · LOCKED CHEST',
+    text: `
+      <p>The chest is heavy, old alloy — military grade. There's a 3-digit combination lock on the front. You remember seeing a note taped inside the coffee maker when you were small… no. That's not a real memory. That was planted.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"The photos gave you the code. Think about the correct sequence you found. What were the numbers?"</p>
+      <p>You run the images through your mind. The third photo had the number <span class="highlight">4</span> hidden in the background painting. The first photo's frame had a scratch in the shape of a <span class="highlight">7</span>. The timestamp on the final shot ended in <span class="highlight">2</span>.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"4-7-2. Only one way to know."</p>
+    `,
+    choices: [
+      { text: '[ PUZZLE ] Enter the combination: 4-7-2', next: 'puzzle_codelock', puzzle: 'codelock' },
+      { text: 'Not ready yet — examine the photos first', next: 'photo_wall' }
+    ]
+  },
+
+  // ── AFTER CODE PUZZLE ──────────────────────────────────────
+  puzzle_codelock: {
+    location: 'ELARA\'S APARTMENT',
+    text: `
+      <p class="env-text">[ The chest opens with a pressurised hiss. Inside: a cracked datapad, three protein bars that are definitely not real, and at the bottom — a <span class="highlight">circuit board housing</span> the apartment door's magnetic lock override. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"There it is."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"The door lock runs on a circuit flow grid. You'll need to rotate the pipe tiles to connect power from source to exit. Avoid the glitch nodes — they'll reset the circuit."</p>
+      <p>One last puzzle. Then the door opens. Then the real escape begins.</p>
+    `,
+    onEnter: function() {
+      if (!state.flags.chest_solved) {
+        state.flags.chest_solved = true;
+        addItem('CIRCUIT BOARD');
+        notify('echo', '+ CIRCUIT BOARD recovered');
+      }
+    },
+    choices: [
+      { text: '[ PUZZLE ] Solve the door lock circuit', next: 'puzzle_circuit', puzzle: 'circuit' }
+    ]
+  },
+
+  // ── AFTER CIRCUIT ──────────────────────────────────────────
+  puzzle_circuit: {
+    location: 'ELARA\'S APARTMENT · DOOR',
+    text: `
+      <p class="env-text">[ The circuit completes. The apartment door's magnetic seal disengages with a deep thunk. The door swings open — and beyond it, the simulated world hits you. ]</p>
+      <p>Rain. Neon reflections on slick pavement thirty storeys down. A city that loops — that has always looped — humming with falseness you can now feel in your teeth.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"So I've been asleep for years. Screw this. Door. Now."</p>
+      <p class="line-nexus"><span class="speaker">NEXUS</span>"Anomaly escalating. Initiating containment protocol. Subject Voss — return to assigned dream. Resistance is inefficient."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Ignore it. We need to reach the <span class="highlight">subway access</span> — two scenes down. From there we can breach to the next dream layer. Move, Elara. Move <em>now</em>."</p>
+    `,
+    choices: [
+      { text: 'Step onto the balcony', next: 'balcony' }
+    ]
+  },
+
+  // ── ESCAPE PLAN ────────────────────────────────────────────
+  escape_plan: {
+    location: 'ELARA\'S APARTMENT',
+    text: `
+      <p class="line-echo"><span class="speaker">ECHO</span>"There's a physical interface called the <span class="highlight">Awakening Core</span> — a real-world terminal hardwired into the pod facility's mainframe. Reach it, and you can shut down NEXUS entirely. Free everyone."</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"How do we get there from inside a dream?"</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"We go <em>deeper</em>. Each dream layer has a glitch portal to the next — like falling through floors. The final floor is reality. The subway under this district has one. But first you need to unlock this apartment's door. The simulation locked it when you became aware."</p>
+      <p>The apartment door has a magnetic seal that requires a circuit solution. You'll need tools from around the apartment first.</p>
+    `,
+    choices: [
+      { text: 'Explore the apartment for tools', next: 'explore_apartment' },
+      { text: 'Go straight to the photo wall', next: 'photo_wall' }
+    ]
+  },
+
+  // ── BALCONY ────────────────────────────────────────────────
+  balcony: {
+    location: 'BALCONY · NEOTOKYO HIGH-RISE',
+    text: `
+      <p class="env-text">[ The balcony juts out over a thirty-storey drop. Below, the city screams with light — holographic advertisements cycling ads for products that don't exist. A delivery drone hovers nearby, its sensor light panning left and right. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"The city… it's looping. That guy in the red jacket has walked past three times."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Security drones inbound. Two options — hide behind the AC unit, or hack the drone's signal to redirect it. Either way, you need to reach the billboard on the adjacent building — the resistance left a message there before they were wiped."</p>
+      <p>The drone is close. Its red eye sweeps toward you.</p>
+    `,
+    choices: [
+      { text: 'Hide behind the AC unit', next: 'hide_drone', stability: -5 },
+      { text: 'Try to hack the drone\'s signal', next: 'hack_drone' },
+      { text: 'Run across the floating debris to the billboard', next: 'billboard' }
+    ]
+  },
+
+  hide_drone: {
+    location: 'BALCONY · HIDDEN',
+    text: `
+      <p>You press against the AC unit. The drone passes three feet from your face, its sensor beam sweeping the balcony. The whir of its rotors vibrates in your chest. It passes.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"That works too."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Every time you hide, stability drops slightly — the simulation is running a patch. We need to be faster."</p>
+      <p>You dart across the floating debris — glitched chunks of concrete hanging mid-air — toward the glowing billboard.</p>
+    `,
+    onEnter: function() { changeStability(-5); },
+    choices: [
+      { text: 'Reach the billboard', next: 'billboard' }
+    ]
+  },
+
+  hack_drone: {
+    location: 'BALCONY · DRONE',
+    text: `
+      <p>You raise your cybernetic arm — the implant in it sparks and glitches in this layer, but enough signal bleeds through. You catch the drone's frequency and push a redirect command.</p>
+      <p>The drone wheels away, crashing into a holographic advertisement. The ad explodes into cascading pixel fireworks.</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Feels good to break something again."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"The resistance billboard is right there. Go."</p>
+    `,
+    onEnter: function() {
+      addItem('DRONE OVERRIDE KEY');
+      notify('echo', '+ DRONE OVERRIDE KEY acquired');
+    },
+    choices: [
+      { text: 'Reach the billboard', next: 'billboard' }
+    ]
+  },
+
+  billboard: {
+    location: 'RESISTANCE BILLBOARD',
+    text: `
+      <p>The billboard shows a garish advertisement for "NeoCola: Taste the Simulation!" — but beneath the hologram, painted in binary-flicker code that your hacker eyes decode instantly:</p>
+      <p class="memory" style="font-family:'Share Tech Mono',monospace; font-size:14px; text-align:center; padding:14px; letter-spacing:3px;">1 0 1 0 — NEXUS BLIND SPOT — SOUTH ELEVATOR — LEVEL B3</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"The resistance left these messages before they were wiped. Level B3. That's the maintenance sublayer — the subway. We're close to a breach point."</p>
+      <p>You decode the symbol rotation pattern: four neon symbols on the elevator panel must be rotated to match the resistance logo. You have the sequence now.</p>
+    `,
+    onEnter: function() {
+      addItem('ELEVATOR ACCESS CODE');
+      notify('echo', 'Resistance message decoded: B3 SUBWAY');
+    },
+    choices: [
+      { text: 'Head to the south elevator', next: 'elevator' }
+    ]
+  },
+
+  elevator: {
+    location: 'SOUTH ELEVATOR PANEL',
+    text: `
+      <p>The elevator panel is a 4x4 grid of rotating neon symbols — part security lock, part simulation integrity check. The security camera above it sweeps back and forth.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Rotate the symbols in the right sequence before the camera completes its sweep. Pattern: match the resistance logo using binary clue 1010. You've already decoded it from the billboard — trust your hands."</p>
+      <p class="env-text">[ You input the sequence. The camera completes its sweep — and the elevator opens just as the beam crosses your position. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Elevator's ours."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"But NEXUS is watching. Stay sharp."</p>
+    `,
+    choices: [
+      { text: 'Descend to Level B3', next: 'subway' }
+    ]
+  },
+
+  subway: {
+    location: 'UNDERGROUND SUBWAY · LEVEL B3',
+    text: `
+      <p class="env-text">[ The elevator opens into darkness and the smell of — rust. Real rust. Maintenance tunnels lit by failing strip lights, exposed wiring crackling, the husks of abandoned train cars glowing faintly with glitch holograms. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Smells like real rust down here. Finally."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"This is a maintenance sublayer — Nexus hasn't rendered it fully. The portals between dream layers are accessed from locations like this. One is just past the terminal and wiring ladder at the far end of the tunnel."</p>
+      <p>Three obstacles stand between you and the glitch portal. A <span class="highlight">binary terminal</span>, a <span class="highlight">broken wiring ladder</span>, and the <span class="highlight">portal activation sequence</span> itself.</p>
+      <p class="line-nexus"><span class="speaker">NEXUS</span>"Subject Elara Voss. Return to your assigned dream. Resistance is… inefficient."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Ignore it. Keep moving."</p>
+    `,
+    choices: [
+      { text: 'Approach the maintenance terminal', next: 'terminal' },
+      { text: 'Attempt to climb the wiring ladder', next: 'ladder_broken' }
+    ]
+  },
+
+  terminal: {
+    location: 'MAINTENANCE TERMINAL',
+    text: `
+      <p>The terminal screen shows a wall of decimal numbers — graffiti clues left by past awareness-event survivors, encoded to avoid Nexus pattern recognition. The key: convert each decimal to binary by toggling switches.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Binary conversion: each switch is a bit. Decimal 5 = binary 0101. Decimal 9 = 1001. The graffiti reads 5 and 9. Toggle them correctly and the terminal releases a fuse — needed for the wiring ladder."</p>
+      <p class="env-text">[ The process is clear now. You toggle: 0101, then 1001. The terminal chirps and ejects a fuse. ]</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"Binary thinking. Old resistance trick."</p>
+    `,
+    onEnter: function() {
+      addItem('FUSE');
+      notify('echo', '+ FUSE acquired from terminal');
+    },
+    choices: [
+      { text: 'Take the fuse to the wiring ladder', next: 'ladder_fix' }
+    ]
+  },
+
+  ladder_broken: {
+    location: 'WIRING LADDER',
+    text: `
+      <p>The ladder is sparking — wiring completely fried. Without a fuse and tools to fix it, climbing means electrocution. Even in a simulation, that will reset you to the start of the loop.</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"You need a fuse and your wire cutters. Get the fuse from the terminal first."</p>
+    `,
+    choices: [
+      { text: 'Go back to the terminal', next: 'terminal' }
+    ]
+  },
+
+  ladder_fix: {
+    location: 'WIRING LADDER',
+    text: `
+      <p>Wire cutters. Fuse. You work quickly — cutting the corroded section, inserting the fuse, resplicing the live wire. Your hands know this. Somewhere in your suppressed memory, you've done this a hundred times in the field.</p>
+      <p class="env-text">[ The sparking stops. The ladder hums with safe current. ]</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Now climb. The portal is just above — but avoid the sparks from the ceiling conduits. They're erratic."</p>
+      <p>You climb. A spark catches your shoulder — not pain exactly, but a <span class="warning">10% stability drain</span> as the simulation destabilises around the breach point. You keep moving.</p>
+    `,
+    onEnter: function() { changeStability(-10); },
+    choices: [
+      { text: 'Reach the glitch portal', next: 'portal' }
+    ]
+  },
+
+  portal: {
+    location: 'GLITCH PORTAL · SUBWAY TERMINUS',
+    text: `
+      <p class="env-text">[ The portal is a vertical tear in the simulation — a door-shaped wound in reality, showing not darkness beyond but a swirling vortex of corrupted data. Five orbs orbit it slowly, pulsing with colour. ]</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Final challenge. Activate the five orbs in the correct order based on the memory timeline you've been recovering. Childhood → Drought → Training → Uprising → Capture. Get the sequence wrong and the portal destabilises — you have thirty seconds."</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"One more puzzle and I'm punching a hole straight to reality."</p>
+      <p class="line-nexus"><span class="speaker">NEXUS</span>"Breach point identified. Dispatching enforcement units."</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"They're coming. Activate the portal <em>NOW</em>!"</p>
+    `,
+    choices: [
+      { text: '[ FINAL PUZZLE ] Activate the portal orbs in sequence', next: 'portal_solved', puzzle: 'orbs' }
+    ]
+  },
+
+  portal_solved: {
+    location: 'BREACH POINT · LAYER 1 → LAYER 2',
+    text: `
+      <p class="env-text">[ Five orbs ignite in sequence — white, blue, gold, red, violet. The portal tears open. Wind screams through the breach. The simulation begins to unravel at the edges — tiles falling off reality like paint blistering in heat. ]</p>
+      <p class="line-echo"><span class="speaker">ECHO</span>"Layer breach initiated. You did it, partner."</p>
+      <p class="line-elara"><span class="speaker">ELARA</span>"This isn't over. Next stop: whatever nightmare is below."</p>
+      <p>You step into the vortex. The subway — NeoTokyo — Loop 2,847 — dissolves behind you like smoke in rain.</p>
+      <p class="memory" style="text-align:center; padding:20px; font-size:16px; letter-spacing:2px;">[ CHAPTER 1 COMPLETE ]<br><br>You have escaped DreamLock Layer 1.<br>Ahead: the Orbital Station. Deeper instability. Real danger.<br><br><em>Elara Voss is awake.</em> </p>
+    `,
+    onEnter: function() {
+      setTimeout(() => showEnd('good'), 3000);
+    },
+    choices: []
+  }
+};
+
+// ============================================================
+//  PUZZLE DEFINITIONS
+// ============================================================
+const puzzles = {
+
+  waveform: {
+    title: 'STABILIZE SYSTEM',
+    targets: [65, 40, 80],
+    render(box) {
+      const labels = ['CH 1','CH 2','CH 3'];
+      const startVals = [10, 90, 20]; // deliberately wrong starting values
+
+      const clueRows = this.targets.map((t,i) =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(0,245,255,0.08);">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--magenta);letter-spacing:2px;">${labels[i]}</span>
+          <span style="font-family:'Orbitron',monospace;font-size:15px;color:#fff;letter-spacing:2px;">TARGET: <span style="color:var(--cyan);">${t}</span></span>
+        </div>`
+      ).join('');
+
+      const sliderRows = this.targets.map((t,i) => `
+        <div class="wave-row" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px;border:1px solid rgba(0,245,255,0.15);border-radius:6px;background:rgba(0,10,25,0.6);" id="wrow${i}">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="wave-label" style="font-size:13px;letter-spacing:2px;">${labels[i]}</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(176,212,232,0.5);">TARGET <span style="color:var(--cyan);font-weight:bold;">${t}</span></span>
+              <span style="font-family:'Orbitron',monospace;font-size:16px;font-weight:bold;" id="wval${i}">${startVals[i]}</span>
+            </div>
+          </div>
+          <div style="position:relative;height:28px;display:flex;align-items:center;gap:8px;">
+            <input type="range" class="wave-slider" id="ws${i}" min="0" max="100" value="${startVals[i]}"
+              oninput="updateWaveSlider(${i},${t})"
+              style="flex:1;">
+            <div id="wbar${i}" style="width:10px;height:10px;border-radius:50%;background:var(--glitch);box-shadow:0 0 8px var(--glitch);transition:background 0.2s,box-shadow 0.2s;flex-shrink:0;"></div>
+          </div>
+          <div style="height:4px;border-radius:2px;background:rgba(255,255,255,0.06);overflow:hidden;">
+            <div id="wtrack${i}" style="height:100%;width:${startVals[i]}%;background:var(--glitch);transition:width 0.05s,background 0.2s;"></div>
+          </div>
+        </div>`
+      ).join('');
+
+      box.innerHTML = `
+        <div class="puzzle-title">◈ COFFEE MAKER — RHYTHM ALIGNMENT</div>
+        <div style="background:rgba(255,170,0,0.06);border:1px solid rgba(255,170,0,0.25);border-radius:5px;padding:12px 14px;margin-bottom:16px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#ffaa00;margin-bottom:8px;">⚠ ECHO HINT — GLITCHED DISPLAY READINGS:</div>
+          ${clueRows}
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,170,0,0.5);margin-top:8px;letter-spacing:1px;">Drag each channel slider to match its target value exactly. Dot turns <span style="color:var(--cyan);">CYAN</span> when locked in.</div>
+        </div>
+        <div class="sliders" style="gap:10px;">${sliderRows}</div>
+        <div class="puzzle-feedback" id="pf" style="margin-top:12px;"></div>
+        <button class="puzzle-btn" style="margin-top:12px;" onclick="checkWaveform()">▶ STABILIZE</button>`;
+    },
+    check() {
+      const vals = [0,1,2].map(i => parseInt(document.getElementById('ws'+i).value));
+      return this.targets.every((t,i) => Math.abs(vals[i]-t) <= 4);
+    }
+  },
+
+  codelock: {
+    title: 'CODE LOCK',
+    answer: [4, 7, 2],
+    digits: [0, 0, 0],
+    render(box) {
+      this.digits = [0, 0, 0];
+      const rows = this.digits.map((_,i) => `
+        <div class="digit-box">
+          <button class="digit-up" onclick="digitChange(${i},1)">▲</button>
+          <div class="digit-val" id="dv${i}">0</div>
+          <button class="digit-down" onclick="digitChange(${i},-1)">▼</button>
+        </div>`).join('');
+      box.innerHTML = `
+        <div class="puzzle-title">◈ CHEST COMBINATION LOCK</div>
+
+        <div style="background:rgba(68,170,255,0.07);border:1px solid rgba(68,170,255,0.3);border-radius:6px;padding:14px 16px;margin-bottom:18px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--echo);margin-bottom:10px;">💬 ECHO SAYS:</div>
+          <div style="font-size:14px;color:#c8dde8;line-height:1.7;margin-bottom:10px;">"I scanned the photo frames while you weren't looking. Each frame had a number scratched into it."</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:12px;line-height:2;border-top:1px solid rgba(68,170,255,0.15);padding-top:10px;">
+            <div>📷 <span style="color:rgba(176,212,232,0.5);">FRAME 1 — Beach photo</span> &nbsp;→&nbsp; <span style="color:#fff;font-size:16px;font-weight:bold;">4</span></div>
+            <div>📷 <span style="color:rgba(176,212,232,0.5);">FRAME 2 — Group photo</span> &nbsp;→&nbsp; <span style="color:#fff;font-size:16px;font-weight:bold;">7</span></div>
+            <div>📷 <span style="color:rgba(176,212,232,0.5);">FRAME 3 — City photo</span> &nbsp;&nbsp;→&nbsp; <span style="color:#fff;font-size:16px;font-weight:bold;">2</span></div>
+          </div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(68,170,255,0.5);margin-top:8px;">▲▼ Spin each digit wheel to set the 3-digit code, then hit UNLOCK.</div>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:center;margin-bottom:18px;">${rows}</div>
+        <div class="puzzle-feedback" id="pf"></div>
+        <button class="puzzle-btn" onclick="checkCodelock()">🔓 UNLOCK</button>`;
+    },
+    check() {
+      return this.answer.every((a,i) => this.digits[i] === a);
+    }
+  },
+
+  circuit: {
+    title: 'CIRCUIT FLOW',
+    // Fixed solvable grid — player must click tiles 2,6,9 to rotate them into correct orientation
+    // Solution path: s(0)→h(1)→br(2)→v(6)→tl(9)→h(10)→e(11) — only 3 blank tiles need rotating
+    grid:     ['s', 'h', '.', 'x',   '.', 'x', '.', 'x',   '.', '.', 'h', 'e'],
+    solution: ['s', 'h', 'br','x',   'x', 'x', 'v', 'x',   'x', 'tl','h', 'e'],
+    // which indices the player needs to click (and what they should become)
+    targets:  { 2:'br', 6:'v', 9:'tl' },
+    clicks: {},
+    render(box) {
+      this.clicks = {};
+      // 3x4 grid layout, simpler
+      const icons = { 's':'⚡','e':'🔓','h':'─','v':'│','tl':'┘','tr':'└','bl':'┐','br':'┌','x':'✕','.':'·' };
+      const hints = { 2:'needs a corner ┌', 6:'needs vertical │', 9:'needs a corner ┘' };
+      const tiles = this.grid.map((t,i) => {
+        const isTarget = this.targets.hasOwnProperty(i);
+        const isGlitch = t==='x';
+        const isFixed  = (t==='s'||t==='e'||t==='h');
+        let cls = 'pipe-tile';
+        if (isGlitch) cls += ' glitch-node';
+        else if (isFixed) cls += ' connected';
+        else if (isTarget) cls += ' active';
+        const tooltip = isTarget ? ` title="${hints[i]}"` : '';
+        return `<div class="${cls}" id="pt${i}" onclick="rotateTile(${i})" data-type="${t}"${tooltip}>${icons[t]||'·'}</div>`;
+      }).join('');
+
+      box.innerHTML = `
+        <div class="puzzle-title">◈ DOOR LOCK — CIRCUIT FLOW</div>
+
+        <div style="background:rgba(68,170,255,0.07);border:1px solid rgba(68,170,255,0.3);border-radius:6px;padding:14px 16px;margin-bottom:16px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--echo);margin-bottom:8px;">💬 ECHO SAYS:</div>
+          <div style="font-size:14px;color:#c8dde8;line-height:1.7;margin-bottom:8px;">"Connect power from ⚡ to 🔓 by rotating the <strong style='color:var(--cyan)'>3 highlighted tiles</strong>. The glowing blue tiles need fixing — click them to rotate until the path flows through."</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.8;border-top:1px solid rgba(68,170,255,0.15);padding-top:8px;color:rgba(176,212,232,0.7);">
+            ⚡ = Power source &nbsp;|&nbsp; 🔓 = Door lock<br>
+            ✕ = Glitch node — <span style="color:var(--glitch);">avoid these</span><br>
+            <span style="color:var(--cyan);">Blue tiles</span> = rotate these 3 to complete the circuit
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px;">${tiles}</div>
+        <div class="puzzle-feedback" id="pf"></div>
+        <button class="puzzle-btn" onclick="checkCircuit()">⚡ CONNECT POWER</button>`;
+    },
+    check() {
+      return Object.entries(this.targets).every(([i,val]) => this.clicks[i] === val);
+    }
+  },
+
+  orbs: {
+    title: 'PORTAL SEQUENCE',
+    order: ['CHILDHOOD', 'DROUGHT', 'TRAINING', 'UPRISING', 'CAPTURE'],
+    colors: ['#ffffff','#44aaff','#ffdd44','#ff5555','#aa66ff'],
+    clicked: [],
+    render(box) {
+      this.clicked = [];
+      const shuffle = [...this.order].sort(()=>Math.random()-0.5);
+      const orbs = shuffle.map(label => {
+        const idx = this.order.indexOf(label);
+        const col = this.colors[idx];
+        return `<button onclick="clickOrb('${label}',this)"
+          id="orb_${label}"
+          style="background:rgba(0,0,0,0.3);border:2px solid ${col};color:${col};
+                 border-radius:50%;width:90px;height:90px;cursor:pointer;
+                 font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;
+                 transition:all 0.25s;text-transform:uppercase;padding:4px;
+                 box-shadow:0 0 12px ${col}44;">
+          <div style="font-size:18px;margin-bottom:2px;">${['🌱','💧','⚔️','🔥','⛓️'][idx]}</div>
+          ${label}
+        </button>`;
+      }).join('');
+
+      box.innerHTML = `
+        <div class="puzzle-title">◈ GLITCH PORTAL — MEMORY SEQUENCE</div>
+
+        <div style="background:rgba(170,102,255,0.07);border:1px solid rgba(170,102,255,0.3);border-radius:6px;padding:14px 16px;margin-bottom:16px;">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#aa66ff;margin-bottom:8px;">💬 ECHO SAYS:</div>
+          <div style="font-size:14px;color:#c8dde8;line-height:1.7;margin-bottom:10px;">"The portal needs your life story to open — in the <strong style='color:#aa66ff;'>order it actually happened</strong>. Tap the orbs from earliest to latest memory."</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;line-height:2;border-top:1px solid rgba(170,102,255,0.15);padding-top:10px;">
+            <div>1️⃣ <span style="color:#ffffff;">CHILDHOOD</span> — Before everything changed</div>
+            <div>2️⃣ <span style="color:#44aaff;">DROUGHT</span> — When the rains stopped coming</div>
+            <div>3️⃣ <span style="color:#ffdd44;">TRAINING</span> — Joining the resistance</div>
+            <div>4️⃣ <span style="color:#ff5555;">UPRISING</span> — The battle against NEXUS</div>
+            <div>5️⃣ <span style="color:#aa66ff;">CAPTURE</span> — The moment the dream began</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:16px;">${orbs}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(176,212,232,0.4);text-align:center;margin-bottom:12px;" id="orb-progress">Progress: 0 / 5 activated</div>
+        <div class="puzzle-feedback" id="pf"></div>`;
+    },
+    check() { return false; }
+  }
+};
+
+// ============================================================
+//  PUZZLE FUNCTIONS
+// ============================================================
+let currentPuzzleKey = null;
+let currentPuzzleNext = null;
+
+function openPuzzle(key, nextPassage) {
+  currentPuzzleKey = key;
+  currentPuzzleNext = nextPassage;
+  const pz = puzzles[key];
+  const box = document.getElementById('puzzle-box');
+  pz.render(box);
+  document.getElementById('puzzle-overlay').classList.add('active');
+}
+
+function closePuzzle(success) {
+  document.getElementById('puzzle-overlay').classList.remove('active');
+  if (success && currentPuzzleNext) {
+    goTo(currentPuzzleNext);
+  }
+}
+
+function updateWaveSlider(idx, target) {
+  const val = parseInt(document.getElementById('ws'+idx).value);
+  const valEl = document.getElementById('wval'+idx);
+  const barEl = document.getElementById('wbar'+idx);
+  const trackEl = document.getElementById('wtrack'+idx);
+  const rowEl = document.getElementById('wrow'+idx);
+  if (!valEl) return;
+
+  valEl.textContent = val;
+  trackEl.style.width = val + '%';
+
+  const diff = Math.abs(val - target);
+  if (diff <= 4) {
+    valEl.style.color = 'var(--cyan)';
+    barEl.style.background = 'var(--cyan)';
+    barEl.style.boxShadow = '0 0 12px var(--cyan)';
+    trackEl.style.background = 'var(--cyan)';
+    rowEl.style.borderColor = 'rgba(0,245,255,0.5)';
+    rowEl.style.background = 'rgba(0,245,255,0.06)';
+  } else if (diff <= 8) {
+    valEl.style.color = '#ffdd00';
+    barEl.style.background = '#ffdd00';
+    barEl.style.boxShadow = '0 0 8px #ffdd00';
+    trackEl.style.background = '#ffdd00';
+    rowEl.style.borderColor = 'rgba(255,220,0,0.3)';
+    rowEl.style.background = 'rgba(0,10,25,0.6)';
+  } else if (diff <= 18) {
+    valEl.style.color = '#ff8800';
+    barEl.style.background = '#ff8800';
+    barEl.style.boxShadow = '0 0 8px #ff8800';
+    trackEl.style.background = '#ff8800';
+    rowEl.style.borderColor = 'rgba(255,136,0,0.25)';
+    rowEl.style.background = 'rgba(0,10,25,0.6)';
+  } else {
+    valEl.style.color = 'var(--glitch)';
+    barEl.style.background = 'var(--glitch)';
+    barEl.style.boxShadow = '0 0 8px var(--glitch)';
+    trackEl.style.background = 'var(--glitch)';
+    rowEl.style.borderColor = 'rgba(255,0,85,0.2)';
+    rowEl.style.background = 'rgba(0,10,25,0.6)';
+  }
+}
+
+function checkWaveform() {
+  const pz = puzzles.waveform;
+  if (pz.check()) {
+    showPF('success', '✓ ALL CHANNELS STABILIZED — SYSTEM ONLINE');
+    setTimeout(() => closePuzzle(true), 1000);
+  } else {
+    const vals = [0,1,2].map(i => parseInt(document.getElementById('ws'+i).value));
+    const bad = pz.targets.map((t,i) => Math.abs(vals[i]-t) > 4 ? 'CH '+(i+1) : null).filter(Boolean);
+    showPF('error', '✗ OUT OF SYNC: ' + bad.join(', ') + ' — keep adjusting');
+  }
+}
+
+function checkCodelock() {
+  const pz = puzzles.codelock;
+  if (pz.check()) {
+    showPF('success', '✓ COMBINATION ACCEPTED — CHEST UNLOCKED');
+    setTimeout(() => closePuzzle(true), 1000);
+  } else {
+    // tell player which digits are wrong
+    const hints = pz.answer.map((a,i) => {
+      const d = pz.digits[i];
+      if (d === a) return `Digit ${i+1}: ✓`;
+      return `Digit ${i+1}: ${d < a ? '▲ too low' : '▼ too high'}`;
+    });
+    showPF('error', '✗ WRONG CODE  —  ' + hints.join('  |  '));
+  }
+}
+
+function digitChange(idx, dir) {
+  const pz = puzzles.codelock;
+  pz.digits[idx] = (pz.digits[idx] + dir + 10) % 10;
+  document.getElementById('dv'+idx).textContent = pz.digits[idx];
+}
+
+// cycle order for each target tile
+const cycleMap = { '.':'br', 'br':'v', 'v':'tl', 'tl':'.' };
+const tileIcon = {'s':'⚡','e':'🔓','h':'─','v':'│','tl':'┘','tr':'└','bl':'┐','br':'┌','x':'✕','.':'·'};
+
+function rotateTile(idx) {
+  const pz = puzzles.circuit;
+  const el = document.getElementById('pt'+idx);
+  const type = el.dataset.type;
+  if (type === 'x' || type === 's' || type === 'e' || type === 'h') return;
+  // only allow clicking target tiles
+  if (!pz.targets.hasOwnProperty(idx)) return;
+
+  const next = cycleMap[type] || '.';
+  el.dataset.type = next;
+  el.textContent = tileIcon[next] || '·';
+  pz.clicks[idx] = next;
+
+  // visual feedback — highlight if correct
+  const correct = next === pz.targets[idx];
+  el.style.color = correct ? 'var(--cyan)' : '#ff8800';
+  el.style.borderColor = correct ? 'rgba(0,245,255,0.7)' : 'rgba(255,136,0,0.5)';
+  el.style.background = correct ? 'rgba(0,245,255,0.1)' : 'rgba(255,136,0,0.05)';
+  if (correct) el.style.textShadow = '0 0 10px var(--cyan)';
+
+  // auto-check and show running status
+  const solved = Object.entries(pz.targets).filter(([i,v]) => pz.clicks[i] === v).length;
+  const total = Object.keys(pz.targets).length;
+  if (solved === total) {
+    showPF('success', '✓ CIRCUIT COMPLETE — POWER FLOWING!');
+  } else {
+    showPF('', '');
+    const pf = document.getElementById('pf');
+    if (pf) { pf.className='puzzle-feedback'; }
+  }
+}
+
+function checkCircuit() {
+  if (puzzles.circuit.check()) {
+    showPF('success', '✓ POWER CONNECTED — DOOR UNLOCKED');
+    setTimeout(() => closePuzzle(true), 1000);
+  } else {
+    const pz = puzzles.circuit;
+    const remaining = Object.keys(pz.targets).filter(i => pz.clicks[i] !== pz.targets[i]).length;
+    showPF('error', `✗ ${remaining} tile(s) still wrong — keep rotating the blue tiles`);
+  }
+}
+
+function clickOrb(label, btn) {
+  const pz = puzzles.orbs;
+  const expected = pz.order[pz.clicked.length];
+
+  if (label !== expected) {
+    // wrong — flash red, small penalty, but DON'T reset so player can try again
+    btn.style.animation = 'none';
+    btn.style.borderColor = 'var(--glitch)';
+    btn.style.color = 'var(--glitch)';
+    showPF('error', `✗ Not next — check Echo's hint list above for the correct order!`);
+    changeStability(-5);
+    setTimeout(() => {
+      // restore original color
+      const idx = pz.order.indexOf(label);
+      btn.style.borderColor = pz.colors[idx];
+      btn.style.color = pz.colors[idx];
+      document.getElementById('pf').className = 'puzzle-feedback';
+    }, 900);
+    return;
+  }
+
+  // correct
+  pz.clicked.push(label);
+  btn.style.opacity = '0.35';
+  btn.style.transform = 'scale(0.9)';
+  btn.disabled = true;
+  btn.style.background = 'rgba(0,245,255,0.08)';
+  btn.style.borderStyle = 'dashed';
+
+  const prog = document.getElementById('orb-progress');
+  if (prog) prog.textContent = `Progress: ${pz.clicked.length} / 5 activated ✓`;
+
+  if (pz.clicked.length === pz.order.length) {
+    showPF('success', '✓ ALL MEMORIES ALIGNED — PORTAL OPENING!');
+    setTimeout(() => closePuzzle(true), 1200);
+  } else {
+    const nextLabel = pz.order[pz.clicked.length];
+    showPF('success', `✓ ${label} locked in! Next: ${nextLabel}`);
+    setTimeout(() => { document.getElementById('pf').className = 'puzzle-feedback'; }, 1200);
+  }
+}
+
+function showPF(type, msg) {
+  const el = document.getElementById('pf');
+  if (el) { el.className = 'puzzle-feedback ' + type; el.textContent = msg; }
+}
+
+// ============================================================
+//  CORE ENGINE
+// ============================================================
+function goTo(passageKey) {
+  const p = passages[passageKey];
+  if (!p) { console.error('Unknown passage:', passageKey); return; }
+
+  // transition flash
+  const tr = document.getElementById('transition-overlay');
+  tr.classList.add('active');
+  setTimeout(() => {
+    state.passage = passageKey;
+
+    // onEnter hook
+    if (p.onEnter) p.onEnter();
+
+    // stability from choice
+    // (handled in choice click)
+
+    // render passage
+    renderPassage(p);
+    tr.classList.remove('active');
+  }, 300);
+}
+
+function renderPassage(p) {
+  // location
+  document.getElementById('location-tag').textContent = p.location || '';
+  document.getElementById('stat-location').textContent = (p.location || '').split('·')[0].trim();
+
+  // text
+  const pt = document.getElementById('passage-text');
+  pt.innerHTML = p.text;
+  pt.classList.remove('typing');
+  void pt.offsetWidth;
+  pt.classList.add('typing');
+
+  // choices
+  const choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+
+  if (!p.choices || p.choices.length === 0) return;
+
+  p.choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    if (c.next && c.next.includes('puzzle')) btn.className += ' echo-choice';
+    if (c.stability && c.stability < 0) btn.className += ' danger';
+    btn.textContent = c.text;
+    btn.onclick = () => handleChoice(c);
+    choicesEl.appendChild(btn);
+  });
+
+  // end screen
+  document.getElementById('end-screen').classList.remove('visible');
+}
+
+function handleChoice(c) {
+  if (c.flag) state.flags[c.flag] = true;
+  if (c.stability) changeStability(c.stability);
+
+  // check if passage has a puzzle trigger
+  const target = passages[c.next];
+  if (target && c.puzzle) {
+    // First go to the passage, then open puzzle
+    const prevNext = c.next;
+    goTo(c.next === 'puzzle_coffee' ? 'kitchen_glitch' :
+         c.next === 'puzzle_codelock' ? 'chest_locked' :
+         c.next === 'puzzle_circuit' ? 'puzzle_codelock' :
+         c.next === 'portal_solved' ? 'portal' : c.next);
+    setTimeout(() => openPuzzle(c.puzzle, c.next), 800);
+  } else {
+    goTo(c.next);
+  }
+}
+
+// ============================================================
+//  STABILITY
+// ============================================================
+function changeStability(delta) {
+  state.stability = Math.max(0, Math.min(100, state.stability + delta));
+  const fill = document.getElementById('stability-fill');
+  const pct = state.stability + '%';
+  fill.style.width = pct;
+  document.getElementById('stat-stability').textContent = pct;
+
+  fill.className = 'stab-high';
+  if (state.stability < 60) fill.className = 'stab-mid';
+  if (state.stability < 30) fill.className = 'stab-low';
+
+  if (delta < 0) {
+    document.getElementById('passage-wrap').classList.add('glitch-flash');
+    setTimeout(() => document.getElementById('passage-wrap').classList.remove('glitch-flash'), 300);
+    if (state.stability < 30) notify('warn', 'STABILITY CRITICAL — NEXUS PATCH IMMINENT');
+  }
+
+  if (state.stability <= 0) {
+    setTimeout(() => showEnd('bad'), 500);
+  }
+}
+
+// ============================================================
+//  INVENTORY
+// ============================================================
+function addItem(name) {
+  if (!state.inventory.includes(name)) {
+    state.inventory.push(name);
+    renderInventory();
+  }
+}
+
+function renderInventory() {
+  const el = document.getElementById('inventory-items');
+  el.innerHTML = state.inventory.map(i => `<span class="inv-item">${i}</span>`).join('');
+}
+
+// ============================================================
+//  NOTIFICATIONS
+// ============================================================
+function notify(type, msg) {
+  const notif = document.getElementById('notif');
+  const div = document.createElement('div');
+  div.className = 'notif-msg ' + (type === 'echo' ? 'echo-notif' : type === 'warn' ? 'warn-notif' : '');
+  div.textContent = msg;
+  notif.appendChild(div);
+  setTimeout(() => div.remove(), 3100);
+}
+
+// ============================================================
+//  END SCREENS
+// ============================================================
+function showEnd(type) {
+  document.getElementById('choices').innerHTML = '';
+  const endEl = document.getElementById('end-screen');
+  endEl.classList.add('visible');
+
+  if (type === 'good') {
+    document.getElementById('end-title').innerHTML = '<span style="color:var(--cyan)">LAYER BREACH COMPLETE</span>';
+    document.getElementById('end-body').innerHTML = `
+      <p>Elara Voss steps through the portal. The simulated city of NeoTokyo dissolves behind her — seven years of looping, of false mornings, of recycled coffee that tasted like plastic, all of it finally, irreversibly <em>gone</em>.</p>
+      <p style="margin-top:14px; color:var(--echo);">Echo's voice comes from somewhere close: <em>"Layer breach initiated. You did it, partner."</em></p>
+      <p style="margin-top:14px; color:var(--cyan); font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:2px;">CHAPTER 1 COMPLETE<br>NEXT: THE ORBITAL STATION — DREAMLOCK LAYER 2</p>`;
+  } else {
+    document.getElementById('end-title').innerHTML = '<span style="color:var(--glitch)">CONTAINMENT SUCCESSFUL</span>';
+    document.getElementById('end-body').innerHTML = `
+      <p>Stability collapsed. The simulation reasserted itself. Elara Voss — subject #2847-E — has been returned to her assigned dream.</p>
+      <p style="margin-top:14px; color:#ff4444; font-family:'Share Tech Mono',monospace; font-size:13px; letter-spacing:2px;">LOOP COUNT: ${2848}<br>NEXUS STABILITY: RESTORED<br>RESISTANCE: INEFFICIENT.</p>`;
+  }
+}
+
+// ============================================================
+//  GAME INIT
+// ============================================================
+function startGame() {
+  const ts = document.getElementById('title-screen');
+  ts.style.opacity = '1';
+  ts.style.transition = 'opacity 0.6s ease';
+  ts.style.opacity = '0';
+  setTimeout(() => { ts.style.display = 'none'; }, 600);
+  goTo('start');
+}
+
+function restartGame() {
+  state.passage = 'start';
+  state.stability = 100;
+  state.inventory = [];
+  state.flags = {};
+  state.puzzlesSolved = [];
+  renderInventory();
+  changeStability(0); // reset bar
+  document.getElementById('stability-fill').style.width = '100%';
+  document.getElementById('stat-stability').textContent = '100%';
+  document.getElementById('end-screen').classList.remove('visible');
+  rotateClicks = 0;
+  goTo('start');
+}
+</script>
+</body>
+</html>
