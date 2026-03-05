@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🦁 Mini Math Zoo — Count & Care!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ROOT & RESET
+============================================================ */
+:root {
+  --jungle:   #4CAF50;
+  --jungle-d: #2E7D32;
+  --jungle-l: #C8E6C9;
+  --yellow:   #FFD54F;
+  --yellow-d: #F57F17;
+  --sky:      #64B5F6;
+  --sky-d:    #1565C0;
+  --coral:    #FF8A65;
+  --coral-d:  #BF360C;
+  --cream:    #FFF8E1;
+  --brown:    #6D4C41;
+  --brown-l:  #A1887F;
+  --wood:     #8D6E63;
+  --orange:   #FF6F00;
+
+  --tiger-bg:   linear-gradient(160deg,#FF8F00,#FFA726);
+  --elephant-bg:linear-gradient(160deg,#5C7A8C,#78909C);
+  --monkey-bg:  linear-gradient(160deg,#6D4C41,#8D6E63);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  overflow:hidden;
+  font-family:'Nunito', sans-serif;
+  background:#1a6b1a;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  touch-action:none;
+}
+
+/* ============================================================
+   SCREEN SYSTEM
+============================================================ */
+.screen {
+  position:fixed; inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  overflow:hidden;
+}
+.screen.active { display:flex; }
+
+/* ============================================================
+   LUSH BACKGROUND LAYERS  (sky + hills + ground)
+============================================================ */
+.world-bg {
+  position:absolute; inset:0; z-index:0;
+  background:linear-gradient(180deg,
+    #87CEEB 0%, #9FD9F5 35%,
+    #AEE57A 60%, #7EC850 75%, #5a9e2a 100%);
+}
+
+/* Animated sun */
+.sun {
+  position:absolute; top:18px; right:14%;
+  width:60px; height:60px;
+  background:radial-gradient(circle,#FFE082 40%,#FFD54F 70%,transparent 100%);
+  border-radius:50%;
+  box-shadow:0 0 0 10px rgba(255,213,79,0.3), 0 0 0 22px rgba(255,213,79,0.12);
+  animation:sunPulse 4s ease-in-out infinite;
+  z-index:1;
+}
+@keyframes sunPulse {
+  0%,100%{box-shadow:0 0 0 10px rgba(255,213,79,0.3),0 0 0 22px rgba(255,213,79,0.12);}
+  50%{box-shadow:0 0 0 16px rgba(255,213,79,0.4),0 0 0 34px rgba(255,213,79,0.15);}
+}
+
+/* Clouds */
+.cloud {
+  position:absolute; z-index:1;
+  background:white; border-radius:50px;
+  opacity:0.9;
+  animation:cloudDrift linear infinite;
+}
+.cloud::before,.cloud::after{
+  content:''; position:absolute;
+  background:white; border-radius:50%;
+}
+@keyframes cloudDrift {
+  0%{transform:translateX(-250px);}
+  100%{transform:translateX(calc(100vw + 250px));}
+}
+
+/* Hills */
+.hill {
+  position:absolute; border-radius:50% 50% 0 0;
+  z-index:1;
+}
+
+/* Trees */
+.tree {
+  position:absolute; z-index:2;
+  display:flex; flex-direction:column; align-items:center;
+}
+.tree-top {
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#5DBB3E,#2E7D32);
+}
+.tree-trunk {
+  background:linear-gradient(180deg,#795548,#5D4037);
+  border-radius:0 0 4px 4px;
+}
+
+/* Ground strip */
+.ground-strip {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(180deg,#7EC850 0%,#4a8a1a 60%,#2d5a0f 100%);
+  z-index:2;
+  border-radius:60% 60% 0 0 / 20px 20px 0 0;
+}
+.ground-strip::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:12px;
+  background:radial-gradient(ellipse at 50% 0%,#9AE04A,transparent);
+  border-radius:50%;
+}
+
+/* ============================================================
+   TOP HUD
+============================================================ */
+.hud {
+  position:relative; z-index:30;
+  width:100%; max-width:480px;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px 0;
+}
+.hud-badge {
+  background:var(--brown);
+  color:white;
+  border-radius:50%;
+  width:46px; height:46px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.3);
+  flex-shrink:0;
+}
+.hud-info { flex:1; }
+.hud-title {
+  font-family:'Fredoka One', cursive;
+  font-size:13px; color:white;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.3);
+  letter-spacing:0.5px;
+}
+.hud-step {
+  font-family:'Fredoka One', cursive;
+  font-size:18px; color:var(--yellow);
+  text-shadow:1px 2px 0 rgba(0,0,0,0.4);
+  line-height:1.1;
+}
+.hud-stars { display:flex; gap:3px; }
+.hud-star {
+  font-size:20px;
+  filter:grayscale(1) opacity(0.4);
+  transition:filter 0.4s, transform 0.3s;
+}
+.hud-star.lit {
+  filter:none;
+  transform:scale(1.2);
+  animation:starPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes starPop {
+  0%{transform:scale(0)rotate(-30deg);}
+  100%{transform:scale(1.2);}
+}
+
+/* ============================================================
+   PIP GUIDE PANEL
+============================================================ */
+.pip-panel {
+  position:relative; z-index:30;
+  display:flex; align-items:flex-end; gap:8px;
+  width:100%; max-width:480px;
+  padding:6px 14px;
+}
+.pip-sprite {
+  font-size:46px;
+  flex-shrink:0;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+  transition:transform 0.3s;
+}
+.pip-sprite.happy { animation:pipJoy 0.6s ease; }
+.pip-sprite.thinking { animation:pipThink 1s ease-in-out infinite; }
+.pip-sprite.worried { animation:pipWorry 0.4s ease; }
+@keyframes pipJoy    { 0%{transform:scale(1)}50%{transform:scale(1.3)rotate(10deg)}100%{transform:scale(1)} }
+@keyframes pipThink  { 0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)} }
+@keyframes pipWorry  { 0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)} }
+
+.pip-bubble {
+  position:relative;
+  background:white;
+  border-radius:18px 18px 18px 5px;
+  padding:10px 14px;
+  font-size:14px; font-weight:800; color:#333; line-height:1.45;
+  box-shadow:0 4px 16px rgba(0,0,0,0.18);
+  max-width:260px;
+  transition:opacity 0.25s;
+}
+.pip-bubble::before {
+  content:'';
+  position:absolute; left:-9px; bottom:12px;
+  border:9px solid transparent;
+  border-right-color:white; border-left:0;
+}
+
+/* ============================================================
+   TITLE SCREEN
+============================================================ */
+#title-screen { justify-content:center; }
+.title-card {
+  position:relative; z-index:20;
+  background:var(--cream);
+  border-radius:28px;
+  padding:24px 28px 28px;
+  margin:10px;
+  width:90%; max-width:360px;
+  box-shadow:
+    0 0 0 5px var(--wood),
+    0 0 0 9px var(--yellow),
+    0 12px 40px rgba(0,0,0,0.3);
+  text-align:center;
+  animation:cardReveal 0.7s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cardReveal {
+  0%{opacity:0;transform:scale(0.6)translateY(40px);}
+  100%{opacity:1;transform:scale(1)translateY(0);}
+}
+.title-zoo-tag {
+  display:inline-block;
+  background:var(--jungle);
+  color:white;
+  font-family:'Fredoka One',cursive;
+  font-size:13px; letter-spacing:3px;
+  padding:4px 16px; border-radius:20px;
+  margin-bottom:10px;
+  box-shadow:0 2px 8px rgba(76,175,80,0.4);
+}
+.title-main {
+  font-family:'Fredoka One',cursive;
+  font-size:54px; line-height:0.95;
+  color:var(--brown);
+  text-shadow:3px 3px 0 var(--yellow-d);
+  margin-bottom:2px;
+}
+.title-main em { color:var(--jungle-d); font-style:normal; }
+.title-sub {
+  font-family:'Fredoka One',cursive;
+  font-size:20px; color:var(--coral-d);
+  margin-bottom:16px;
+}
+.title-animals-row {
+  font-size:40px;
+  display:flex; justify-content:center; gap:6px;
+  margin-bottom:14px;
+}
+.title-animals-row span { display:inline-block; animation:animalFloat 2s ease-in-out infinite; }
+.title-animals-row span:nth-child(2) { animation-delay:0.3s; }
+.title-animals-row span:nth-child(3) { animation-delay:0.6s; }
+@keyframes animalFloat {
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+.pip-intro-box {
+  background:linear-gradient(135deg,#E8F5E9,#F1F8E9);
+  border-radius:14px; padding:12px 14px;
+  border:2px dashed var(--jungle);
+  margin-bottom:18px; text-align:left;
+}
+.pip-intro-row { display:flex; align-items:center; gap:10px; }
+.pip-intro-face { font-size:32px; }
+.pip-intro-text { font-size:13px; font-weight:800; color:#2E7D32; line-height:1.5; }
+.btn-play {
+  display:block; width:100%;
+  background:linear-gradient(135deg,var(--jungle),var(--jungle-d));
+  color:white; border:none;
+  border-radius:50px; padding:16px;
+  font-family:'Fredoka One',cursive;
+  font-size:26px; letter-spacing:1px;
+  cursor:pointer;
+  box-shadow:0 6px 0 var(--jungle-d), 0 8px 22px rgba(0,0,0,0.22);
+  transition:transform 0.1s, box-shadow 0.1s;
+}
+.btn-play:active { transform:translateY(5px); box-shadow:0 1px 0 var(--jungle-d); }
+
+/* ============================================================
+   SORT SCREEN
+============================================================ */
+#sort-screen { justify-content:flex-start; }
+.sort-layout {
+  position:relative; z-index:20;
+  flex:1;
+  width:100%; max-width:480px;
+  display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  padding:0 12px 8px;
+}
+
+/* Zoo Gate progress */
+.zoo-gate {
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(6px);
+  border-radius:16px; padding:8px 16px;
+  border:2px solid rgba(255,255,255,0.3);
+}
+.zoo-gate-label {
+  font-family:'Fredoka One',cursive;
+  font-size:11px; color:white;
+  letter-spacing:2px; text-transform:uppercase;
+}
+.zoo-gate-bar-wrap {
+  width:180px; height:14px;
+  background:rgba(0,0,0,0.2); border-radius:10px; overflow:hidden;
+}
+.zoo-gate-bar {
+  height:100%;
+  background:linear-gradient(90deg,var(--yellow),var(--coral));
+  border-radius:10px;
+  transition:width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.zoo-gate-text {
+  font-family:'Fredoka One',cursive;
+  font-size:11px; color:var(--yellow);
+}
+
+/* Habitats row */
+.habitats-wrap {
+  display:flex; gap:8px; width:100%;
+}
+.habitat-zone {
+  flex:1; min-height:115px;
+  border-radius:22px;
+  display:flex; flex-direction:column;
+  align-items:center; padding:8px 6px 6px;
+  position:relative;
+  border:3px dashed rgba(255,255,255,0.5);
+  transition:all 0.25s;
+  overflow:hidden;
+}
+.habitat-zone::before {
+  content:''; position:absolute; inset:0;
+  border-radius:20px;
+  opacity:0;
+  transition:opacity 0.25s;
+  pointer-events:none;
+}
+.habitat-zone.glow {
+  border-color:var(--yellow);
+  box-shadow:0 0 0 3px var(--yellow), 0 0 24px rgba(255,213,79,0.7);
+  animation:habitatPulse 0.9s ease-in-out infinite;
+}
+.habitat-zone.glow::before { opacity:1; background:rgba(255,213,79,0.12); }
+@keyframes habitatPulse {
+  0%,100%{box-shadow:0 0 0 3px var(--yellow),0 0 24px rgba(255,213,79,0.7);}
+  50%{box-shadow:0 0 0 5px var(--yellow),0 0 36px rgba(255,213,79,0.9);}
+}
+.habitat-name {
+  font-family:'Fredoka One',cursive;
+  font-size:11px; color:white;
+  text-shadow:1px 1px 0 rgba(0,0,0,0.35);
+  background:rgba(0,0,0,0.25);
+  border-radius:20px; padding:2px 10px;
+  margin-bottom:6px; white-space:nowrap;
+}
+.habitat-animals-grid {
+  display:flex; flex-wrap:wrap; gap:3px; justify-content:center;
+}
+.placed-animal {
+  font-size:24px;
+  animation:animalLand 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes animalLand {
+  0%{transform:scale(0)rotate(-20deg); opacity:0;}
+  80%{transform:scale(1.2);}
+  100%{transform:scale(1); opacity:1;}
+}
+#habitat-tigers   { background:var(--tiger-bg); }
+#habitat-elephants{ background:var(--elephant-bg); }
+#habitat-monkeys  { background:var(--monkey-bg); }
+
+/* Loose animals tray */
+.loose-tray {
+  width:100%;
+  background:rgba(255,255,255,0.22);
+  backdrop-filter:blur(8px);
+  border-radius:22px;
+  padding:14px 12px;
+  border:2px solid rgba(255,255,255,0.4);
+  box-shadow:0 4px 20px rgba(0,0,0,0.12);
+}
+.loose-tray-label {
+  font-family:'Fredoka One',cursive;
+  font-size:12px; color:white;
+  text-align:center; margin-bottom:10px;
+  letter-spacing:1px; text-shadow:1px 1px 0 rgba(0,0,0,0.2);
+}
+.loose-animals-grid {
+  display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+
+/* Draggable animal card */
+.animal-chip {
+  width:64px; height:64px;
+  background:white;
+  border-radius:18px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  font-size:28px;
+  cursor:grab;
+  touch-action:none;
+  box-shadow:0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.8);
+  transition:transform 0.12s, box-shadow 0.12s;
+  position:relative;
+}
+.animal-chip-label {
+  font-family:'Fredoka One',cursive;
+  font-size:9px; color:#777; margin-top:1px; line-height:1;
+}
+.animal-chip.picked {
+  transform:scale(1.25)rotate(-6deg);
+  box-shadow:0 12px 28px rgba(0,0,0,0.3);
+  cursor:grabbing; z-index:800;
+}
+.animal-chip.placed-out {
+  opacity:0.25; pointer-events:none;
+  transform:scale(0.88);
+}
+
+/* Ghost drag element */
+#drag-ghost {
+  position:fixed; z-index:9999;
+  font-size:46px;
+  pointer-events:none;
+  display:none;
+  transform:translate(-50%,-55%)scale(1.3)rotate(-8deg);
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,0.35));
+}
+
+/* ============================================================
+   COUNT SCREEN
+============================================================ */
+#count-screen { justify-content:flex-start; }
+.count-layout {
+  position:relative; z-index:20;
+  flex:1; width:100%; max-width:480px;
+  display:flex; flex-direction:column;
+  align-items:center; gap:8px;
+  padding:0 12px 10px;
+  overflow-y:auto;
+}
+
+.count-card {
+  width:100%;
+  background:white;
+  border-radius:22px;
+  padding:14px 14px 10px;
+  box-shadow:0 5px 18px rgba(0,0,0,0.15);
+}
+.count-card-header {
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:10px;
+}
+.count-card-icon {
+  width:40px; height:40px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+}
+.count-card-title {
+  font-family:'Fredoka One',cursive;
+  font-size:18px; color:var(--brown);
+}
+.count-card-hint {
+  font-size:11px; font-weight:700; color:var(--coral-d);
+}
+
+.animals-tap-row {
+  display:flex; flex-wrap:wrap; gap:8px;
+  justify-content:center; margin-bottom:10px;
+}
+.tap-animal {
+  width:55px; height:55px;
+  background:#FFF8E1;
+  border:3px solid #E0D0A0;
+  border-radius:15px;
+  font-size:26px;
+  cursor:pointer;
+  transition:all 0.15s;
+  display:flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.tap-animal.counted {
+  background:#E8F5E9;
+  border-color:var(--jungle);
+  box-shadow:0 0 0 3px rgba(76,175,80,0.25);
+  transform:scale(1.08);
+}
+.tap-check {
+  position:absolute; top:-7px; right:-7px;
+  background:var(--jungle); color:white;
+  border-radius:50%; width:20px; height:20px;
+  font-size:12px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+  animation:popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+  0%{transform:scale(0);} 80%{transform:scale(1.3);} 100%{transform:scale(1);}
+}
+
+.tally-track {
+  display:flex; gap:5px; flex-wrap:wrap;
+  justify-content:center; min-height:28px;
+  margin-bottom:6px;
+}
+.tally-block {
+  width:28px; height:28px;
+  background:var(--brown);
+  border-radius:8px; color:white;
+  font-family:'Fredoka One',cursive;
+  font-size:15px;
+  display:flex; align-items:center; justify-content:center;
+  animation:popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+.count-total {
+  font-family:'Fredoka One',cursive;
+  font-size:34px; color:var(--jungle-d);
+  text-align:center;
+  opacity:0; transition:opacity 0.5s;
+  display:flex; flex-direction:column; align-items:center;
+}
+.count-total small {
+  font-size:12px; color:var(--brown-l); font-family:'Nunito',sans-serif;
+  font-weight:700;
+}
+.count-total.revealed { opacity:1; }
+
+.btn-compare {
+  position:relative; z-index:30;
+  background:linear-gradient(135deg,var(--sky),var(--sky-d));
+  color:white; border:none;
+  border-radius:50px; padding:14px 44px;
+  font-family:'Fredoka One',cursive;
+  font-size:22px; letter-spacing:0.5px;
+  cursor:pointer;
+  box-shadow:0 5px 0 var(--sky-d), 0 8px 22px rgba(0,0,0,0.2);
+  transition:transform 0.1s, box-shadow 0.1s;
+  display:none; margin-top:4px;
+}
+.btn-compare.show { display:block; animation:slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+.btn-compare:active { transform:translateY(4px); box-shadow:0 1px 0 var(--sky-d); }
+@keyframes slideUp {
+  0%{transform:translateY(30px);opacity:0;}
+  100%{transform:translateY(0);opacity:1;}
+}
+
+/* ============================================================
+   COMPARE SCREEN
+============================================================ */
+#compare-screen { justify-content:flex-start; }
+.compare-layout {
+  position:relative; z-index:20;
+  flex:1; width:100%; max-width:480px;
+  display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  padding:0 12px 12px;
+}
+.compare-habitats {
+  display:flex; gap:10px; width:100%;
+}
+.compare-hab {
+  flex:1; background:white;
+  border-radius:22px; padding:14px 10px 10px;
+  box-shadow:0 5px 18px rgba(0,0,0,0.15);
+  text-align:center;
+  transition:all 0.3s;
+  border:3px solid transparent;
+}
+.compare-hab.winner {
+  border-color:var(--yellow);
+  box-shadow:0 5px 18px rgba(0,0,0,0.15), 0 0 0 3px var(--yellow), 0 0 30px rgba(255,213,79,0.5);
+  transform:scale(1.04);
+}
+.compare-hab.equal-glow {
+  border-color:var(--sky);
+  box-shadow:0 5px 18px rgba(0,0,0,0.15), 0 0 0 3px var(--sky), 0 0 30px rgba(100,181,246,0.5);
+  transform:scale(1.02);
+}
+.compare-hab-title {
+  font-family:'Fredoka One',cursive;
+  font-size:15px; color:var(--brown);
+  margin-bottom:8px;
+}
+.compare-animals-row {
+  display:flex; flex-wrap:wrap; gap:4px;
+  justify-content:center; min-height:36px;
+  margin-bottom:8px;
+}
+.compare-emoji { font-size:20px; }
+.compare-number {
+  font-family:'Fredoka One',cursive;
+  font-size:42px; color:var(--brown);
+  line-height:1;
+}
+
+.compare-question-wrap {
+  background:var(--brown);
+  border-radius:18px; padding:10px 20px;
+  position:relative; z-index:20;
+}
+.compare-question {
+  font-family:'Fredoka One',cursive;
+  font-size:17px; color:white;
+  text-align:center; line-height:1.4;
+}
+
+.compare-choices {
+  display:flex; flex-direction:column; gap:8px; width:100%;
+}
+.choice-btn {
+  display:flex; align-items:center; gap:12px;
+  background:white;
+  border:4px solid var(--jungle-l);
+  border-radius:18px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:all 0.15s;
+  box-shadow:0 3px 12px rgba(0,0,0,0.1);
+}
+.choice-btn:active { transform:scale(0.96); }
+.choice-icon { font-size:28px; flex-shrink:0; }
+.choice-label {
+  font-family:'Fredoka One',cursive;
+  font-size:18px; color:var(--brown);
+}
+.choice-btn.correct {
+  background:var(--jungle); border-color:var(--jungle-d);
+  animation:correctFlash 0.4s ease;
+}
+.choice-btn.correct .choice-label { color:white; }
+.choice-btn.wrong {
+  background:#FFEBEE; border-color:#EF9A9A;
+  animation:wrongShake 0.4s ease;
+}
+@keyframes correctFlash {
+  0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}
+}
+@keyframes wrongShake {
+  0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}
+}
+
+/* ============================================================
+   WIN SCREEN
+============================================================ */
+#win-screen { justify-content:center; }
+.win-card {
+  position:relative; z-index:20;
+  background:var(--cream);
+  border-radius:28px;
+  padding:24px 26px;
+  width:90%; max-width:360px;
+  text-align:center;
+  box-shadow:
+    0 0 0 5px var(--wood),
+    0 0 0 9px var(--yellow),
+    0 14px 40px rgba(0,0,0,0.3);
+  animation:cardReveal 0.7s cubic-bezier(0.34,1.56,0.64,1);
+}
+.win-medal { font-size:70px; animation:medalSpin 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes medalSpin {
+  0%{transform:scale(0)rotate(-180deg);} 100%{transform:scale(1)rotate(0);}
+}
+.win-title {
+  font-family:'Fredoka One',cursive;
+  font-size:36px; color:var(--brown);
+  text-shadow:2px 2px 0 var(--yellow);
+  margin:8px 0 4px;
+}
+.win-sub {
+  font-size:14px; font-weight:800; color:var(--jungle-d);
+  margin-bottom:14px; line-height:1.5;
+}
+.logbook-wrap {
+  background:linear-gradient(135deg,#FFF3E0,#FFF8E1);
+  border-radius:18px;
+  border:3px dashed var(--yellow-d);
+  padding:14px; margin-bottom:16px;
+}
+.logbook-title {
+  font-family:'Fredoka One',cursive;
+  font-size:15px; color:var(--brown);
+  margin-bottom:10px;
+}
+.logbook-stamps {
+  display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+}
+.stamp {
+  background:var(--jungle); color:white;
+  font-family:'Fredoka One',cursive;
+  font-size:12px;
+  border-radius:10px; padding:6px 10px;
+  display:flex; align-items:center; gap:5px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.stamp:nth-child(1){animation-delay:0.1s;}
+.stamp:nth-child(2){animation-delay:0.25s;}
+.stamp:nth-child(3){animation-delay:0.4s;}
+.stamp:nth-child(4){animation-delay:0.55s;}
+.btn-again {
+  display:block; width:100%;
+  background:linear-gradient(135deg,var(--yellow),var(--yellow-d));
+  color:var(--brown); border:none;
+  border-radius:50px; padding:14px;
+  font-family:'Fredoka One',cursive;
+  font-size:22px; cursor:pointer;
+  box-shadow:0 5px 0 var(--yellow-d), 0 8px 20px rgba(0,0,0,0.2);
+  transition:transform 0.1s, box-shadow 0.1s;
+}
+.btn-again:active { transform:translateY(4px); box-shadow:0 1px 0 var(--yellow-d); }
+
+/* ============================================================
+   CONFETTI
+============================================================ */
+.confetti {
+  position:fixed; pointer-events:none; z-index:9998;
+  animation:confettiFall linear forwards;
+  border-radius:2px;
+}
+@keyframes confettiFall {
+  0%{transform:translateY(-30px)rotate(0deg);opacity:1;}
+  100%{transform:translateY(110vh)rotate(720deg);opacity:0;}
+}
+
+/* ============================================================
+   SHARED UTILS
+============================================================ */
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<!-- FLOATING DRAG GHOST -->
+<div id="drag-ghost">🐯</div>
+
+<!-- =============================================
+     TITLE SCREEN
+============================================= -->
+<div class="screen active" id="title-screen">
+  <div class="world-bg"></div>
+  <div class="sun"></div>
+  <div class="ground-strip" style="height:90px"></div>
+
+  <div class="title-card">
+    <div class="title-zoo-tag">🌿 SUNSHINE ZOO 🌿</div>
+    <div class="title-main">Mini<br><em>Math</em> Zoo</div>
+    <div class="title-sub">Count &amp; Care! 🌟</div>
+    <div class="title-animals-row">
+      <span>🐯</span><span>🐘</span><span>🐒</span>
+    </div>
+    <div class="pip-intro-box">
+      <div class="pip-intro-row">
+        <div class="pip-intro-face">🦜</div>
+        <div class="pip-intro-text">
+          <strong>Hi! I'm Pip! 👋</strong><br>
+          The animals escaped again! Help me sort them, count them, and open the zoo gates!
+        </div>
+      </div>
+    </div>
+    <button class="btn-play" onclick="Game.start()">🚀 Let's Go!</button>
+  </div>
+</div>
+
+<!-- =============================================
+     SORT SCREEN
+============================================= -->
+<div class="screen" id="sort-screen">
+  <div class="world-bg"></div>
+  <div class="sun"></div>
+  <div class="ground-strip" style="height:70px"></div>
+
+  <div class="hud" id="sort-hud">
+    <div class="hud-badge">🔀</div>
+    <div class="hud-info">
+      <div class="hud-title">SUNSHINE ZOO • STEP 1 OF 3</div>
+      <div class="hud-step">Sort the Animals!</div>
+    </div>
+    <div class="hud-stars" id="sort-stars">
+      <div class="hud-star" id="star-sort">⭐</div>
+      <div class="hud-star" id="star-count">⭐</div>
+      <div class="hud-star" id="star-compare">⭐</div>
+    </div>
+  </div>
+
+  <div class="pip-panel">
+    <div class="pip-sprite thinking" id="pip-sort">🦜</div>
+    <div class="pip-bubble" id="pip-sort-msg">
+      Oh no! Tigers, elephants and monkeys are all mixed up! Drag each animal to their right home! 🏠
+    </div>
+  </div>
+
+  <div class="sort-layout">
+    <div class="zoo-gate">
+      <div class="zoo-gate-label">🚪 Zoo Gate Progress</div>
+      <div class="zoo-gate-bar-wrap">
+        <div class="zoo-gate-bar" id="gate-bar" style="width:0%"></div>
+      </div>
+      <div class="zoo-gate-text" id="gate-text">0 animals sorted</div>
+    </div>
+
+    <div class="habitats-wrap">
+      <div class="habitat-zone" id="habitat-tigers">
+        <div class="habitat-name">🐯 Tiger Zone</div>
+        <div class="habitat-animals-grid" id="tigers-bin"></div>
+      </div>
+      <div class="habitat-zone" id="habitat-elephants">
+        <div class="habitat-name">🐘 Elephant Zone</div>
+        <div class="habitat-animals-grid" id="elephants-bin"></div>
+      </div>
+      <div class="habitat-zone" id="habitat-monkeys">
+        <div class="habitat-name">🐒 Monkey Zone</div>
+        <div class="habitat-animals-grid" id="monkeys-bin"></div>
+      </div>
+    </div>
+
+    <div class="loose-tray">
+      <div class="loose-tray-label">👆 DRAG ANIMALS TO THEIR HOME!</div>
+      <div class="loose-animals-grid" id="loose-pool"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     COUNT SCREEN
+============================================= -->
+<div class="screen" id="count-screen">
+  <div class="world-bg"></div>
+  <div class="sun"></div>
+  <div class="ground-strip" style="height:60px"></div>
+
+  <div class="hud">
+    <div class="hud-badge">🔢</div>
+    <div class="hud-info">
+      <div class="hud-title">SUNSHINE ZOO • STEP 2 OF 3</div>
+      <div class="hud-step">Count the Animals!</div>
+    </div>
+    <div class="hud-stars">
+      <div class="hud-star lit">⭐</div>
+      <div class="hud-star" id="star-count2">⭐</div>
+      <div class="hud-star">⭐</div>
+    </div>
+  </div>
+
+  <div class="pip-panel">
+    <div class="pip-sprite thinking" id="pip-count">🦜</div>
+    <div class="pip-bubble" id="pip-count-msg">
+      Great sorting! Now tap EACH animal one by one to count them! 👆
+    </div>
+  </div>
+
+  <div class="count-layout" id="count-layout">
+    <!-- Filled by JS -->
+  </div>
+  <button class="btn-compare" id="btn-to-compare" onclick="Game.goCompare()">
+    Compare Them! ⚖️
+  </button>
+</div>
+
+<!-- =============================================
+     COMPARE SCREEN
+============================================= -->
+<div class="screen" id="compare-screen">
+  <div class="world-bg"></div>
+  <div class="sun"></div>
+  <div class="ground-strip" style="height:55px"></div>
+
+  <div class="hud">
+    <div class="hud-badge">⚖️</div>
+    <div class="hud-info">
+      <div class="hud-title">SUNSHINE ZOO • STEP 3 OF 3</div>
+      <div class="hud-step">Compare!</div>
+    </div>
+    <div class="hud-stars">
+      <div class="hud-star lit">⭐</div>
+      <div class="hud-star lit">⭐</div>
+      <div class="hud-star" id="star-compare2">⭐</div>
+    </div>
+  </div>
+
+  <div class="pip-panel">
+    <div class="pip-sprite thinking" id="pip-compare">🦜</div>
+    <div class="pip-bubble" id="pip-compare-msg">
+      Hmm! Which group has MORE animals? You pick — I'm not sure! 🤔
+    </div>
+  </div>
+
+  <div class="compare-layout" id="compare-layout">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<!-- =============================================
+     WIN SCREEN
+============================================= -->
+<div class="screen" id="win-screen">
+  <div class="world-bg"></div>
+  <div class="sun"></div>
+  <div class="ground-strip" style="height:90px"></div>
+
+  <div class="win-card">
+    <div class="win-medal">🏅</div>
+    <div class="win-title">Zoo Hero! 🎉</div>
+    <div class="win-sub">
+      You sorted, counted &amp; compared!<br>
+      The zoo gates are OPEN! 🚪✨
+    </div>
+
+    <div class="pip-intro-box" style="margin-bottom:16px;">
+      <div class="pip-intro-row">
+        <div class="pip-intro-face" style="font-size:38px">🦜✨</div>
+        <div class="pip-intro-text" style="color:#2E7D32;">
+          <strong>"WE DID IT!!"</strong><br>
+          All animals are safe because of YOU! The visitors are cheering! 🎊
+        </div>
+      </div>
+    </div>
+
+    <div class="logbook-wrap">
+      <div class="logbook-title">📒 Your Logbook Stamps</div>
+      <div class="logbook-stamps" id="win-stamps"></div>
+    </div>
+
+    <button class="btn-again" onclick="Game.restart()">🔄 Play Again!</button>
+  </div>
+</div>
+
+<!-- =============================================
+     JAVASCRIPT GAME ENGINE
+============================================= -->
+<script>
+/* ──────────────────────────────────────────────
+   GAME STATE
+────────────────────────────────────────────── */
+const Game = (() => {
+  let level = {};     // { tigers:N, elephants:N, monkeys:N }
+  let sortDone = false;
+  let countData = {}; // { tigers:{emoji,count,tapped}, ... }
+  let drag = null;    // current drag info
+  const DEFS = {
+    tigers:    { emoji:'🐯', label:'Tiger',    bin:'tigers-bin',    hab:'habitat-tigers'    },
+    elephants: { emoji:'🐘', label:'Elephant', bin:'elephants-bin', hab:'habitat-elephants' },
+    monkeys:   { emoji:'🐒', label:'Monkey',   bin:'monkeys-bin',   hab:'habitat-monkeys'   }
+  };
+
+  /* ── HELPERS ── */
+  const $  = id => document.getElementById(id);
+  const rn = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    $(id).classList.add('active');
+  }
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]]=[arr[j],arr[i]];
+    }
+    return arr;
+  }
+  function setPip(screen, mood, msg) {
+    const sprite = $('pip-'+screen);
+    const bubble = $('pip-'+screen+'-msg');
+    if (!sprite||!bubble) return;
+    sprite.className = 'pip-sprite '+mood;
+    bubble.style.opacity='0';
+    setTimeout(()=>{ bubble.textContent=msg; bubble.style.opacity='1'; bubble.style.transition='opacity 0.3s'; },160);
+  }
+
+  /* ── CLOUDS ── */
+  function makeClouds() {
+    document.querySelectorAll('.world-bg').forEach(bg=>{
+      for(let i=0;i<4;i++){
+        const c=document.createElement('div');
+        c.className='cloud';
+        const w=rn(55,110);
+        c.style.cssText=`
+          width:${w}px;height:${Math.round(w*0.45)}px;
+          top:${rn(4,28)}%;left:-200px;
+          animation-duration:${rn(18,35)}s;
+          animation-delay:-${rn(0,25)}s;`;
+        bg.appendChild(c);
+      }
+    });
+  }
+
+  /* ── GENERATE LEVEL ── */
+  function genLevel() {
+    level = {
+      tigers:    rn(2,5),
+      elephants: rn(2,4),
+      monkeys:   rn(2,4)
+    };
+  }
+
+  /* ═══════════════════════════════════════════
+     SORT SCREEN
+  ═══════════════════════════════════════════ */
+  function buildSort() {
+    // clear bins
+    ['tigers-bin','elephants-bin','monkeys-bin'].forEach(id=>$(id).innerHTML='');
+    document.querySelectorAll('.habitat-zone').forEach(h=>h.classList.remove('glow'));
+    $('gate-bar').style.width='0%';
+    $('gate-text').textContent='0 animals sorted';
+
+    // build animal cards
+    const pool = $('loose-pool');
+    pool.innerHTML='';
+    const cards=[];
+    Object.entries(DEFS).forEach(([type,def])=>{
+      for(let i=0;i<level[type];i++) cards.push({type,emoji:def.emoji,label:def.label,id:`chip-${type}-${i}`});
+    });
+    shuffle(cards);
+    cards.forEach(c=>{
+      const el=document.createElement('div');
+      el.className='animal-chip'; el.id=c.id;
+      el.dataset.type=c.type; el.dataset.emoji=c.emoji;
+      el.innerHTML=`${c.emoji}<div class="animal-chip-label">${c.label}</div>`;
+      el.addEventListener('pointerdown', startDrag);
+      pool.appendChild(el);
+    });
+
+    show('sort-screen');
+    setPip('sort','thinking','Oh no! Tigers, elephants and monkeys are all mixed up! Drag each animal to their right home! 🏠');
+  }
+
+  let sortedCount = 0;
+  let sortTotal = 0;
+
+  /* ── DRAG ── */
+  function startDrag(e) {
+    e.preventDefault();
+    const chip = e.currentTarget;
+    if (chip.classList.contains('placed-out')) return;
+    drag = { chip, type:chip.dataset.type, emoji:chip.dataset.emoji };
+    chip.classList.add('picked');
+    const ghost=$('drag-ghost');
+    ghost.textContent=drag.emoji;
+    ghost.style.display='block';
+    positionGhost(e);
+    // glow correct habitat
+    Object.entries(DEFS).forEach(([t,d])=>{
+      $(d.hab).classList.toggle('glow', t===drag.type);
+    });
+    document.addEventListener('pointermove', moveDrag);
+    document.addEventListener('pointerup', endDrag);
+    document.addEventListener('pointercancel', endDrag);
+  }
+  function moveDrag(e) { positionGhost(e); }
+  function positionGhost(e) {
+    const x=e.clientX||(e.touches&&e.touches[0]?.clientX)||0;
+    const y=e.clientY||(e.touches&&e.touches[0]?.clientY)||0;
+    const g=$('drag-ghost');
+    g.style.left=x+'px'; g.style.top=y+'px';
+  }
+  function endDrag(e) {
+    document.removeEventListener('pointermove',moveDrag);
+    document.removeEventListener('pointerup',endDrag);
+    document.removeEventListener('pointercancel',endDrag);
+    const g=$('drag-ghost'); g.style.display='none';
+    document.querySelectorAll('.habitat-zone').forEach(h=>h.classList.remove('glow'));
+    if (!drag) return;
+    drag.chip.classList.remove('picked');
+    const x=e.clientX||(e.changedTouches&&e.changedTouches[0]?.clientX)||0;
+    const y=e.clientY||(e.changedTouches&&e.changedTouches[0]?.clientY)||0;
+    let hit=false;
+    Object.entries(DEFS).forEach(([type,def])=>{
+      const habEl=$(def.hab);
+      const r=habEl.getBoundingClientRect();
+      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom) {
+        hit=true;
+        if(type===drag.type) placeCorrect(drag.chip,type,drag.emoji);
+        else placeWrong(drag.chip);
+      }
+    });
+    if(!hit) drag.chip.classList.remove('picked');
+    drag=null;
+  }
+  function placeCorrect(chip, type, emoji) {
+    chip.classList.add('placed-out');
+    const bin = $(DEFS[type].bin);
+    const span=document.createElement('div');
+    span.className='placed-animal'; span.textContent=emoji;
+    bin.appendChild(span);
+    sortedCount++;
+    const total=level.tigers+level.elephants+level.monkeys;
+    const pct=Math.round(sortedCount/total*100);
+    $('gate-bar').style.width=pct+'%';
+    $('gate-text').textContent=`${sortedCount} of ${total} sorted!`;
+    const msgs=['Nice! ✅','Right home! 🏠','Perfect throw! 🎯','Excellent! ⭐','Great job! 🌟'];
+    setPip('sort','happy',msgs[Math.floor(Math.random()*msgs.length)]);
+    if(sortedCount>=total) {
+      setTimeout(()=>{
+        setPip('sort','happy','ALL SORTED! 🎉 Amazing! Now let\'s COUNT every animal!');
+        setTimeout(()=>buildCount(),1300);
+      },300);
+    }
+  }
+  function placeWrong(chip) {
+    chip.style.animation='wrongShake 0.4s ease';
+    setTimeout(()=>chip.style.animation='',420);
+    setPip('sort','worried','Oops! That\'s the wrong home — try again! 🔄');
+  }
+
+  /* ═══════════════════════════════════════════
+     COUNT SCREEN
+  ═══════════════════════════════════════════ */
+  function buildCount() {
+    show('count-screen');
+    sortedCount=0;
+    const layout=$('count-layout');
+    layout.innerHTML='';
+    $('btn-to-compare').classList.remove('show');
+
+    countData={};
+    const COLORS={'tigers':'#FFA726','elephants':'#78909C','monkeys':'#8D6E63'};
+    Object.entries(DEFS).forEach(([type,def])=>{
+      countData[type]={emoji:def.emoji,count:level[type],tapped:0};
+      const card=document.createElement('div');
+      card.className='count-card';
+      // header
+      const hdr=document.createElement('div');
+      hdr.className='count-card-header';
+      hdr.innerHTML=`
+        <div class="count-card-icon" style="background:${COLORS[type]}20;border:2px solid ${COLORS[type]}40">${def.emoji}</div>
+        <div>
+          <div class="count-card-title">${def.label}s</div>
+          <div class="count-card-hint">Tap each ${def.label.toLowerCase()}!</div>
+        </div>`;
+      card.appendChild(hdr);
+      // tap row
+      const tapRow=document.createElement('div');
+      tapRow.className='animals-tap-row'; tapRow.id='tap-'+type;
+      for(let i=0;i<level[type];i++){
+        const btn=document.createElement('div');
+        btn.className='tap-animal'; btn.dataset.type=type; btn.dataset.idx=i;
+        btn.textContent=def.emoji;
+        btn.addEventListener('click',()=>onTap(type,btn));
+        tapRow.appendChild(btn);
+      }
+      card.appendChild(tapRow);
+      // tally
+      const tally=document.createElement('div');
+      tally.className='tally-track'; tally.id='tally-'+type;
+      card.appendChild(tally);
+      // total
+      const total=document.createElement('div');
+      total.className='count-total'; total.id='total-'+type;
+      total.innerHTML=`<small>Total</small>0`;
+      card.appendChild(total);
+      layout.appendChild(card);
+    });
+    setPip('count','thinking','Great sorting! Now tap EACH animal one by one to count them! 👆');
+  }
+
+  function onTap(type, btn) {
+    if(btn.classList.contains('counted')) return;
+    btn.classList.add('counted');
+    const ck=document.createElement('div'); ck.className='tap-check'; ck.textContent='✓';
+    btn.appendChild(ck);
+    const d=countData[type];
+    d.tapped++;
+    // tally block
+    const tb=document.createElement('div'); tb.className='tally-block'; tb.textContent=d.tapped;
+    $('tally-'+type).appendChild(tb);
+    // total update
+    const totalEl=$('total-'+type);
+    totalEl.innerHTML=`<small>Total ${d.tapped===d.count?'✓':''}</small>${d.tapped}`;
+    if(d.tapped===d.count) {
+      totalEl.classList.add('revealed');
+      const label=DEFS[type].label;
+      setPip('count','happy',`${d.count} ${label}${d.count>1?'s':''}! Great counting! 🌟`);
+      checkAllCounted();
+    }
+  }
+  function checkAllCounted() {
+    const done=Object.values(countData).every(d=>d.tapped===d.count);
+    if(done) setTimeout(()=>{
+      setPip('count','happy','Amazing! All animals counted! Ready to COMPARE? 🤩');
+      $('btn-to-compare').classList.add('show');
+    },500);
+  }
+
+  /* ═══════════════════════════════════════════
+     COMPARE SCREEN
+  ═══════════════════════════════════════════ */
+  function buildCompare() {
+    show('compare-screen');
+    const layout=$('compare-layout');
+    layout.innerHTML='';
+
+    // Pick best two (highest & lowest count)
+    const types=Object.keys(countData).sort((a,b)=>countData[b].count-countData[a].count);
+    const A=types[0], B=types[types.length-1];
+    const cA=countData[A].count, cB=countData[B].count;
+    const answer = cA>cB?'A':cA<cB?'B':'equal';
+
+    // habitats side by side
+    const habRow=document.createElement('div'); habRow.className='compare-habitats';
+    [A,B].forEach((type,idx)=>{
+      const count=idx===0?cA:cB;
+      const emoji=countData[type].emoji;
+      const label=type.charAt(0).toUpperCase()+type.slice(1)+'s';
+      const div=document.createElement('div');
+      div.className='compare-hab'; div.id='chab-'+type;
+      let animals='';
+      for(let i=0;i<count;i++) animals+=`<span class="compare-emoji">${emoji}</span>`;
+      div.innerHTML=`
+        <div class="compare-hab-title">${emoji} ${label}</div>
+        <div class="compare-animals-row">${animals}</div>
+        <div class="compare-number">${count}</div>`;
+      habRow.appendChild(div);
+    });
+    layout.appendChild(habRow);
+
+    // question
+    const qw=document.createElement('div'); qw.className='compare-question-wrap';
+    qw.innerHTML=`<div class="compare-question">Which group has <strong>MORE</strong> animals?<br><small style="font-size:13px;opacity:0.8">Or are they EQUAL?</small></div>`;
+    layout.appendChild(qw);
+
+    // choices
+    const labelA=DEFS[A].label+'s', labelB=DEFS[B].label+'s';
+    const choices=[
+      {id:'A', icon:countData[A].emoji, text:`${labelA} have MORE`},
+      {id:'B', icon:countData[B].emoji, text:`${labelB} have MORE`},
+      {id:'equal', icon:'⚖️', text:'They are EQUAL!'}
+    ];
+    const choiceWrap=document.createElement('div'); choiceWrap.className='compare-choices';
+    choices.forEach(ch=>{
+      const btn=document.createElement('div'); btn.className='choice-btn';
+      btn.innerHTML=`<span class="choice-icon">${ch.icon}</span><span class="choice-label">${ch.text}</span>`;
+      btn.addEventListener('click',()=>onAnswer(ch.id,btn,answer,A,B,cA,cB,choiceWrap));
+      choiceWrap.appendChild(btn);
+    });
+    layout.appendChild(choiceWrap);
+
+    setPip('compare','thinking',`Hmm! ${labelA}: ${cA} animals, ${labelB}: ${cB} animals. Which is more? YOU decide! 🤔`);
+  }
+
+  function onAnswer(chosen,btn,answer,A,B,cA,cB,wrap) {
+    wrap.querySelectorAll('.choice-btn').forEach(b=>b.style.pointerEvents='none');
+    if(chosen===answer) {
+      btn.classList.add('correct');
+      // highlight winner
+      if(answer==='A') $('chab-'+A)?.classList.add('winner');
+      else if(answer==='B') $('chab-'+B)?.classList.add('winner');
+      else { $('chab-'+A)?.classList.add('equal-glow'); $('chab-'+B)?.classList.add('equal-glow'); }
+      document.getElementById('star-compare2')?.classList.add('lit');
+      setPip('compare','happy','🎉 YES!! You got it right! The zoo gates are opening!!');
+      setTimeout(()=>showWin(),1600);
+    } else {
+      btn.classList.add('wrong');
+      setPip('compare','worried',`Not quite! Look carefully — count each side again! 🔍`);
+      setTimeout(()=>{
+        btn.classList.remove('wrong');
+        wrap.querySelectorAll('.choice-btn').forEach(b=>b.style.pointerEvents='');
+      },900);
+    }
+  }
+
+  /* ═══════════════════════════════════════════
+     WIN
+  ═══════════════════════════════════════════ */
+  function showWin() {
+    show('win-screen');
+    const stamps=$('win-stamps');
+    stamps.innerHTML=`
+      <div class="stamp">🔀 Sorted!</div>
+      <div class="stamp">🔢 Counted!</div>
+      <div class="stamp">⚖️ Compared!</div>
+      <div class="stamp">🏅 Zoo Hero!</div>`;
+    confetti();
+  }
+
+  /* ── CONFETTI ── */
+  function confetti() {
+    const colors=['#FFD54F','#FF8A65','#64B5F6','#4CAF50','#F06292','#BA68C8','#FF7043','#26C6DA'];
+    for(let i=0;i<90;i++) {
+      const el=document.createElement('div');
+      el.className='confetti';
+      el.style.cssText=`
+        left:${Math.random()*100}vw; top:-20px;
+        width:${rn(7,13)}px; height:${rn(7,13)}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        border-radius:${Math.random()>.5?'50%':'3px'};
+        animation-duration:${rn(14,30)/10}s;
+        animation-delay:${rn(0,10)/10}s;`;
+      document.body.appendChild(el);
+      el.addEventListener('animationend',()=>el.remove());
+    }
+  }
+
+  /* ── PUBLIC API ── */
+  return {
+    start() {
+      makeClouds();
+      genLevel();
+      sortedCount=0;
+      buildSort();
+    },
+    goCompare() { buildCompare(); },
+    restart() {
+      genLevel();
+      sortedCount=0;
+      buildSort();
+    }
+  };
+})();
+
+// Prevent rubber-band scroll on iOS
+document.body.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
+</script>
+</body>
+</html>
