@@ -448,13 +448,15 @@ body.entered #scroll-hint { opacity:1; }
 }
 
 .h-eyebrow {
-  font-size:12px; font-style:italic; font-family:var(--fs);
+  font-size:13px; font-style:italic; font-family:var(--fs);
   color:var(--ochre); display:flex; align-items:center; gap:16px;
-  margin-bottom:32px; opacity:0; position:relative; z-index:1;
+  margin-bottom:32px; opacity:0; position:relative; z-index:20;
+  text-shadow: 0 0 20px rgba(193,127,58,0.8), 0 1px 8px rgba(0,0,0,1);
+  letter-spacing:.05em;
 }
 .h-eyebrow::before { content:''; width:36px; height:1px; background:var(--ochre); }
 
-.h-name { position:relative; z-index:1; }
+.h-name { position:relative; z-index:20; }
 .h-name-line {
   display:block; overflow:hidden;
   font-family:var(--fd);
@@ -468,19 +470,21 @@ body.entered #scroll-hint { opacity:1; }
 
 .h-role {
   font-family:var(--fs); font-size:clamp(13px,1.6vw,18px); font-style:italic;
-  color:rgba(240,232,216,0.75);
-  margin-top:20px; opacity:0; position:relative; z-index:1;
+  color:rgba(240,232,216,0.9);
+  margin-top:20px; opacity:0; position:relative; z-index:20;
+  text-shadow: 0 1px 14px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.9);
 }
 .h-desc {
   margin-top:22px; font-size:15px; line-height:1.9; font-family:var(--fb);
-  color:rgba(240,232,216,0.7); max-width:420px;
-  opacity:0; position:relative; z-index:1;
+  color:rgba(240,232,216,0.85); max-width:420px;
+  opacity:0; position:relative; z-index:20;
+  text-shadow: 0 1px 10px rgba(0,0,0,1);
 }
-.h-desc strong { color:rgba(240,232,216,.75); font-weight:400; }
+.h-desc strong { color:rgba(240,232,216,.95); font-weight:600; }
 
 .h-ctas {
   margin-top:28px; display:flex; gap:10px;
-  opacity:0; position:relative; z-index:1;
+  opacity:0; position:relative; z-index:20;
 }
 
 .h-chapters {
@@ -618,8 +622,22 @@ body.entered #scroll-hint { opacity:1; }
 .pc:hover .pc-img { filter:saturate(.85) sepia(.15); transform:scale(1.05); }
 .pc-body { padding:15px 17px 18px; }
 .pc-eng { font-size:10px; font-style:italic; font-family:var(--fs); color:var(--ochre); margin-bottom:6px; }
-.pc-title { font-family:var(--fo); font-size:17px; font-weight:700; letter-spacing:.5px; color:var(--white); margin-bottom:7px; }
-.pc-desc { font-size:13px; line-height:1.7; font-family:var(--fb); color:var(--muted); margin-bottom:13px; }
+.pc-title { font-family:var(--fo); font-size:17px; font-weight:700; letter-spacing:.5px; color:var(--white); margin-bottom:5px; }
+.pc-desc-sub {
+  font-family:var(--fs); font-size:11px; font-style:italic; letter-spacing:.5px;
+  color:rgba(193,127,58,0.65); margin-bottom:8px;
+}
+.pc-desc { font-size:12.5px; line-height:1.75; font-family:var(--fb); color:var(--muted); margin-bottom:11px; }
+.pc-tags-row {
+  display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px;
+}
+.pc-tag-chip {
+  font-family:var(--fs); font-size:9.5px; font-style:italic;
+  color:var(--muted); padding:3px 10px;
+  border:1px solid rgba(193,127,58,0.15); border-radius:1px;
+  background:rgba(193,127,58,0.04);
+}
+.pc-tag-chip strong { font-style:normal; font-weight:600; color:rgba(240,232,216,0.65); margin-left:4px; }
 .pc-btns { display:flex; gap:7px; flex-wrap:wrap; }
 .demo-badge {
   display:inline-flex; align-items:center; gap:5px;
@@ -1065,8 +1083,14 @@ body.entered #scroll-hint { opacity:1; }
   mix-blend-mode: screen;
 }
 
-/* Statement canvas fix */
-#p-statement::before {
+/* ── Author's Lens chapter panel overrides ── */
+#ch-stmt .ch-tag { color:var(--ochre) !important; opacity:1 !important; font-weight:600; }
+#ch-stmt .ch-name { text-shadow: 0 2px 0 rgba(0,0,0,0.15); }
+#ch-stmt #cs1 { color:var(--ink) !important; -webkit-text-stroke:0 !important; text-shadow: none; }
+#ch-stmt #cs2 { color:transparent !important; -webkit-text-stroke:2.5px var(--ink) !important; }
+#ch-stmt .ch-sub { color:rgba(42,31,20,0.6) !important; text-shadow:none; }
+/* Ensure the bg letter is very faint on light bg */
+#ch-stmt .ch-bg-letter { color:transparent !important; -webkit-text-stroke:1px rgba(42,31,20,.07) !important; }
   content:''; position:absolute; inset:0;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23t)' opacity='0.03'/%3E%3C/svg%3E");
   background-size:200px; pointer-events:none; z-index:0; mix-blend-mode:multiply;
@@ -1255,12 +1279,120 @@ body.entered #scroll-hint { opacity:1; }
     </div>
     <div class="pcat on" id="cat-games">
       <div class="proj-grid">
-        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202026-03-04%20213419.png?raw=true" alt="The Last Choice"></div><div class="pc-body"><p class="pc-eng">Twine · Narrative Design</p><h3 class="pc-title">THE LAST CHOICE</h3><p class="pc-desc">Dark story-driven adventure — werewolves, fractured realities, and a missing sister.</p><div class="pc-btns"><a class="btn-r" href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Itch.io</a><button class="btn-o" onclick="openM('beatM')" style="font-size:9px;padding:7px 14px;">Beat Sheet</button></div></div></div>
-        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202025-11-22%20134919.png?raw=true" alt="DREAM"></div><div class="pc-body"><p class="pc-eng">Godot · Hardcore Platformer</p><h3 class="pc-title">DREAM</h3><p class="pc-desc">A young girl trapped inside a distorted dream world. Fast-paced 2D pixel platformer.</p><div class="pc-btns"><a class="btn-r" href="https://janeshwaran2829.itch.io/dream" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Itch.io</a></div></div></div>
-        <div class="pc"><div class="pc-body" style="padding-top:22px;"><p class="pc-eng">Unity 3D · Action FPS</p><h3 class="pc-title">WRATH OF THE NIGHT</h3><p class="pc-desc">Dark FPS survival-action in a cursed abandoned world.</p><div class="pc-btns"><button class="btn-r" onclick="openM('trailerM')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-film"></i> Trailer</button><button class="btn-o" onclick="openM('pitchM')" style="font-size:9px;padding:7px 14px;">Pitch PPT</button></div></div></div>
-        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-flask"></i> Playable Demo</div><p class="pc-eng">HTML · Claude AI · Escape Room</p><h3 class="pc-title">ESCAPE THE DREAM</h3><p class="pc-desc">Hacker Elara Voss trapped inside a super-AI's simulated reality.</p><div class="pc-btns"><a class="btn-r" href="https://janeshobito.github.io/myFolder/escapedream.html" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Play Demo</a></div></div></div>
-        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-flask"></i> Playable Demo</div><p class="pc-eng">HTML · VibeCoding · Educational</p><h3 class="pc-title">MINI MATH ZOO</h3><p class="pc-desc">Step into Sunshine Zoo as Junior Zookeeper — sort animals, tap to count!</p><div class="pc-btns"><a class="btn-r" href="https://janeshobito.github.io/myFolder/minizoo.html" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Play Demo</a></div></div></div>
-        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket Thruster"></div><div class="pc-body"><p class="pc-eng">Unity · Physics Simulation</p><h3 class="pc-title">ROCKET THRUSTER LANDING</h3><p class="pc-desc">Physics-based rocket landing challenge.</p><div class="pc-btns"><a class="btn-r" href="#" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> Play</a></div></div></div>
+
+        <!-- THE LAST CHOICE -->
+        <div class="pc">
+          <div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202026-03-04%20213419.png?raw=true" alt="The Last Choice"></div>
+          <div class="pc-body">
+            <p class="pc-eng">Twine · Script-Based Narrative</p>
+            <h3 class="pc-title">THE LAST CHOICE</h3>
+            <p class="pc-desc">A dark narrative-driven adventure where every decision echoes forever. In a fractured world where reality is slowly collapsing, a young brother embarks on a haunting journey to find his missing sister — through werewolves, fractured realities, and choices with permanent consequences.</p>
+            <div class="pc-tags-row">
+              <span class="pc-tag-chip">Engine <strong>Twine</strong></span>
+              <span class="pc-tag-chip">Genre <strong>Dark Fantasy</strong></span>
+              <span class="pc-tag-chip">Type <strong>Narrative</strong></span>
+            </div>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Itch.io</a>
+              <a class="btn-o" href="https://janeshobito.github.io/myFolder/Mygames.html" target="_blank" style="font-size:9px;padding:7px 14px;"><i class="fas fa-play"></i> Play</a>
+              <button class="btn-o" onclick="openM('beatM')" style="font-size:9px;padding:7px 14px;">Beat Sheet</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DREAM -->
+        <div class="pc">
+          <div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202025-11-22%20134919.png?raw=true" alt="DREAM"></div>
+          <div class="pc-body">
+            <p class="pc-eng">Godot Engine</p>
+            <h3 class="pc-title">DREAM</h3>
+            <p class="pc-desc-sub">Pixel Hardcore Platformer</p>
+            <p class="pc-desc">A fast-paced 2D pixel platformer where a young girl is trapped inside a distorted dream world. Atmospheric, brutal, and emotional.</p>
+            <div class="pc-tags-row">
+              <span class="pc-tag-chip">Engine <strong>Godot</strong></span>
+              <span class="pc-tag-chip">Genre <strong>Platformer</strong></span>
+            </div>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshwaran2829.itch.io/dream" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Itch.io</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROCKET THRUSTER -->
+        <div class="pc">
+          <div class="pc-img-w"><img class="pc-img" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket Thruster"></div>
+          <div class="pc-body">
+            <p class="pc-eng">Unity</p>
+            <h3 class="pc-title">ROCKET THRUSTER LANDING</h3>
+            <p class="pc-desc-sub">Physics Simulation</p>
+            <p class="pc-desc">Physics-based rocket landing challenge. Navigate thrust vectors and gravity to achieve a precision touchdown.</p>
+            <div class="pc-tags-row">
+              <span class="pc-tag-chip">Engine <strong>Unity</strong></span>
+              <span class="pc-tag-chip">Type <strong>Simulation</strong></span>
+            </div>
+            <div class="pc-btns">
+              <a class="btn-r" href="#" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> Play</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- WRATH OF THE NIGHT -->
+        <div class="pc">
+          <div class="pc-body" style="padding-top:22px;">
+            <p class="pc-eng">Unity 3D</p>
+            <h3 class="pc-title">WRATH OF THE NIGHT</h3>
+            <p class="pc-desc-sub">Action · FPS · Adventure</p>
+            <p class="pc-desc">A dark FPS survival-action game set in a cursed, abandoned world. Shadows hold secrets — and something far worse. Environmental puzzle solving meets brutal combat.</p>
+            <div class="pc-tags-row">
+              <span class="pc-tag-chip">Engine <strong>Unity 3D</strong></span>
+              <span class="pc-tag-chip">Genre <strong>Action FPS</strong></span>
+            </div>
+            <div class="pc-btns">
+              <button class="btn-r" onclick="openM('trailerM')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-film"></i> Trailer</button>
+              <button class="btn-o" onclick="openM('pitchM')" style="font-size:9px;padding:7px 14px;">Pitch PPT</button>
+              <a class="btn-o" href="https://janeshwaran2829.itch.io/wrath-of-the-night-game-book" target="_blank" style="font-size:9px;padding:7px 14px;">Game Book</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESCAPE THE DREAM -->
+        <div class="pc">
+          <div class="pc-body" style="padding-top:22px;">
+            <div class="demo-badge"><i class="fas fa-flask"></i> Playable Demo</div>
+            <p class="pc-eng">HTML · Claude AI · Escape Room</p>
+            <h3 class="pc-title">ESCAPE THE DREAM</h3>
+            <p class="pc-desc-sub">Psychological · Thriller · Platformer · Escape</p>
+            <p class="pc-desc">Demo game built using HTML + Claude AI for the Escape the Dream concept book. Play as Elara Voss — a hacker trapped inside a super-AI's simulated reality. Solve glitch puzzles, exploit the dream's flaws, and breach the portal to wake up.</p>
+            <div class="pc-tags-row">
+              <span class="pc-tag-chip">Engine <strong>HTML</strong></span>
+              <span class="pc-tag-chip">Genre <strong>Sci-Fi Thriller</strong></span>
+            </div>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshobito.github.io/myFolder/escapedream.html" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Play Demo</a>
+              <a class="btn-o" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/escape%20the%20dream%20game%20design%20doc_compressed.pdf" target="_blank" style="font-size:9px;padding:7px 14px;">Concept Book</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- MINI MATH ZOO -->
+        <div class="pc">
+          <div class="pc-body" style="padding-top:22px;">
+            <div class="demo-badge"><i class="fas fa-flask"></i> Playable Demo</div>
+            <p class="pc-eng">HTML · VibeCoding · Claude AI</p>
+            <h3 class="pc-title">MINI MATH ZOO</h3>
+            <p class="pc-desc-sub">Educational Game · Children's</p>
+            <p class="pc-desc">Demo game built using HTML + VibeCoding + Claude AI for the Mini Math Zoo concept book. Step into Sunshine Zoo as Junior Zookeeper — sort escaped animals, tap to count them, then compare the groups to open the zoo gates!</p>
+            <div class="pc-tags-row">
+              <span class="pc-tag-chip">Engine <strong>HTML</strong></span>
+              <span class="pc-tag-chip">Genre <strong>Educational</strong></span>
+            </div>
+            <div class="pc-btns">
+              <a class="btn-r" href="https://janeshobito.github.io/myFolder/minizoo.html" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Play Demo</a>
+              <a class="btn-o" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/Mini%20Math%20Zoo%20Game%20Design%20Book%20Janeshwaran%20R_compressed.pdf" target="_blank" style="font-size:9px;padding:7px 14px;">Book</a>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="pcat" id="cat-breakdowns">
@@ -1405,11 +1537,11 @@ body.entered #scroll-hint { opacity:1; }
       <a class="sb" href="https://www.artstation.com/janeshobito283" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/></svg></a>
       <a class="sb" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
       <a class="sb" href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
-      <a class="sb" href="mailto:Janeshwaranobito28@gmail.com"><i class="fas fa-envelope"></i></a>
+      <a class="sb" href="/cdn-cgi/l/email-protection#3c765d52594f544b5d4e5d52535e5548530e047c5b515d5550125f5351"><i class="fas fa-envelope"></i></a>
     </div>
   </div>
   <div class="con-right">
-    <a class="con-row" href="mailto:Janeshwaranobito28@gmail.com"><div class="con-ic"><i class="fas fa-envelope"></i></div><div><p class="con-lbl">Email</p><p class="con-val">Janeshwaranobito28@gmail.com</p></div></a>
+    <a class="con-row" href="/cdn-cgi/l/email-protection#99d3f8f7fceaf1eef8ebf8f7f6fbf0edf6aba1d9fef4f8f0f5b7faf6f4"><div class="con-ic"><i class="fas fa-envelope"></i></div><div><p class="con-lbl">Email</p><p class="con-val"><span class="__cf_email__" data-cfemail="c78da6a9a2b4afb0a6b5a6a9a8a5aeb3a8f5ff87a0aaa6aeabe9a4a8aa">[email&#160;protected]</span></p></div></a>
     <div class="con-row"><div class="con-ic"><i class="fas fa-phone"></i></div><div><p class="con-lbl">Phone</p><p class="con-val">+91 63799 89918</p></div></div>
     <div class="con-row"><div class="con-ic"><i class="fas fa-map-marker-alt"></i></div><div><p class="con-lbl">Location</p><p class="con-val">Chennai, Tamil Nadu, India</p></div></div>
     <a class="con-row" href="https://www.artstation.com/janeshobito283" target="_blank"><div class="con-ic"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/></svg></div><div><p class="con-lbl">ArtStation</p><p class="con-val">janeshobito283</p></div></a>
@@ -1475,7 +1607,7 @@ body.entered #scroll-hint { opacity:1; }
 <div id="hillM2" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 2</p><button class="modal-x" onclick="closeM('hillM2')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/c6c8346c-7069-42c1-8776-f55fc010b8f0_fullscreen.mp4" type="video/mp4"></video></div></div></div>
 <div id="hillM3" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 3</p><button class="modal-x" onclick="closeM('hillM3')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/fe4305d2-94ab-4d85-8b7b-04252903bb22_fullscreen.mp4" type="video/mp4"></video></div></div></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ═══════════════════════════════════════════════════
    CURSOR
 ═══════════════════════════════════════════════════ */
@@ -2058,7 +2190,7 @@ var IMGS = {
   'ch-con':      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1800&q=85',
   'p-contact':   'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1800&q=85',
 };
-var BRUSH=120, FEATHER=0.60, FADE=0.013;
+var BRUSH=180, FEATHER=0.45, FADE=0.006;
 var gx=-9999, gy=-9999;
 var ring=document.getElementById('pb-ring');
 document.addEventListener('mousemove',function(e){ gx=e.clientX; gy=e.clientY; ring.style.left=gx+'px'; ring.style.top=gy+'px'; },{passive:true});
@@ -2078,7 +2210,7 @@ Object.keys(IMGS).forEach(function(id){
     var w=panel.offsetWidth||1, h=panel.offsetHeight||1;
     if(cv.width===w&&cv.height===h) return;
     cv.width=w; cv.height=h;
-    ctx.fillStyle='rgba(18,12,8,0.88)'; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='rgba(18,12,8,0.78)'; ctx.fillRect(0,0,w,h);
   }
   sync(); window.addEventListener('resize',sync);
   function tick(){
@@ -2095,15 +2227,4 @@ Object.keys(IMGS).forEach(function(id){
       g.addColorStop(FEATHER,'rgba(0,0,0,0.30)'); g.addColorStop(FEATHER+0.2,'rgba(0,0,0,0.05)');
       g.addColorStop(1,'rgba(0,0,0,0)');
       ctx.beginPath(); ctx.arc(lx,ly,BRUSH,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
-      var gc=ctx.createRadialGradient(lx,ly,0,lx,ly,BRUSH*0.22);
-      gc.addColorStop(0,'rgba(0,0,0,1)'); gc.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.beginPath(); ctx.arc(lx,ly,BRUSH*0.22,0,Math.PI*2); ctx.fillStyle=gc; ctx.fill();
-      ctx.globalCompositeOperation='source-over';
-    }
-  }
-  tick();
-});
-})();
-</script>
-</body>
-</html>
+      var gc=ctx.createRadial
