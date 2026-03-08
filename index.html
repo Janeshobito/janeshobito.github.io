@@ -1,991 +1,2109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Janeshwaran R — Portfolio </title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Janeshwaran R — Narrative Designer · Author</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-
-/* ─── TOKENS ─────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════ */
 :root {
-  --bg:       #060608;
-  --card:     rgba(255,255,255,0.03);
-  --border:   rgba(255,255,255,0.07);
-  --bdr-red:  rgba(229,57,53,0.4);
-  --red:      #e53935;
-  --red-soft: rgba(229,57,53,0.10);
-  --white:    #ededeb;
-  --muted:    #656878;
-  --dim:      #252733;
-  --fd: 'Oswald', sans-serif;
-  --fb: 'DM Sans', sans-serif;
+  --bg:      #1a1410;
+  --canvas:  #f5f0e8;
+  --ink:     #2a1f14;
+  --ochre:   #c17f3a;
+  --ochre-dim: rgba(193,127,58,0.12);
+  --ochre-bdr: rgba(193,127,58,0.42);
+  --sienna:  #8b3a2a;
+  --umber:   #4a3728;
+  --muted:   #7a6a58;
+  --border:  rgba(193,127,58,0.12);
+  --card:    rgba(193,127,58,0.04);
+  --red:     var(--ochre);
+  --red-dim: var(--ochre-dim);
+  --red-bdr: var(--ochre-bdr);
+  --white:   #f0e8d8;
+  --fd: 'Cinzel', serif;
+  --fo: 'Playfair Display', serif;
+  --fb: 'Spectral', serif;
+  --fs: 'IM Fell English', serif;
+}
+
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:9001; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23t)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size:200px; mix-blend-mode:overlay; opacity:0.6;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; }
+html { overflow:hidden; }
 body {
-  background: var(--bg); color: var(--white);
-  font-family: var(--fb); font-weight: 300;
-  overflow-x: hidden; cursor: none;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--fb);
+  font-weight: 300;
+  cursor: none;
+  overflow: hidden;
+  width: 100vw; height: 100vh;
 }
 
-/* ─── CURSOR ─────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════════════ */
 #cur {
   position:fixed; width:9px; height:9px;
-  background:var(--red); border-radius:50%;
-  pointer-events:none; z-index:999999;
+  background:var(--ochre); border-radius:50%;
+  pointer-events:none; z-index:99999;
   transform:translate(-50%,-50%);
+  transition: width .25s, height .25s;
 }
 #cur-ring {
-  position:fixed; width:32px; height:32px;
-  border:1px solid rgba(229,57,53,0.55); border-radius:50%;
-  pointer-events:none; z-index:999998;
+  position:fixed; width:34px; height:34px;
+  border:1px solid rgba(193,127,58,.5); border-radius:50%;
+  pointer-events:none; z-index:99998;
   transform:translate(-50%,-50%);
-  transition: transform .08s, border-color .3s;
+  transition: width .3s, height .3s, border-color .3s;
 }
-body.hov #cur-ring { transform:translate(-50%,-50%) scale(1.8); border-color:var(--red); }
+body.hov #cur { width:15px; height:15px; }
+body.hov #cur-ring { width:54px; height:54px; border-color:var(--ochre); }
 
-/* ─── PROFESSIONAL ENTRANCE ──────────────────── */
-#intro {
-  position: fixed; inset: 0; z-index: 999990;
-  background: #000;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  pointer-events: all;
+#noise {
+  position:fixed; inset:0; z-index:9000; pointer-events:none; opacity:.026;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px;
 }
 
-/* thin red horizontal rule that draws itself first */
-.intro-rule {
-  width: 0; height: 1px;
-  background: var(--red);
-  animation: rule-draw 0.7s cubic-bezier(0.77,0,0.175,1) 0.2s forwards;
-  position: absolute;
+/* ═══════════════════════════════════════════════
+   ★ NEW ENTRANCE EFFECT — INK CURTAIN SPLIT
+═══════════════════════════════════════════════ */
+#preloader {
+  position:fixed; inset:0; z-index:99990;
+  background:transparent;
+  pointer-events:none;
 }
-@keyframes rule-draw { to { width: min(480px, 70vw); } }
+#preloader.gone { pointer-events:none; }
 
-/* name fades + rises cleanly */
-.intro-name {
+/* Two curtain panels — top & bottom */
+.pl-curtain {
+  position:absolute; left:0; right:0;
+  height:50.5%; /* tiny overlap prevents gap */
+  background:#0e0b08;
+  transition: none;
+  z-index:2;
+}
+.pl-curtain.top    { top:0; transform-origin: top center; }
+.pl-curtain.bottom { bottom:0; transform-origin: bottom center; }
+
+/* Ink bleed texture on curtains */
+.pl-curtain::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 50%, rgba(193,127,58,0.04) 0%, transparent 70%);
+}
+
+/* Center stage — where name appears between curtains */
+.pl-center {
+  position:absolute; inset:0; z-index:3;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  pointer-events:none;
+}
+
+/* Horizontal filament lines (appear first, then glow) */
+.pl-filament {
+  position:absolute; left:0; right:0;
+  height:1px;
+  overflow:hidden;
+}
+.pl-filament.f1 { top:calc(50% - 68px); }
+.pl-filament.f2 { top:calc(50% + 68px); }
+.pl-filament-inner {
+  height:100%;
+  background:linear-gradient(90deg, transparent 0%, rgba(193,127,58,0.6) 20%, rgba(240,220,170,0.9) 50%, rgba(193,127,58,0.6) 80%, transparent 100%);
+  transform:scaleX(0); transform-origin:center;
+}
+
+/* Name block — clips in from center using clip-path */
+.pl-name-block {
+  text-align:center; position:relative;
+  clip-path: inset(0 50% 0 50%);
+}
+.pl-name-main {
   font-family: var(--fd);
-  font-size: clamp(38px, 7.5vw, 96px);
-  font-weight: 700; letter-spacing: 14px;
-  text-transform: uppercase; color: #fff;
-  text-align: center; position: relative; z-index: 2;
-  opacity: 0;
-  animation: intro-rise 0.8s cubic-bezier(0.215,0.61,0.355,1) 0.7s forwards;
+  font-size: clamp(28px, 5.5vw, 72px);
+  letter-spacing: 12px;
+  text-transform: uppercase;
+  color: var(--canvas);
+  line-height: 1;
+  position:relative;
 }
-.intro-name em { font-style: normal; color: var(--red); }
-@keyframes intro-rise {
-  from { opacity: 0; transform: translateY(22px); }
-  to   { opacity: 1; transform: translateY(0); }
+.pl-name-main em { font-style:normal; color:var(--ochre); }
+
+/* Ink drop glow behind name */
+.pl-ink-drop {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:0; height:0;
+  border-radius:50%;
+  background:radial-gradient(ellipse, rgba(193,127,58,0.15) 0%, transparent 70%);
+  pointer-events:none;
+  z-index:-1;
 }
 
-/* role line */
-.intro-role {
-  font-size: 11px; letter-spacing: 6px; text-transform: uppercase;
-  color: var(--muted); margin-top: 18px;
-  opacity: 0; position: relative; z-index: 2;
-  animation: intro-rise 0.6s ease 1.1s forwards;
+.pl-role-text {
+  font-family: var(--fs);
+  font-size: 12px;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: rgba(193,127,58,0.8);
+  margin-top: 14px;
+  opacity:0;
 }
 
-/* thin progress bar */
-.intro-bar-wrap {
-  width: min(480px, 70vw); height: 1px;
-  background: rgba(255,255,255,0.07);
-  margin-top: 40px; overflow: hidden;
-  opacity: 0; position: relative; z-index: 2;
-  animation: intro-rise 0.4s ease 0.9s forwards;
+.pl-progress-wrap {
+  width: min(360px, 60vw);
+  height: 1px;
+  background: rgba(193,127,58,0.1);
+  margin-top: 28px;
+  overflow:hidden;
+  opacity:0;
 }
-.intro-bar {
-  height: 1px; background: var(--red);
-  transform: scaleX(0); transform-origin: left;
-  animation: bar-run 1.4s cubic-bezier(0.77,0,0.175,1) 1s forwards;
+.pl-progress-bar {
+  height:1px;
+  background:var(--ochre);
+  width:0%;
+  transition: width 0.08s linear;
 }
-@keyframes bar-run  { to { transform: scaleX(1); } }
-@keyframes fade-up  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
-
-/* percentage counter */
-.intro-pct {
-  font-family: var(--fd); font-size: 11px; letter-spacing: 4px;
-  color: var(--red); margin-top: 14px;
-  opacity: 0; position: relative; z-index: 2;
-  animation: intro-rise 0.4s ease 1s forwards;
+.pl-pct-text {
+  font-family: var(--fs);
+  font-size: 10px;
+  font-style: italic;
+  letter-spacing: 5px;
+  color: rgba(193,127,58,0.5);
+  margin-top: 10px;
+  opacity:0;
 }
 
-/* exit: whole overlay fades, no panel split */
-#intro { transition: opacity 0.6s ease; }
-#intro.gone { opacity: 0; pointer-events: none; }
-
-/* ─── NAV ────────────────────────────────────── */
-.nav {
-  position:fixed; top:0; left:0; right:0; z-index:9000;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:18px 52px;
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+#nav {
+  position:fixed; top:0; left:0; right:0; z-index:8000;
+  padding:22px 48px;
+  display:flex; justify-content:space-between; align-items:center;
   opacity:0; pointer-events:none;
-  transition: opacity .5s ease .2s, background .4s, padding .4s;
+  transition:opacity .5s ease .2s;
+  background:linear-gradient(to bottom, rgba(26,20,16,0.85) 0%, transparent 100%);
 }
-body.entered .nav { opacity:1; pointer-events:auto; }
-.nav.bg {
-  background:rgba(6,6,8,0.94);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  padding-top:14px; padding-bottom:14px;
-}
+body.entered #nav { opacity:1; pointer-events:auto; }
+
 .nav-logo {
-  font-family:var(--fd); font-size:19px; font-weight:700; letter-spacing:4px;
+  font-family:var(--fd); font-size:13px; font-weight:600;
+  letter-spacing:4px; text-transform:uppercase;
   color:var(--white); text-decoration:none;
 }
-.nav-logo span { color:var(--red); }
-.nav-links { display:flex; align-items:center; gap:4px; }
-.nl {
-  font-size:11px; letter-spacing:3px; text-transform:uppercase;
-  color:var(--muted); text-decoration:none;
-  padding:8px 16px; border-radius:3px; transition:color .3s;
-}
-.nl:hover { color:var(--white); }
-.nl.act   { color:var(--white); }
-.nl.cta   {
-  color:var(--white); border:1px solid var(--bdr-red);
-  padding:8px 22px; margin-left:8px;
-  transition: background .3s, border-color .3s;
-}
-.nl.cta:hover { background:var(--red-soft); border-color:var(--red); }
+.nav-logo span { color:var(--ochre); }
 
-/* ─── HERO ───────────────────────────────────── */
-.hero {
-  height:100vh; min-height:700px;
-  position:relative; overflow:hidden;
-  display:flex; align-items:flex-end;
+.nav-links { display:flex; gap:0; list-style:none; }
+.nav-links a {
+  font-family:var(--fs); font-size:12px; font-style:italic; letter-spacing:1px;
+  color:var(--muted);
+  text-decoration:none; padding:8px 14px;
+  position:relative; transition:color .3s;
 }
-.hero-vid {
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; opacity:.5;
-  will-change:transform; /* parallax target */
-}
-.hero-fade-bot {
-  position:absolute; bottom:0; left:0; right:0; height:55%;
-  background:linear-gradient(to bottom,transparent,var(--bg)); z-index:1;
-}
-.hero-vignette {
-  position:absolute; inset:0; z-index:1;
-  background:radial-gradient(ellipse at center,transparent 45%,rgba(6,6,8,.75) 100%);
-}
-.hero-content {
-  position:relative; z-index:2;
-  padding:0 52px 72px;
-  max-width:1300px; width:100%; margin:0 auto;
-  opacity:0;
-  transition: opacity .8s ease;
-}
-body.entered .hero-content { opacity:1; transition-delay:.4s; }
-.hero-eye {
-  font-size:11px; letter-spacing:7px; color:var(--red); text-transform:uppercase;
-  margin-bottom:16px; display:flex; align-items:center; gap:12px;
-}
-.hero-eye::before { content:''; display:inline-block; width:28px; height:1px; background:var(--red); }
-.hero-name {
-  font-family:var(--fd);
-  font-size:clamp(54px,11vw,150px);
-  font-weight:700; line-height:.88; letter-spacing:2px; text-transform:uppercase;
-  color:var(--white);
-}
-.hero-name em {
-  font-style:normal;
-  -webkit-text-stroke:1px rgba(255,255,255,.35);
-  color:transparent;
-}
-.hero-bot {
-  margin-top:34px;
-  display:flex; align-items:flex-end; justify-content:space-between;
-  flex-wrap:wrap; gap:22px;
-}
-.hero-desc {
-  font-size:15px; line-height:1.75; color:var(--muted); max-width:420px;
-}
-.hero-desc strong { color:rgba(255,255,255,.65); font-weight:400; }
-.cta-row { display:flex; gap:14px; flex-wrap:wrap; }
-.btn-p {
-  display:inline-flex; align-items:center; gap:9px;
-  padding:13px 30px; background:var(--red); color:#fff;
-  font-family:var(--fb); font-size:11px; letter-spacing:3px;
-  text-transform:uppercase; font-weight:500; text-decoration:none;
-  border-radius:3px; transition:background .3s, transform .3s;
-}
-.btn-p:hover { background:#c62828; transform:translateY(-2px); }
-.btn-g {
-  display:inline-flex; align-items:center; gap:9px;
-  padding:12px 28px; background:transparent; color:var(--muted);
-  font-family:var(--fb); font-size:11px; letter-spacing:3px;
-  text-transform:uppercase; font-weight:500; text-decoration:none;
-  border:1px solid var(--border); border-radius:3px;
-  transition:color .3s, border-color .3s;
-}
-.btn-g:hover { color:var(--white); border-color:rgba(255,255,255,.25); }
-.scroll-hint {
-  position:absolute; bottom:30px; right:52px; z-index:2;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
-  font-size:9px; letter-spacing:4px; color:var(--dim); text-transform:uppercase;
-  opacity:0; transition:opacity .5s ease;
-}
-body.entered .scroll-hint { opacity:1; transition-delay:.8s; }
-.scroll-line {
-  width:1px; height:44px;
-  background:linear-gradient(to bottom,var(--red),transparent);
-  animation: sline 2.4s ease-in-out infinite;
-}
-@keyframes sline {
-  0%,100%{opacity:.25;transform:scaleY(.5)}
-  50%    {opacity:1;  transform:scaleY(1)  }
-}
-
-/* ─── SECTION BASE ───────────────────────────── */
-.sec { position:relative; overflow:hidden; }
-.sbv {
-  position:absolute; inset:0; width:100%; height:120%;
-  object-fit:cover; z-index:0; pointer-events:none;
-  will-change:transform; top:-10%;
-}
-.sov {
-  position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:rgba(6,6,8,.83);
-}
-.sgt {
-  position:absolute; top:0; left:0; right:0; height:28%;
-  background:linear-gradient(to bottom,var(--bg),transparent);
-  z-index:2; pointer-events:none;
-}
-.sgb {
-  position:absolute; bottom:0; left:0; right:0; height:28%;
-  background:linear-gradient(to top,var(--bg),transparent);
-  z-index:2; pointer-events:none;
-}
-.si {
-  position:relative; z-index:3;
-  max-width:1300px; margin:0 auto; padding:120px 52px;
-}
-.slbl {
-  font-size:10px; letter-spacing:6px; text-transform:uppercase; color:var(--red);
-  margin-bottom:10px; display:flex; align-items:center; gap:12px;
-}
-.slbl::before { content:''; display:inline-block; width:22px; height:1px; background:var(--red); }
-.stitle {
-  font-family:var(--fd); font-size:clamp(42px,6vw,84px);
-  font-weight:700; line-height:.93; letter-spacing:1px; text-transform:uppercase;
-  color:var(--white);
-}
-
-/* ─── REVEAL ─────────────────────────────────── */
-.rv { opacity:0; transform:translateY(32px); transition:opacity .9s ease, transform .9s cubic-bezier(.215,.61,.355,1); }
-.rv.up { opacity:1; transform:none; }
-.d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s} .d4{transition-delay:.32s} .d5{transition-delay:.40s}
-
-/* ─── ABOUT ──────────────────────────────────── */
-.about-grid {
-  margin-top:60px; display:grid;
-  grid-template-columns:300px 1fr; gap:68px; align-items:start;
-}
-.photo-wrap { position:relative; }
-.photo-wrap::after {
+.nav-links a::after {
   content:''; position:absolute;
-  inset:14px -14px -14px 14px;
-  border:1px solid var(--bdr-red); border-radius:3px;
-  z-index:0; transition:inset .4s;
+  bottom:4px; left:14px; right:14px;
+  height:1px; background:var(--ochre);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .3s;
 }
-.photo-wrap:hover::after { inset:8px -8px -8px 8px; }
-.photo-wrap img {
-  width:100%; border-radius:3px; display:block;
+.nav-links a:hover { color:var(--white); }
+.nav-links a:hover::after,
+.nav-links a.active::after { transform:scaleX(1); }
+.nav-links a.active { color:var(--white); }
+
+/* ═══════════════════════════════════════════════
+   PROGRESS + COUNTER + HINT
+═══════════════════════════════════════════════ */
+#progress {
+  position:fixed; bottom:0; left:0;
+  height:2px; background:var(--ochre);
+  z-index:8000; transform-origin:left; transform:scaleX(0);
+}
+#counter {
+  position:fixed; bottom:34px; left:48px;
+  z-index:8000; font-family:var(--fs); font-size:12px; font-style:italic;
+  letter-spacing:.1em; color:rgba(240,232,216,.2);
+  opacity:0; transition:opacity .5s ease .3s;
+}
+body.entered #counter { opacity:1; }
+#counter .cur { color:var(--ochre); font-size:20px; font-family:var(--fo); font-weight:700; vertical-align:middle; }
+
+#scroll-hint {
+  position:fixed; bottom:34px; right:48px; z-index:8000;
+  display:flex; align-items:center; gap:10px;
+  font-size:11px; font-style:italic; font-family:var(--fs);
+  color:rgba(240,232,216,.2);
+  opacity:0; transition:opacity .5s ease 1s;
+}
+body.entered #scroll-hint { opacity:1; }
+#scroll-hint.hidden { opacity:0 !important; }
+#scroll-hint svg { animation:hint 1.6s ease-in-out infinite; }
+@keyframes hint {
+  0%,100%{ transform:translateX(0); opacity:.4; }
+  50%    { transform:translateX(8px); opacity:1; }
+}
+
+/* ═══════════════════════════════════════════════
+   HORIZONTAL SCROLL ENGINE
+═══════════════════════════════════════════════ */
+#scroll-container { position:fixed; inset:0; overflow:hidden; }
+#scroll-track {
+  display:flex; height:100vh;
+  will-change:transform;
+}
+.panel {
+  flex-shrink:0; height:100vh;
+  position:relative; overflow:hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   DIVIDER PANELS
+═══════════════════════════════════════════════ */
+.div-panel {
+  width:140px; background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+}
+.div-line {
+  width:1px; height:55%;
+  background:linear-gradient(to bottom,transparent,rgba(193,127,58,.2),transparent);
+}
+.div-ghost {
+  position:absolute;
+  font-family:var(--fd); font-size:80px;
+  color:rgba(193,127,58,.04);
+  writing-mode:vertical-rl;
+  letter-spacing:.1em; user-select:none; pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════════
+   CHAPTER INTRO PANELS
+═══════════════════════════════════════════════ */
+.ch-panel {
+  width:100vw;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.ch-bg-letter {
+  position:absolute;
+  font-family:var(--fd); font-size:62vw; line-height:.8;
+  pointer-events:none; user-select:none; white-space:nowrap;
+}
+.ch-center { text-align:center; z-index:2; position:relative; }
+.ch-tag {
+  font-size:11px; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); margin-bottom:16px;
+}
+.ch-name {
+  font-family:var(--fd);
+  font-size:clamp(52px,11vw,150px);
+  line-height:.88; letter-spacing:.06em; color:var(--white);
+  text-shadow: 0 2px 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.7);
+}
+.ch-name .line { overflow:hidden; display:block; }
+.ch-name .ol  { color:transparent; -webkit-text-stroke:1.5px rgba(240,232,216,.3); }
+.ch-name .red { color:var(--ochre); }
+.ch-sub {
+  margin-top:18px; font-size:14px; line-height:1.7; font-style:italic;
+  font-family:var(--fs);
+  color:rgba(240,232,216,0.75);
+  max-width:380px; margin-left:auto; margin-right:auto; line-height:2;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.95);
+}
+
+/* ═══════════════════════════════════════════════
+   MARQUEE
+═══════════════════════════════════════════════ */
+.mq-bar {
+  position:absolute; bottom:0; left:0; right:0;
+  height:32px; border-top:1px solid var(--border);
+  overflow:hidden; display:flex; align-items:center;
+}
+.mq-inner {
+  display:flex; gap:48px; white-space:nowrap;
+  animation:mq 28s linear infinite;
+  font-size:11px; font-style:italic; font-family:var(--fs);
+  color:rgba(193,127,58,.2);
+}
+.mq-inner em { font-style:normal; color:var(--ochre); }
+@keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ═══════════════════════════════════════════════
+   CROSSHAIR + FLOAT-TAG
+═══════════════════════════════════════════════ */
+.xhair {
+  position:absolute; width:26px; height:26px; pointer-events:none;
+}
+.xhair::before,.xhair::after {
+  content:''; position:absolute; background:rgba(193,127,58,.2);
+}
+.xhair::before { width:1px; height:100%; left:50%; }
+.xhair::after  { width:100%; height:1px; top:50%; }
+.float-tag {
+  position:absolute;
+  font-size:10px; font-style:italic; font-family:var(--fs);
+  color:rgba(193,127,58,.18);
+  transform:rotate(-90deg); white-space:nowrap;
+  user-select:none; pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════════
+   SHARED BUTTONS
+═══════════════════════════════════════════════ */
+.btn-r {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:11px 26px; background:var(--ochre); color:var(--ink);
+  font-family:var(--fd); font-size:10px; letter-spacing:3px;
+  text-transform:uppercase; font-weight:600;
+  text-decoration:none; border:none; border-radius:1px;
+  cursor:none; transition:background .3s, transform .3s;
+}
+.btn-r:hover { background:#a86d2a; transform:translateY(-2px); }
+.btn-o {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 24px; background:transparent; color:var(--muted);
+  font-family:var(--fs); font-size:12px; font-style:italic;
+  text-decoration:none; border:1px solid var(--border); border-radius:1px;
+  cursor:none; transition:color .3s, border-color .3s;
+}
+.btn-o:hover { color:var(--white); border-color:var(--ochre-bdr); }
+
+.btn-explore {
+  display:inline-flex; align-items:center; gap:16px;
+  padding:14px 32px 14px 28px;
+  background:transparent;
+  border:1px solid var(--ochre-bdr);
+  color:var(--white);
+  font-family:var(--fd); font-size:11px; letter-spacing:4px;
+  text-transform:uppercase;
+  cursor:none; position:relative; overflow:hidden;
+  transition:color .4s, border-color .4s;
+}
+.btn-explore::before {
+  content:''; position:absolute; inset:0;
+  background:var(--ochre);
+  transform:translateX(-101%);
+  transition:transform .45s cubic-bezier(.77,0,.175,1);
+  z-index:0;
+}
+.btn-explore:hover::before { transform:translateX(0); }
+.btn-explore:hover { border-color:var(--ochre); color:var(--ink); }
+.btn-explore-text { position:relative; z-index:1; }
+.btn-explore-arrow {
   position:relative; z-index:1;
-  filter:grayscale(20%); transition:filter .5s;
+  display:flex; align-items:center;
+  transition:transform .3s ease;
 }
-.photo-wrap:hover img { filter:grayscale(0); }
-.about-bio { font-size:15.5px; line-height:1.85; color:#b4b6c7; margin-bottom:14px; }
-.divider   { width:36px; height:1px; background:var(--red); margin:28px 0; }
-.sh { font-size:9px; letter-spacing:5px; text-transform:uppercase; color:var(--red); margin-bottom:12px; }
-.tags { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.btn-explore:hover .btn-explore-arrow { transform:translateX(5px); }
+
+/* ═══════════════════════════════════════════════
+   SECTION LABEL
+═══════════════════════════════════════════════ */
+.slbl {
+  font-size:11px; letter-spacing:.2em; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); display:flex; align-items:center; gap:14px;
+  margin-bottom:14px;
+}
+.slbl::before { content:''; width:22px; height:1px; background:var(--ochre); flex-shrink:0; }
+.slbl.dark { color:var(--umber); }
+.slbl.dark::before { background:var(--umber); }
+
+/* ═══════════════════════════════════════════════
+   PANEL 0 — HERO
+═══════════════════════════════════════════════ */
+#p-hero {
+  width:100vw; background:var(--bg);
+  display:flex; flex-direction:column;
+  justify-content:center; padding:0 10vw;
+  background-image:
+    radial-gradient(ellipse at 80% 50%, rgba(193,127,58,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(139,58,42,0.06) 0%, transparent 50%);
+}
+#p-hero::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    -45deg,
+    transparent, transparent 12px,
+    rgba(193,127,58,.008) 12px, rgba(193,127,58,.008) 13px
+  );
+  pointer-events:none; z-index:0; opacity:1;
+}
+
+.h-eyebrow {
+  font-size:12px; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); display:flex; align-items:center; gap:16px;
+  margin-bottom:32px; opacity:0; position:relative; z-index:1;
+}
+.h-eyebrow::before { content:''; width:36px; height:1px; background:var(--ochre); }
+
+.h-name { position:relative; z-index:1; }
+.h-name-line {
+  display:block; overflow:hidden;
+  font-family:var(--fd);
+  font-size:clamp(60px,11vw,160px);
+  line-height:.88; letter-spacing:.04em; color:var(--white);
+  text-shadow: 0 2px 40px rgba(0,0,0,0.95), 0 0 100px rgba(0,0,0,0.7);
+}
+.h-name-line span { display:block; transform:translateY(110%); }
+.h-name-line.ol span { color:transparent; -webkit-text-stroke:1.5px rgba(240,232,216,.2); }
+.h-name-line.red span { color:var(--ochre); }
+
+.h-role {
+  font-family:var(--fs); font-size:clamp(13px,1.6vw,18px); font-style:italic;
+  color:rgba(240,232,216,0.75);
+  margin-top:20px; opacity:0; position:relative; z-index:1;
+}
+.h-desc {
+  margin-top:22px; font-size:15px; line-height:1.9; font-family:var(--fb);
+  color:rgba(240,232,216,0.7); max-width:420px;
+  opacity:0; position:relative; z-index:1;
+}
+.h-desc strong { color:rgba(240,232,216,.75); font-weight:400; }
+
+.h-ctas {
+  margin-top:28px; display:flex; gap:10px;
+  opacity:0; position:relative; z-index:1;
+}
+
+.h-chapters {
+  position:absolute; right:10vw; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:18px; opacity:0; z-index:1;
+}
+.h-ch {
+  display:flex; align-items:center; gap:14px;
+  font-size:12px; font-style:italic; font-family:var(--fs);
+  color:rgba(240,232,216,.25); cursor:none; transition:color .3s;
+}
+.h-ch:hover { color:var(--white); }
+.h-ch-num {
+  font-family:var(--fd); font-size:18px;
+  color:rgba(193,127,58,.2); transition:color .3s;
+}
+.h-ch:hover .h-ch-num { color:var(--ochre); }
+.h-ch-tick { width:0; height:1px; background:var(--ochre); transition:width .3s; }
+.h-ch:hover .h-ch-tick { width:26px; }
+
+.h-year {
+  position:absolute; right:10vw; bottom:10vh;
+  font-family:var(--fd);
+  font-size:clamp(80px,15vw,230px);
+  color:transparent; -webkit-text-stroke:1px rgba(193,127,58,.05);
+  line-height:1; pointer-events:none; user-select:none; z-index:0;
+}
+
+/* ═══════════════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════════════ */
+#p-about {
+  width:90vw; background:var(--bg);
+  display:flex; align-items:center;
+  padding:0 6vw; gap:5vw;
+}
+.ab-photo { flex:0 0 220px; position:relative; }
+.ab-photo::after {
+  content:''; position:absolute;
+  inset:12px -12px -12px 12px;
+  border:1px solid var(--ochre-bdr); border-radius:1px;
+  transition:inset .4s;
+}
+.ab-photo:hover::after { inset:6px -6px -6px 6px; }
+.ab-photo::before {
+  content:''; position:absolute; top:10px; right:10px;
+  width:18px; height:18px;
+  border-top:1px solid var(--ochre); border-right:1px solid var(--ochre);
+  z-index:2; opacity:.6;
+}
+.ab-photo img {
+  width:100%; display:block; border-radius:1px;
+  position:relative; z-index:1;
+  filter:grayscale(25%) sepia(20%); transition:filter .5s;
+}
+.ab-photo:hover img { filter:grayscale(0) sepia(10%); }
+.ab-text { flex:1; max-width:520px; }
+.ab-title {
+  font-family:var(--fd);
+  font-size:clamp(36px,5vw,72px);
+  line-height:.9; letter-spacing:.04em; color:var(--white);
+  margin-bottom:20px;
+}
+.ab-title .ol { color:transparent; -webkit-text-stroke:1px rgba(240,232,216,.2); display:block; }
+.ab-bio { font-size:14px; line-height:1.84; font-family:var(--fb); color:var(--muted); margin-bottom:11px; }
+.divider { width:32px; height:1px; background:var(--ochre); margin:20px 0; }
+.sh { font-size:11px; font-style:italic; font-family:var(--fs); color:var(--ochre); margin-bottom:9px; }
+.tags { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px; }
 .tag {
-  font-size:12px; padding:6px 15px; border-radius:3px;
-  background:var(--card); border:1px solid var(--border); color:#8e91a4;
+  font-size:12px; padding:5px 13px; font-family:var(--fs); font-style:italic;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:1px; color:var(--muted);
   transition:border-color .3s, color .3s;
 }
-.tag:hover { border-color:rgba(229,57,53,.3); color:var(--white); }
-.edu {
-  border:1px solid var(--border); border-radius:3px;
-  overflow:hidden; margin:28px 0 32px;
-}
-.edu-row { padding:16px 20px; display:flex; align-items:flex-start; gap:16px; }
-.edu-row+.edu-row { border-top:1px solid var(--border); }
-.edu-dot { width:8px; height:8px; border-radius:50%; background:var(--red); margin-top:4px; flex-shrink:0; }
-.edu-deg  { font-size:14px; font-weight:500; color:var(--white); }
-.edu-meta { font-size:12px; color:var(--muted); margin-top:3px; }
-.doc-row  { display:flex; gap:12px; flex-wrap:wrap; }
+.tag:hover { border-color:var(--ochre-bdr); color:var(--white); }
+.edu { border:1px solid var(--border); border-radius:1px; overflow:hidden; margin:18px 0 22px; }
+.edu-row { padding:14px 18px; display:flex; align-items:flex-start; gap:13px; }
+.edu-row + .edu-row { border-top:1px solid var(--border); }
+.edu-dot { width:7px; height:7px; border-radius:50%; background:var(--ochre); margin-top:5px; flex-shrink:0; }
+.edu-deg { font-size:13px; font-weight:600; font-family:var(--fo); color:var(--white); }
+.edu-meta { font-size:11px; font-style:italic; font-family:var(--fs); color:var(--muted); margin-top:2px; }
 
-/* ─── PROJECTS ───────────────────────────────── */
-.proj-grid { margin-top:56px; display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+/* ═══════════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════════ */
+#p-projects {
+  width:115vw; background:var(--bg);
+  display:flex; flex-direction:column;
+  justify-content:center; padding:0 6vw;
+}
+.proj-tabs {
+  display:flex; gap:0; margin-bottom:32px;
+  border:1px solid var(--border); border-radius:1px; overflow:hidden;
+  width:fit-content;
+}
+.ptab {
+  padding:11px 22px; font-family:var(--fs); font-style:italic;
+  font-size:12px; letter-spacing:1px;
+  color:var(--muted); cursor:none; transition:color .3s, background .3s;
+  border-right:1px solid var(--border); display:flex; align-items:center; gap:8px;
+}
+.ptab:last-child { border-right:none; }
+.ptab:hover { color:var(--white); background:rgba(193,127,58,.03); }
+.ptab.on { color:var(--white); background:rgba(193,127,58,.08); }
+.ptab i { color:var(--ochre); font-size:12px; }
+.pcat { display:none; }
+.pcat.on { display:block; animation:cat-in .45s ease forwards; }
+@keyframes cat-in { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+.proj-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.proj-grid.g2 { grid-template-columns:repeat(2,1fr); }
 .pc {
-  border-radius:3px; overflow:hidden;
-  border:1px solid var(--border); background:var(--card);
-  transition:border-color .4s, transform .5s cubic-bezier(.215,.61,.355,1);
-  cursor:none;
+  border:1px solid var(--border); border-radius:1px;
+  background:var(--card); overflow:hidden;
+  transition:border-color .4s, transform .45s;
+  cursor:none; position:relative;
 }
-.pc:hover { border-color:var(--bdr-red); transform:translateY(-6px); }
-.pc img {
-  width:100%; height:210px; object-fit:cover; display:block;
-  filter:saturate(.55); transition:filter .6s, transform .6s;
+.pc:hover { border-color:var(--ochre-bdr); transform:translateY(-5px); }
+.pc::before,.pc::after {
+  content:''; position:absolute; width:12px; height:12px;
+  pointer-events:none; opacity:0; transition:opacity .3s; z-index:2;
 }
-.pc:hover img { filter:saturate(1); transform:scale(1.04); }
-.pc-body { padding:20px 24px 24px; }
-.pc-eng { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--red); margin-bottom:7px; }
-.pc-title { font-family:var(--fd); font-size:25px; font-weight:600; color:var(--white); margin-bottom:9px; }
-.pc-desc  { font-size:13px; line-height:1.7; color:var(--muted); }
-
-/* ─── NOVELS ─────────────────────────────────── */
-.nov-row {
-  margin-top:56px; display:flex; gap:16px;
-  overflow-x:auto; padding-bottom:6px;
-  scrollbar-width:thin; scrollbar-color:var(--dim) transparent;
-}
-.nc {
-  min-width:210px; flex-shrink:0; border-radius:3px; overflow:hidden;
-  border:1px solid var(--border); background:var(--card);
-  transition:border-color .4s, transform .5s; cursor:none;
-}
-.nc:hover { border-color:rgba(139,92,246,.5); transform:translateY(-8px); }
-.nc-cov-wrap { overflow:hidden; height:280px; }
-.nc-cov {
+.pc::before { top:8px; right:8px; border-top:1px solid var(--ochre); border-right:1px solid var(--ochre); }
+.pc::after  { bottom:8px; left:8px; border-bottom:1px solid var(--ochre); border-left:1px solid var(--ochre); }
+.pc:hover::before,.pc:hover::after { opacity:1; }
+.pc-img-w { overflow:hidden; height:150px; }
+.pc-img {
   width:100%; height:100%; object-fit:cover; display:block;
-  filter:saturate(.5); transition:filter .6s, transform .6s;
+  filter:saturate(.4) sepia(.3);
+  transition:filter .5s, transform .5s;
 }
-.nc:hover .nc-cov { filter:saturate(1); transform:scale(1.07); }
-.nc-body { padding:15px 17px 18px; }
-.nc-gen  { font-size:10px; letter-spacing:3px; color:#8b5cf6; text-transform:uppercase; margin-bottom:5px; }
-.nc-title { font-family:var(--fd); font-size:17px; font-weight:600; color:var(--white); margin-bottom:12px; line-height:1.15; }
-.nc-link {
-  font-size:10px; letter-spacing:3px; text-transform:uppercase;
-  color:var(--muted); text-decoration:none;
-  display:flex; align-items:center; gap:5px; transition:color .3s;
+.pc:hover .pc-img { filter:saturate(.85) sepia(.15); transform:scale(1.05); }
+.pc-body { padding:15px 17px 18px; }
+.pc-eng { font-size:10px; font-style:italic; font-family:var(--fs); color:var(--ochre); margin-bottom:6px; }
+.pc-title { font-family:var(--fo); font-size:17px; font-weight:700; letter-spacing:.5px; color:var(--white); margin-bottom:7px; }
+.pc-desc { font-size:13px; line-height:1.7; font-family:var(--fb); color:var(--muted); margin-bottom:13px; }
+.pc-btns { display:flex; gap:7px; flex-wrap:wrap; }
+.demo-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:10px; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); border:1px solid var(--ochre-bdr);
+  background:var(--ochre-dim); padding:2px 9px; border-radius:1px;
+  margin-bottom:8px;
 }
-.nc-link:hover { color:var(--white); }
 
-/* ─── STATEMENT ──────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   NOVELS SHELF
+═══════════════════════════════════════════════ */
+#p-novels {
+  width:100vw; background:var(--bg);
+  display:flex; flex-direction:column;
+  align-items:flex-start; justify-content:center;
+  padding:80px 6vw 40px; gap:28px;
+}
+.shelf {
+  display:flex; gap:0; height:400px;
+  border:1px solid var(--border); border-radius:2px;
+  overflow:hidden; width:100%;
+  box-shadow: 0 4px 40px rgba(193,127,58,0.06);
+}
+.si {
+  position:relative; flex:1; overflow:hidden; cursor:none;
+  border-right:1px solid rgba(255,255,255,.04);
+  transition:flex .68s cubic-bezier(.77,0,.175,1);
+}
+.si:last-child { border-right:none; }
+.si.open { flex:4.6; }
+.si-cover {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; filter:saturate(.2) brightness(.55);
+  transition:filter .7s, transform .8s cubic-bezier(.215,.61,.355,1);
+}
+.si.open .si-cover { filter:saturate(.75) brightness(.65); transform:scale(1.05); }
+.si-ov {
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(to top,rgba(7,7,10,.98) 0%,rgba(7,7,10,.25) 55%,transparent 100%);
+}
+.si-accent {
+  position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:var(--ochre); z-index:3;
+  transform:scaleY(0); transform-origin:bottom;
+  transition:transform .45s ease .2s;
+}
+.si.open .si-accent { transform:scaleY(1); }
+.si-label {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  white-space:nowrap; z-index:2;
+  font-family:var(--fs); font-size:12px; font-style:italic; letter-spacing:2px;
+  color:rgba(240,232,216,.25);
+  transition:opacity .3s;
+}
+.si.open .si-label { opacity:0; }
+.si:hover:not(.open) .si-label { color:rgba(240,232,216,.5); }
+.si-num {
+  position:absolute; top:13px; right:13px; z-index:3;
+  font-family:var(--fd); font-size:10px; letter-spacing:3px;
+  color:rgba(240,232,216,.12); transition:color .3s;
+}
+.si.open .si-num { color:var(--ochre); }
+.si-body {
+  position:absolute; bottom:0; left:0; right:0; z-index:2;
+  padding:22px 24px; opacity:0; transform:translateY(12px);
+  pointer-events:none;
+  transition:opacity .4s ease .22s, transform .4s ease .22s;
+}
+.si.open .si-body { opacity:1; transform:none; pointer-events:auto; }
+.si-genre {
+  font-size:10px; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.si-genre::before { content:''; width:12px; height:1px; background:var(--ochre); }
+.si-title {
+  font-family:var(--fo); font-size:clamp(14px,1.8vw,21px);
+  font-weight:700; letter-spacing:.5px; color:var(--canvas);
+  margin-bottom:8px; line-height:1.1;
+}
+.si-desc { font-size:13px; line-height:1.7; font-family:var(--fb); color:rgba(240,232,216,.5); margin-bottom:16px; max-width:420px; }
+.si-link {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:8px 22px; background:var(--ochre); color:var(--ink);
+  font-size:10px; font-family:var(--fd); letter-spacing:2px; text-transform:uppercase;
+  text-decoration:none; border-radius:1px; font-weight:600;
+  transition:background .3s;
+}
+.si-link:hover { background:#a86d2a; }
 
-/* big quote banner */
-.stmt-banner {
-  margin-top:60px;
-  padding:52px 60px;
-  border:1px solid var(--border); border-radius:3px;
-  background:var(--card);
-  position:relative; overflow:hidden;
+/* ═══════════════════════════════════════════════
+   STATEMENT
+═══════════════════════════════════════════════ */
+#p-statement {
+  width:100vw; background:var(--canvas);
+  display:flex; align-items:stretch;
+  padding:0; gap:0; min-height:100vh;
 }
-.stmt-banner::before {
-  content:'';
-  position:absolute; left:0; top:0; bottom:0; width:3px;
-  background:var(--red);
+.stmt-left {
+  flex:0 0 38vw;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:80px 5vw 80px 7vw;
+  border-right:1px solid rgba(42,31,20,.1);
 }
-.stmt-banner blockquote {
+.stmt-title {
   font-family:var(--fd);
-  font-size:clamp(22px,3.2vw,38px); font-weight:300; line-height:1.4;
-  letter-spacing:1px; color:rgba(255,255,255,.8);
+  font-size:clamp(36px,5.5vw,82px);
+  line-height:.9; color:var(--ink); margin-bottom:32px;
 }
-.stmt-banner blockquote em { font-style:normal; color:var(--red); }
-.stmt-banner cite {
-  display:block; margin-top:16px;
-  font-size:10px; letter-spacing:5px; text-transform:uppercase;
-  color:var(--muted); font-style:normal;
+.stmt-title .ol  { color:transparent; -webkit-text-stroke:1.5px rgba(42,31,20,.25); display:block; }
+.stmt-title .red { color:var(--sienna); display:block; }
+.stmt-quote {
+  font-family:var(--fs); font-style:italic;
+  font-size:clamp(14px,1.4vw,18px);
+  line-height:1.8; color:rgba(42,31,20,.55);
+  padding-left:20px; border-left:2px solid var(--ochre);
+  max-width:380px;
 }
-
-/* accordion-style statement cards */
-.stmt-grid {
-  margin-top:40px;
-  display:grid; grid-template-columns:1fr 1fr; gap:0;
-  border:1px solid var(--border); border-radius:3px; overflow:hidden;
+.stmt-quote cite {
+  display:block; margin-top:14px;
+  font-size:10px; letter-spacing:3px; font-style:normal;
+  color:rgba(42,31,20,.3); text-transform:uppercase; font-family:var(--fd);
+}
+.stmt-right {
+  flex:1; overflow-y:auto;
+  display:flex; flex-direction:column;
 }
 .sc {
-  padding:40px 44px; border-bottom:1px solid var(--border);
-  position:relative; transition:background .4s; cursor:default;
+  padding:28px 40px;
+  border-bottom:1px solid rgba(42,31,20,.07);
+  transition:background .3s; cursor:default; flex-shrink:0;
 }
-.sc:nth-child(even)          { border-left:1px solid var(--border); }
-.sc:nth-last-child(-n+2)     { border-bottom:none; }
-.sc:hover { background:rgba(255,255,255,.025); }
-
-.sc-num  { font-family:var(--fd); font-size:10px; letter-spacing:5px; color:var(--dim); margin-bottom:14px; }
+.sc:last-child { border-bottom:none; }
+.sc:hover { background:rgba(193,127,58,.05); }
+.sc-num  { font-size:10px; font-style:italic; font-family:var(--fs); color:rgba(42,31,20,.3); margin-bottom:6px; }
 .sc-bar  {
-  width:20px; height:1px; background:var(--red); margin-bottom:14px;
+  width:18px; height:1px; background:var(--ochre); margin-bottom:10px;
   transform:scaleX(0); transform-origin:left;
-  transition:transform .5s ease .15s;
+  transition:transform .5s ease .1s;
 }
 .sc:hover .sc-bar { transform:scaleX(1); }
-.sc-head { font-family:var(--fd); font-size:21px; font-weight:600; letter-spacing:1px; color:var(--white); margin-bottom:12px; }
-.sc-icon { font-size:18px; color:var(--red); margin-bottom:14px; opacity:.7; }
-.sc-body { font-size:13.5px; line-height:1.82; color:var(--muted); }
-.sc-body ul { margin-top:12px; list-style:none; display:flex; flex-direction:column; gap:8px; }
-.sc-body ul li::before { content:'→ '; color:var(--red); }
-
-/* full statement text block */
-.stmt-full {
-  margin-top:40px;
-  padding:48px 52px;
-  border:1px solid var(--border); border-radius:3px;
-  background:var(--card);
+.sc-head { font-family:var(--fo); font-size:15px; font-weight:700; letter-spacing:.5px; color:var(--ink); margin-bottom:8px; }
+.sc-body { font-size:13px; line-height:1.88; font-family:var(--fb); color:rgba(42,31,20,.58); }
+.stmt-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; }
+.stmt-pill {
+  font-family:var(--fs); font-size:11px; font-style:italic;
+  color:var(--umber); padding:5px 12px;
+  border:1px solid rgba(42,31,20,.15); border-radius:1px;
+  background:rgba(42,31,20,.04);
 }
-.stmt-section { margin-bottom:44px; }
-.stmt-section:last-child { margin-bottom:0; }
-.stmt-section-label {
-  font-size:9px; letter-spacing:6px; text-transform:uppercase;
-  color:var(--red); margin-bottom:12px;
+.sc-list { display:block; margin-top:8px; font-style:italic; color:rgba(42,31,20,.5); line-height:2; }
+
+/* ═══════════════════════════════════════════════
+   STATEMENT 2
+═══════════════════════════════════════════════ */
+#p-statement2 {
+  width:110vw; background:var(--canvas);
+  display:flex; align-items:stretch;
+  padding:0; gap:0; min-height:100vh;
+  border-left:1px solid rgba(42,31,20,.08);
+}
+.stmt2-header {
+  flex:0 0 30vw;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:80px 4vw 80px 6vw;
+  border-right:1px solid rgba(42,31,20,.1);
+  background:rgba(42,31,20,.03);
+}
+.stmt2-big {
+  font-family:var(--fd);
+  font-size:clamp(28px,3.5vw,52px);
+  line-height:.95; color:var(--ink); margin-bottom:24px;
+}
+.stmt2-big .ol { color:transparent; -webkit-text-stroke:1px rgba(42,31,20,.22); display:block; }
+.stmt2-big .oc { color:var(--sienna); display:block; }
+.stmt2-tagline {
+  font-family:var(--fs); font-style:italic;
+  font-size:14px; line-height:1.75; color:rgba(42,31,20,.45);
+  border-top:1px solid rgba(42,31,20,.1);
+  padding-top:20px; margin-top:4px;
+}
+.stmt2-cards {
+  flex:1; overflow-y:auto;
+  display:grid; grid-template-columns:1fr 1fr;
+  grid-auto-rows:min-content; align-content:start; gap:0;
+}
+.sc2 {
+  padding:32px 36px;
+  border-right:1px solid rgba(42,31,20,.07);
+  border-bottom:1px solid rgba(42,31,20,.07);
+  transition:background .35s; cursor:default;
+}
+.sc2:nth-child(even) { border-right:none; }
+.sc2:hover { background:rgba(193,127,58,.04); }
+.sc2-num {
+  font-size:10px; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); margin-bottom:6px;
   display:flex; align-items:center; gap:10px;
 }
-.stmt-section-label::before { content:''; display:inline-block; width:16px; height:1px; background:var(--red); }
-.stmt-section-title {
-  font-family:var(--fd); font-size:24px; font-weight:600; letter-spacing:1px;
-  color:var(--white); margin-bottom:14px;
+.sc2-num::before { content:''; width:16px; height:1px; background:var(--ochre); display:inline-block; }
+.sc2-head {
+  font-family:var(--fo); font-size:14px; font-weight:700;
+  letter-spacing:.5px; color:var(--ink);
+  margin-bottom:12px; text-transform:uppercase;
 }
-.stmt-section p {
-  font-size:15px; line-height:1.9; color:#a8aab9;
+.sc2-body { font-size:13px; line-height:1.9; font-family:var(--fb); color:rgba(42,31,20,.56); }
+.stmt2-sidebar-quote {
+  margin-top:28px; padding:16px 20px;
+  border:1px solid rgba(42,31,20,.12);
+  border-left:3px solid var(--ochre);
+  background:rgba(42,31,20,.03);
+  font-family:var(--fs); font-style:italic;
+  font-size:13px; line-height:1.8; color:rgba(42,31,20,.5);
 }
-.stmt-section ul {
-  margin-top:14px; list-style:none; display:flex; flex-direction:column; gap:10px;
+.sc2-list { list-style:none; margin-top:12px; padding:0; }
+.sc2-list li {
+  font-family:var(--fb); font-style:italic;
+  font-size:13px; line-height:1.9; color:rgba(42,31,20,.55);
+  padding-left:20px; position:relative;
 }
-.stmt-section ul li {
-  font-size:15px; color:#a8aab9; padding-left:20px; position:relative;
+.sc2-list li::before { content:'—'; position:absolute; left:0; color:var(--ochre); font-style:normal; }
+.stmt2-closing {
+  grid-column:1/-1; padding:36px 36px;
+  border-top:1px solid rgba(42,31,20,.07);
+  background:rgba(42,31,20,.02);
 }
-.stmt-section ul li::before { content:'→'; position:absolute; left:0; color:var(--red); }
+.stmt2-closing-quote {
+  font-family:var(--fs); font-style:italic;
+  font-size:clamp(14px,1.5vw,18px);
+  line-height:1.85; color:rgba(42,31,20,.6);
+  padding-left:22px; border-left:3px solid var(--ochre); max-width:700px;
+}
+.stmt2-closing-cite {
+  margin-top:16px; padding-left:22px;
+  font-size:10px; letter-spacing:3px; color:rgba(42,31,20,.28);
+  text-transform:uppercase; font-family:var(--fd);
+}
 
-.closing-block {
-  margin-top:48px; padding:36px 40px;
-  border:1px solid var(--bdr-red); border-radius:3px;
-  background:var(--red-soft); text-align:center;
+/* ═══════════════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════════════ */
+#p-contact {
+  width:100vw; background:var(--bg);
+  display:flex; align-items:center;
+  padding:0 7vw; gap:6vw;
+  background-image: radial-gradient(ellipse at 10% 50%, rgba(139,58,42,0.06) 0%, transparent 60%);
 }
-.closing-block p { font-family:var(--fd); font-size:20px; letter-spacing:2px; color:var(--white); line-height:1.5; }
-.closing-block em { font-style:normal; color:var(--red); }
-
-/* ─── CONTACT ────────────────────────────────── */
-.con-layout {
-  margin-top:60px; display:grid;
-  grid-template-columns:1fr 1fr; gap:72px; align-items:center;
-}
-.con-head {
+.con-left { flex:1; }
+.con-title {
   font-family:var(--fd);
-  font-size:clamp(44px,6vw,78px); font-weight:700; line-height:.93;
-  letter-spacing:1px; text-transform:uppercase; margin-bottom:20px;
+  font-size:clamp(42px,7.5vw,110px);
+  line-height:.87; letter-spacing:.03em; color:var(--white); margin-bottom:18px;
 }
-.con-head em { font-style:normal; color:var(--red); }
-.con-sub { font-size:15px; line-height:1.75; color:var(--muted); max-width:360px; }
-.con-list { display:flex; flex-direction:column; gap:10px; }
+.con-title em { font-style:normal; color:var(--ochre); }
+.con-sub { font-size:14px; line-height:1.8; font-style:italic; font-family:var(--fs); color:var(--muted); max-width:340px; }
+.socials { display:flex; gap:8px; margin-top:22px; }
+.sb {
+  width:42px; height:42px; border-radius:2px;
+  background:var(--card); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:var(--muted); text-decoration:none;
+  transition:all .3s;
+}
+.sb:hover { background:var(--ochre-dim); border-color:var(--ochre-bdr); color:var(--ochre); transform:translateY(-3px); }
+.con-right { flex:1; display:flex; flex-direction:column; gap:9px; }
 .con-row {
-  display:flex; align-items:center; gap:16px;
-  padding:16px 20px; border-radius:3px;
+  display:flex; align-items:center; gap:14px;
+  padding:14px 17px; border-radius:2px;
   background:var(--card); border:1px solid var(--border);
   text-decoration:none; color:var(--white);
   transition:border-color .3s, transform .4s;
 }
-.con-row:hover { border-color:var(--bdr-red); transform:translateX(6px); }
+.con-row:hover { border-color:var(--ochre-bdr); transform:translateX(6px); }
 .con-ic {
-  width:38px; height:38px; border-radius:3px;
-  background:var(--red-soft); display:flex; align-items:center; justify-content:center;
-  font-size:15px; color:var(--red); flex-shrink:0;
+  width:36px; height:36px; border-radius:2px;
+  background:var(--ochre-dim); display:flex; align-items:center;
+  justify-content:center; font-size:14px; color:var(--ochre); flex-shrink:0;
 }
-.con-lbl   { font-size:10px; letter-spacing:2px; color:var(--muted); margin-bottom:2px; }
-.con-val   { font-size:14px; }
-.socials   { display:flex; gap:9px; margin-top:26px; }
-.sb {
-  width:44px; height:44px; border-radius:3px;
-  background:var(--card); border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px; color:var(--muted); text-decoration:none;
-  transition:all .3s;
-}
-.sb:hover { background:var(--red-soft); border-color:var(--bdr-red); color:var(--red); transform:translateY(-3px); }
+.con-lbl { font-size:10px; font-style:italic; font-family:var(--fs); color:var(--muted); margin-bottom:2px; }
+.con-val { font-size:13px; font-family:var(--fb); }
 
-/* ─── FOOTER ─────────────────────────────────── */
-footer {
-  border-top:1px solid var(--border);
-  max-width:1300px; margin:0 auto; padding:26px 52px;
-  display:flex; justify-content:space-between; align-items:center;
-  font-size:11px; letter-spacing:2px; color:var(--dim);
+/* ═══════════════════════════════════════════════
+   ★ OUTRO — TOPOGRAPHY REVEAL
+═══════════════════════════════════════════════ */
+#p-outro {
+  width:100vw; background:var(--bg);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  background-image: radial-gradient(ellipse at center, rgba(193,127,58,0.03) 0%, transparent 70%);
 }
-footer a { color:var(--muted); text-decoration:none; transition:color .3s; }
-footer a:hover { color:var(--white); }
 
-/* ─── RESPONSIVE ─────────────────────────────── */
-@media(max-width:1020px){
-  .about-grid, .con-layout { grid-template-columns:1fr; }
-  .about-grid .photo-wrap { max-width:280px; }
-  .proj-grid  { grid-template-columns:1fr; }
-  .stmt-grid  { grid-template-columns:1fr; }
-  .sc:nth-child(even) { border-left:none; }
-  .sc:nth-last-child(-n+2){ border-bottom:1px solid var(--border); }
-  .sc:last-child { border-bottom:none; }
+/* Topography SVG canvas — full background */
+#topo-canvas {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none;
+  z-index:0;
+  opacity:0;
+  transition: opacity 1.2s ease;
+  transform-origin: center;
 }
-@media(max-width:640px){
-  .si           { padding:80px 22px; }
-  .hero-content { padding:0 22px 52px; }
-  .scroll-hint  { right:22px; }
-  .nav          { padding:14px 22px; }
-  .nav-links .nl:not(.cta){ display:none; }
-  footer        { padding:22px; flex-direction:column; gap:8px; }
-  .stmt-full    { padding:32px 22px; }
-  .stmt-banner  { padding:32px 22px; }
+#p-outro.topo-active #topo-canvas { opacity:1; }
+
+/* Subtle mouse-parallax wrapper */
+#topo-inner {
+  position:absolute; inset:-5%;
+  width:110%; height:110%;
+  pointer-events:none; z-index:0;
+  transition: transform 0.4s cubic-bezier(.215,.61,.355,1);
 }
+
+/* Elevation labels scattered across topo */
+.topo-label {
+  position:absolute;
+  font-family:var(--fd); font-size:9px; letter-spacing:3px;
+  color:rgba(193,127,58,0.18);
+  pointer-events:none; user-select:none;
+  opacity:0;
+  transition:opacity 1.8s ease;
+}
+#p-outro.topo-active .topo-label { opacity:1; }
+
+/* Radial center glow */
+.outro-glow {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:60vw; height:60vh;
+  background:radial-gradient(ellipse, rgba(193,127,58,0.06) 0%, transparent 70%);
+  pointer-events:none; z-index:1;
+}
+
+.outro-circles { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:2; }
+.oc { position:absolute; border-radius:50%; border:1px solid rgba(193,127,58,.05); animation:oc-pulse 4s ease-in-out infinite; }
+.oc:nth-child(1){ width:65vh; height:65vh; }
+.oc:nth-child(2){ width:47vh; height:47vh; border-color:rgba(193,127,58,.07); animation-delay:.5s; }
+.oc:nth-child(3){ width:28vh; height:28vh; border-color:rgba(193,127,58,.1); animation-delay:1s; }
+@keyframes oc-pulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.04);opacity:1} }
+
+.outro-ey {
+  font-size:12px; font-style:italic; font-family:var(--fs);
+  color:var(--ochre); margin-bottom:28px; z-index:10; position:relative;
+  display:flex; align-items:center; gap:14px;
+  text-shadow: 0 0 30px rgba(193,127,58,0.5);
+}
+.outro-ey::before,.outro-ey::after { content:''; width:34px; height:1px; background:var(--ochre); opacity:.4; }
+.outro-hl {
+  font-family:var(--fd);
+  font-size:clamp(40px,8vw,115px);
+  line-height:.88; text-align:center; letter-spacing:.04em;
+  z-index:10; position:relative;
+  text-shadow: 0 2px 60px rgba(0,0,0,1), 0 0 120px rgba(0,0,0,0.8);
+}
+.outro-hl .line { overflow:hidden; }
+.outro-hl .line span { display:block; transform:translateY(110%); }
+.outro-hl .ol  { color:transparent; -webkit-text-stroke:1px rgba(240,232,216,.5); }
+.outro-hl .red { color:var(--ochre); text-shadow: 0 0 40px rgba(193,127,58,0.6), 0 2px 60px rgba(0,0,0,1); }
+.outro-sub {
+  margin-top:28px;
+  font-size:14px; font-style:italic; font-family:var(--fs);
+  color:rgba(240,232,216,.7); text-align:center; max-width:440px; line-height:1.9;
+  z-index:10; position:relative;
+  text-shadow: 0 1px 16px rgba(0,0,0,0.98);
+}
+.outro-btns { margin-top:40px; display:flex; gap:12px; z-index:10; position:relative; }
+.outro-credit {
+  position:absolute; bottom:28px;
+  font-size:11px; font-style:italic; font-family:var(--fs);
+  color:rgba(193,127,58,.45); z-index:10;
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════ */
+.modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(26,20,16,.94); z-index:99990;
+  align-items:center; justify-content:center;
+  backdrop-filter:blur(20px); padding:20px;
+}
+.modal.open { display:flex; }
+.modal-box {
+  background:#1e1812; border:1px solid rgba(193,127,58,.15);
+  border-radius:2px; overflow:hidden;
+  max-width:1100px; width:100%; max-height:90vh;
+  display:flex; flex-direction:column; position:relative;
+}
+.modal-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--ochre),transparent);
+}
+.modal-hdr {
+  padding:20px 28px 14px;
+  border-bottom:1px solid rgba(193,127,58,.12); text-align:center; flex-shrink:0;
+}
+.modal-hdr h2 { font-family:var(--fd); font-size:1.5rem; color:var(--ochre); letter-spacing:3px; }
+.modal-hdr p  { font-size:.9rem; font-style:italic; font-family:var(--fs); color:var(--muted); margin-top:3px; }
+.modal-x {
+  position:absolute; top:12px; right:16px;
+  background:none; border:none; color:var(--muted);
+  font-size:1.9rem; line-height:1; cursor:pointer; transition:color .2s;
+}
+.modal-x:hover { color:var(--ochre); }
+.modal-body { overflow-y:auto; flex:1; padding:0 28px 28px; }
+.modal-vid { flex:1; background:#0f0d0a; display:flex; align-items:center; justify-content:center; padding:0 26px 26px; }
+.modal-vid video { width:100%; max-height:62vh; object-fit:contain; }
+.bst { width:100%; border-collapse:collapse; font-size:.85rem; color:var(--muted); margin-top:20px; }
+.bst th,.bst td { padding:12px 14px; text-align:left; border-bottom:1px solid rgba(193,127,58,.08); }
+.bst th { background:rgba(193,127,58,.06); color:var(--canvas); font-family:var(--fd); font-size:.72rem; text-transform:uppercase; letter-spacing:1px; }
+.bst tr:nth-child(even) { background:rgba(193,127,58,.03); }
+.bst tr:hover { background:rgba(193,127,58,.07); }
+
+/* ═══════════════════════════════════════════════
+   PAINT REVEAL
+═══════════════════════════════════════════════ */
+.pb-color,.pb-canvas,.pb-vig {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none; user-select:none;
+}
+.pb-color {
+  z-index:1; object-fit:cover; object-position:center;
+  width:100%; height:100%; display:block;
+}
+.pb-canvas  { z-index:2; }
+.pb-vig {
+  z-index:3;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%,
+    rgba(18,12,8,0.55) 0%, rgba(18,12,8,0.88) 50%, rgba(18,12,8,0.99) 100%);
+}
+.panel > *:not(.pb-color):not(.pb-canvas):not(.pb-vig) {
+  position:relative; z-index:10;
+}
+#pb-ring {
+  position:fixed; border-radius:50%;
+  border:1.5px solid rgba(193,127,58,0.6);
+  pointer-events:none; z-index:99997;
+  transform:translate(-50%,-50%);
+  width:220px; height:220px;
+  transition: border-color .2s;
+  mix-blend-mode: screen;
+}
+
+/* Statement canvas fix */
+#p-statement::before {
+  content:''; position:absolute; inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='t'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23t)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size:200px; pointer-events:none; z-index:0; mix-blend-mode:multiply;
+}
+#p-statement > * { position:relative; z-index:1; }
 </style>
 </head>
 <body>
 
-<!-- CURSOR -->
 <div id="cur"></div>
 <div id="cur-ring"></div>
+<div id="noise"></div>
+<div id="pb-ring"></div>
 
-<!-- ═══════════════════════════════════════════
-     CINEMATIC ENTRANCE
-══════════════════════════════════════════════ -->
-<div id="intro">
-  <div class="intro-rule"></div>
-  <h1 class="intro-name">JANE<em>SH</em>WARAN <em>R</em></h1>
-  <p class="intro-role">Game Designer &nbsp;·&nbsp; Narrative Designer &nbsp;·&nbsp; 3D Artist &nbsp;·&nbsp; Author</p>
-  <div class="intro-bar-wrap"><div class="intro-bar"></div></div>
-  <p class="intro-pct" id="intro-pct">0%</p>
+<!-- ══════════════════════════════════
+     ★ NEW ENTRANCE — INK CURTAIN SPLIT
+══════════════════════════════════════ -->
+<div id="preloader">
+  <!-- Two curtain halves that slide apart -->
+  <div class="pl-curtain top" id="pl-top"></div>
+  <div class="pl-curtain bottom" id="pl-bot"></div>
+
+  <!-- Center reveal stage -->
+  <div class="pl-center">
+    <!-- Horizontal filament lines glow before name appears -->
+    <div class="pl-filament f1"><div class="pl-filament-inner" id="fil1"></div></div>
+    <div class="pl-filament f2"><div class="pl-filament-inner" id="fil2"></div></div>
+
+    <!-- Ink drop bg -->
+    <div class="pl-ink-drop" id="ink-drop"></div>
+
+    <!-- Name clips in from center -->
+    <div class="pl-name-block" id="pl-name-block">
+      <div class="pl-name-main">JANE<em>SH</em>WARAN <em>R</em></div>
+      <div class="pl-role-text" id="pl-role">Narrative Designer · Game Designer · 3D Artist · Author</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="pl-progress-wrap" id="pl-prog-wrap">
+      <div class="pl-progress-bar" id="pl-prog"></div>
+    </div>
+    <div class="pl-pct-text" id="pl-pct">0%</div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     NAV
-══════════════════════════════════════════════ -->
-<nav class="nav" id="nav">
+<!-- ══════════════ NAV ══════════════ -->
+<nav id="nav">
   <a class="nav-logo" href="#"><span>J</span>ANESHWARAN</a>
-  <div class="nav-links">
-    <a class="nl" href="#about">About</a>
-    <a class="nl" href="#projects">Projects</a>
-    <a class="nl" href="#novels">Novels</a>
-    <a class="nl" href="#statement">Statement</a>
-    <a class="nl cta" href="#contact">Contact</a>
-  </div>
+  <ul class="nav-links">
+    <li><a href="#" data-s="0" class="active">Home</a></li>
+    <li><a href="#" data-s="1">About</a></li>
+    <li><a href="#" data-s="2">Projects</a></li>
+    <li><a href="#" data-s="3">Novels</a></li>
+    <li><a href="#" data-s="4">Statement</a></li>
+    <li><a href="#" data-s="5">Contact</a></li>
+  </ul>
 </nav>
 
-<!-- ═══════════════════════════════════════════
-     HERO
-══════════════════════════════════════════════ -->
-<section class="hero" id="hero">
-  <video class="hero-vid" data-parallax="0.3" autoplay loop muted playsinline>
-    <source src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/myFolder/video0001-0300.mp4" type="video/mp4">
-  </video>
-  <div class="hero-vignette"></div>
-  <div class="hero-fade-bot"></div>
+<div id="progress"></div>
+<div id="counter"><span class="cur" id="cur-num">01</span>&nbsp;/&nbsp;08</div>
+<div id="scroll-hint">
+  Scroll
+  <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+    <path d="M0 6h22M17 1l5 5-5 5" stroke="rgba(193,127,58,.6)" stroke-width="1.2" stroke-linecap="round"/>
+  </svg>
+</div>
 
-  <div class="hero-content">
-    <p class="hero-eye">Game Designer · Narrative Designer · 3D Artist</p>
-    <h1 class="hero-name">JANESH<em>WARAN</em><br>R</h1>
-    <div class="hero-bot">
-      <p class="hero-desc">
-        Crafting <strong>dark fantasy worlds</strong> through games, 3D art &amp; narrative design.
-        Based in Chennai — obsessed with consequence-driven storytelling.
-      </p>
-      <div class="cta-row">
-        <a class="btn-p" href="#projects"><i class="fas fa-gamepad"></i> View Projects</a>
-        <a class="btn-g" href="#about">About Me</a>
+<!-- ══════════════════════════════════════════════
+     SCROLL TRACK
+══════════════════════════════════════════════ -->
+<div id="scroll-container">
+<div id="scroll-track">
+
+<!-- HERO -->
+<div class="panel" id="p-hero">
+  <p class="h-eyebrow" id="h-ey">Game Designer · Narrative Architect · 3D Artist · Author</p>
+  <div class="h-name">
+    <span class="h-name-line"><span id="hn1">JANESH</span></span>
+    <span class="h-name-line ol"><span id="hn2">WARAN</span></span>
+    <span class="h-name-line red"><span id="hn3">R</span></span>
+  </div>
+  <p class="h-role" id="h-role">Crafting dark fantasy worlds · Mr. Darkpath · Chennai</p>
+  <p class="h-desc" id="h-desc">Crafting <strong>dark fantasy worlds</strong> through games, 3D art &amp; narrative design. Obsessed with consequence-driven storytelling and villain protagonists.</p>
+  <div class="h-ctas" id="h-ctas">
+    <button class="btn-explore" onclick="(function(){ const t=document.getElementById('ch-about'); if(t){ const r=t.getBoundingClientRect(); targetX=currentX+r.left; } })()">
+      <span class="btn-explore-text">Explore More</span>
+      <span class="btn-explore-arrow">
+        <svg width="28" height="10" viewBox="0 0 28 10" fill="none"><path d="M0 5h26M22 1l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </button>
+  </div>
+  <div class="h-chapters" id="h-chapters">
+    <div class="h-ch" data-target="1"><span class="h-ch-num">01</span><span class="h-ch-tick"></span><span>About</span></div>
+    <div class="h-ch" data-target="2"><span class="h-ch-num">02</span><span class="h-ch-tick"></span><span>Projects</span></div>
+    <div class="h-ch" data-target="3"><span class="h-ch-num">03</span><span class="h-ch-tick"></span><span>Novels</span></div>
+    <div class="h-ch" data-target="4"><span class="h-ch-num">04</span><span class="h-ch-tick"></span><span>Statement</span></div>
+    <div class="h-ch" data-target="5"><span class="h-ch-num">05</span><span class="h-ch-tick"></span><span>Contact</span></div>
+  </div>
+  <div class="h-year">2025</div>
+  <div class="mq-bar">
+    <div class="mq-inner">
+      <em>·</em> Game Designer <em>·</em> Narrative Design <em>·</em> 3D Art <em>·</em> Blender <em>·</em> Unity <em>·</em> Unreal Engine <em>·</em> Godot <em>·</em> World Building <em>·</em> Dark Fantasy <em>·</em> Mr. Darkpath <em>·</em> Chennai <em>·</em> Author
+      <em>·</em> Game Designer <em>·</em> Narrative Design <em>·</em> 3D Art <em>·</em> Blender <em>·</em> Unity <em>·</em> Unreal Engine <em>·</em> Godot <em>·</em> World Building <em>·</em> Dark Fantasy <em>·</em> Mr. Darkpath <em>·</em> Chennai <em>·</em> Author
+    </div>
+  </div>
+  <div class="xhair" style="top:19%;right:13%;"></div>
+  <div class="float-tag" style="right:3%;top:50%;transform:translateY(-50%) rotate(-90deg);">Janeshwaran R — Portfolio 2025</div>
+</div>
+
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div><div class="div-ghost">01</div></div>
+
+<!-- CH ABOUT -->
+<div class="panel ch-panel" id="ch-about">
+  <div class="ch-bg-letter" style="color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.04);">A</div>
+  <div class="ch-center">
+    <div class="ch-tag">Chapter 01</div>
+    <div class="ch-name">
+      <span class="line" id="ca1" style="transform:translateY(110%);display:block;">ABOUT</span>
+      <span class="line ol" id="ca2" style="transform:translateY(110%);display:block;">ME</span>
+    </div>
+    <div class="ch-sub">Creative designer — dark fantasy worlds through<br>game development, 3D art, and storytelling.</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="panel" id="p-about">
+  <div class="ab-photo">
+    <img src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/WhatsApp%20Image%202026-03-04%20at%209.50.34%20PM.jpeg?raw=true" alt="Janeshwaran R">
+  </div>
+  <div class="ab-text">
+    <p class="slbl">Who I Am</p>
+    <h2 class="ab-title">JANESH<br><span class="ol">WARAN</span></h2>
+    <p class="ab-bio">Creative and imaginative designer with a deep passion for crafting dark fantasy worlds through game development, 3D art, and storytelling.</p>
+    <p class="ab-bio">Calm, collaborative, and obsessed with detail — I turn twisted ideas into polished realities.</p>
+    <div class="divider"></div>
+    <p class="sh">Core Skills</p>
+    <div class="tags">
+      <span class="tag">3D Modeling · Blender</span><span class="tag">Game Development</span>
+      <span class="tag">Narrative Design</span><span class="tag">Scriptwriting</span>
+      <span class="tag">World Building</span><span class="tag">Storytelling</span>
+    </div>
+    <p class="sh">Tools & Engines</p>
+    <div class="tags">
+      <span class="tag">Unity</span><span class="tag">Unreal Engine</span><span class="tag">Godot</span>
+      <span class="tag">Blender</span><span class="tag">Krita</span><span class="tag">Photoshop</span>
+    </div>
+    <div class="edu">
+      <div class="edu-row"><div class="edu-dot"></div><div><p class="edu-deg">B.Sc Computer Science</p><p class="edu-meta">St. Joseph College, Chennai · 2020 – 2024</p></div></div>
+      <div class="edu-row"><div class="edu-dot"></div><div><p class="edu-deg">M.Sc Game Technology</p><p class="edu-meta">ICAT Design & Media College · 2024 – Present</p></div></div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <a class="btn-r" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank"><i class="fas fa-file-alt"></i> Resume</a>
+      <a class="btn-o" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf" target="_blank"><i class="fas fa-file"></i> Full CV</a>
+    </div>
+  </div>
+  <div class="xhair" style="top:14%;right:4%;"></div>
+</div>
+
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div><div class="div-ghost">02</div></div>
+
+<!-- CH PROJECTS -->
+<div class="panel ch-panel" id="ch-proj" style="background:#140f0b;">
+  <div class="ch-bg-letter" style="color:transparent;-webkit-text-stroke:1px rgba(193,127,58,.04);">P</div>
+  <div class="ch-center">
+    <div class="ch-tag" style="color:var(--ochre);">Chapter 02</div>
+    <div class="ch-name">
+      <span class="line" id="cp1" style="transform:translateY(110%);display:block;">MY</span>
+      <span class="line red" id="cp2" style="transform:translateY(110%);display:block;">WORK</span>
+    </div>
+    <div class="ch-sub">Games, breakdowns, concept books &amp; AI experiments.<br>Every project is a consequence of a choice made.</div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="panel" id="p-projects">
+  <div style="width:100%;">
+    <p class="slbl" style="margin-bottom:10px;">Chapter 02</p>
+    <h2 style="font-family:var(--fd);font-size:clamp(36px,5vw,64px);line-height:.9;color:var(--white);margin-bottom:28px;">ALL PROJECTS</h2>
+    <div class="proj-tabs">
+      <div class="ptab on" data-cat="games"><i class="fas fa-gamepad"></i>Games<span style="font-size:9px;color:var(--red);margin-left:4px;">(6)</span></div>
+      <div class="ptab" data-cat="breakdowns"><i class="fas fa-search-plus"></i>Breakdowns<span style="font-size:9px;color:var(--red);margin-left:4px;">(2)</span></div>
+      <div class="ptab" data-cat="concepts"><i class="fas fa-book-open"></i>Concept Books<span style="font-size:9px;color:var(--red);margin-left:4px;">(3)</span></div>
+      <div class="ptab" data-cat="ai"><i class="fas fa-robot"></i>AI Gen<span style="font-size:9px;color:var(--red);margin-left:4px;">(5)</span></div>
+    </div>
+    <div class="pcat on" id="cat-games">
+      <div class="proj-grid">
+        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202026-03-04%20213419.png?raw=true" alt="The Last Choice"></div><div class="pc-body"><p class="pc-eng">Twine · Narrative Design</p><h3 class="pc-title">THE LAST CHOICE</h3><p class="pc-desc">Dark story-driven adventure — werewolves, fractured realities, and a missing sister.</p><div class="pc-btns"><a class="btn-r" href="https://janeshwaran2829.itch.io/the-last-choice" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Itch.io</a><button class="btn-o" onclick="openM('beatM')" style="font-size:9px;padding:7px 14px;">Beat Sheet</button></div></div></div>
+        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202025-11-22%20134919.png?raw=true" alt="DREAM"></div><div class="pc-body"><p class="pc-eng">Godot · Hardcore Platformer</p><h3 class="pc-title">DREAM</h3><p class="pc-desc">A young girl trapped inside a distorted dream world. Fast-paced 2D pixel platformer.</p><div class="pc-btns"><a class="btn-r" href="https://janeshwaran2829.itch.io/dream" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Itch.io</a></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><p class="pc-eng">Unity 3D · Action FPS</p><h3 class="pc-title">WRATH OF THE NIGHT</h3><p class="pc-desc">Dark FPS survival-action in a cursed abandoned world.</p><div class="pc-btns"><button class="btn-r" onclick="openM('trailerM')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-film"></i> Trailer</button><button class="btn-o" onclick="openM('pitchM')" style="font-size:9px;padding:7px 14px;">Pitch PPT</button></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-flask"></i> Playable Demo</div><p class="pc-eng">HTML · Claude AI · Escape Room</p><h3 class="pc-title">ESCAPE THE DREAM</h3><p class="pc-desc">Hacker Elara Voss trapped inside a super-AI's simulated reality.</p><div class="pc-btns"><a class="btn-r" href="https://janeshobito.github.io/myFolder/escapedream.html" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Play Demo</a></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-flask"></i> Playable Demo</div><p class="pc-eng">HTML · VibeCoding · Educational</p><h3 class="pc-title">MINI MATH ZOO</h3><p class="pc-desc">Step into Sunshine Zoo as Junior Zookeeper — sort animals, tap to count!</p><div class="pc-btns"><a class="btn-r" href="https://janeshobito.github.io/myFolder/minizoo.html" target="_blank" style="font-size:9px;padding:8px 16px;"><i class="fas fa-gamepad"></i> Play Demo</a></div></div></div>
+        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://raw.githubusercontent.com/Janeshobito/Janeshobito.github.io/main/unnamed.jpg" alt="Rocket Thruster"></div><div class="pc-body"><p class="pc-eng">Unity · Physics Simulation</p><h3 class="pc-title">ROCKET THRUSTER LANDING</h3><p class="pc-desc">Physics-based rocket landing challenge.</p><div class="pc-btns"><a class="btn-r" href="#" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> Play</a></div></div></div>
+      </div>
+    </div>
+    <div class="pcat" id="cat-breakdowns">
+      <div class="proj-grid g2">
+        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202025-11-22%20142302.png?raw=true" alt="Bully"></div><div class="pc-body"><p class="pc-eng">Analysis · Rockstar Games</p><h3 class="pc-title">BULLY</h3><p class="pc-desc">Deep dive into mechanics, narrative structure, and world-building.</p><div class="pc-btns"><a class="btn-r" href="https://janeshwaran2829.itch.io/bully-game-breakdown" target="_blank" style="font-size:9px;padding:8px 16px;">View Breakdown</a></div></div></div>
+        <div class="pc"><div class="pc-img-w"><img class="pc-img" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202025-11-22%20143953.png?raw=true" alt="Prototype"></div><div class="pc-body"><p class="pc-eng">Analysis · Prototype</p><h3 class="pc-title">PROTOTYPE BREAKDOWN</h3><p class="pc-desc">Exploring how Prototype builds its open-world traversal and narrative mystery systems.</p><div class="pc-btns"><a class="btn-r" href="https://janeshwaran2829.itch.io/prototype-breakdown" target="_blank" style="font-size:9px;padding:8px 16px;">View Breakdown</a></div></div></div>
+      </div>
+    </div>
+    <div class="pcat" id="cat-concepts">
+      <div class="proj-grid">
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><p class="pc-eng">Mobile · Educational</p><h3 class="pc-title">MINI MATH ZOO</h3><p class="pc-desc">Story-driven educational game — zoo management meets math.</p><div class="pc-btns"><a class="btn-r" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/Mini%20Math%20Zoo%20Game%20Design%20Book%20Janeshwaran%20R_compressed.pdf" target="_blank" style="font-size:9px;padding:8px 16px;">View Book</a></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><p class="pc-eng">Mobile / PC · Adventure</p><h3 class="pc-title">CALYNXX: THE LAST RIDE</h3><p class="pc-desc">A loyal war horse named Calynxx begins a journey to find its master.</p><div class="pc-btns"><a class="btn-r" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/GAME%20DESIGN%20BOOK%20-%20JANESHWARAN%20RAMESH%20CALYNUX%20THE%20LAST%20RIDE_compressed.pdf" target="_blank" style="font-size:9px;padding:8px 16px;">Concept Book</a></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><p class="pc-eng">PC / Mobile · Sci-Fi</p><h3 class="pc-title">ESCAPE THE DREAM</h3><p class="pc-desc">Dystopian 2050. Hacker Elara Voss fights to escape a super AI's simulated reality.</p><div class="pc-btns"><a class="btn-r" href="https://github.com/Janeshobito/janeshobito.github.io/blob/main/myFolder/escape%20the%20dream%20game%20design%20doc_compressed.pdf" target="_blank" style="font-size:9px;padding:8px 16px;">Design Book</a></div></div></div>
+      </div>
+    </div>
+    <div class="pcat" id="cat-ai">
+      <div class="proj-grid">
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-robot"></i> Gemini AI</div><h3 class="pc-title">PIXEL HORSE</h3><p class="pc-desc">AI-generated trailer for a 2D pixel story platformer.</p><div class="pc-btns"><button class="btn-r" onclick="openM('pixelM')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> Watch</button></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-robot"></i> Gemini AI</div><h3 class="pc-title">THE LAST DESIRE</h3><p class="pc-desc">Cinematic trailer for the upcoming novel.</p><div class="pc-btns"><button class="btn-r" onclick="openM('desireM')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> Watch</button></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-robot"></i> Gemini · Sora · ChatGPT</div><h3 class="pc-title">BEAST REBIRTH</h3><p class="pc-desc">Ascending as Alien X — cinematic novel trailer.</p><div class="pc-btns"><button class="btn-r" onclick="openM('beastM')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> Watch</button></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-robot"></i> Gemini · Boba AI · ChatGPT</div><h3 class="pc-title">F1 JET — CH.8</h3><p class="pc-desc">Visual recreation of Chapter 8.</p><div class="pc-btns"><button class="btn-r" onclick="openM('f1M1')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> 1</button><button class="btn-o" onclick="openM('f1M2')" style="font-size:9px;padding:7px 12px;">2</button><button class="btn-o" onclick="openM('f1M3')" style="font-size:9px;padding:7px 12px;">3</button></div></div></div>
+        <div class="pc"><div class="pc-body" style="padding-top:22px;"><div class="demo-badge"><i class="fas fa-robot"></i> ChatGPT · Gemini · Boba AI</div><h3 class="pc-title">HILL SIDE</h3><p class="pc-desc">A woman on a hilltop — three stylistic AI interpretations.</p><div class="pc-btns"><button class="btn-r" onclick="openM('hillM1')" style="font-size:9px;padding:8px 16px;"><i class="fas fa-play"></i> 1</button><button class="btn-o" onclick="openM('hillM2')" style="font-size:9px;padding:7px 12px;">2</button><button class="btn-o" onclick="openM('hillM3')" style="font-size:9px;padding:7px 12px;">3</button></div></div></div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
-  </div>
-</section>
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div><div class="div-ghost">03</div></div>
 
-<!-- ═══════════════════════════════════════════
-     ABOUT
-══════════════════════════════════════════════ -->
-<section class="sec" id="about">
-  <video class="sbv" data-parallax="0.25" autoplay loop muted playsinline>
-    <source src="https://files.catbox.moe/aky7yi.mp4" type="video/mp4">
-  </video>
-  <div class="sov"></div><div class="sgt"></div><div class="sgb"></div>
-
-  <div class="si">
-    <p class="slbl rv">Chapter 01</p>
-    <h2 class="stitle rv d1">About Me</h2>
-
-    <div class="about-grid">
-      <div class="photo-wrap rv d1">
-        <img src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/WhatsApp%20Image%202026-03-04%20at%209.50.34%20PM.jpeg?raw=true" alt="Janeshwaran R">
-      </div>
-      <div>
-        <p class="about-bio rv d1">Creative and imaginative designer with a deep passion for crafting dark fantasy worlds through game development, 3D art, and storytelling. Known for pushing the limits of villain protagonists and building emotionally immersive experiences.</p>
-        <p class="about-bio rv d2">Calm, collaborative, and obsessed with detail   I turn twisted ideas into polished realities.</p>
-        <div class="divider rv d2"></div>
-        <p class="sh rv d2">Core Skills</p>
-        <div class="tags rv d2">
-          <span class="tag">3D Modeling — Blender</span><span class="tag">Game Development</span>
-          <span class="tag">Narrative Design</span><span class="tag">Scriptwriting</span>
-          <span class="tag">World Building</span><span class="tag">Storytelling</span>
-        </div>
-        <p class="sh rv d3">Tools & Engines</p>
-        <div class="tags rv d3">
-          <span class="tag">Unity</span><span class="tag">Unreal Engine</span><span class="tag">Godot</span>
-          <span class="tag">Blender</span><span class="tag">Krita</span><span class="tag">Photoshop</span>
-        </div>
-        <div class="edu rv d3">
-          <div class="edu-row">
-            <div class="edu-dot"></div>
-            <div><p class="edu-deg">B.Sc Computer Science</p><p class="edu-meta">St. Joseph College, Chennai &nbsp;·&nbsp; 2020 – 2024</p></div>
-          </div>
-          <div class="edu-row">
-            <div class="edu-dot"></div>
-            <div><p class="edu-deg">M.Sc Game Technology</p><p class="edu-meta">ICAT Design & Media College, Chennai &nbsp;·&nbsp; 2024 – Present</p></div>
-          </div>
-        </div>
-        <div class="doc-row rv d4">
-          <a class="btn-p" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20Resume.pdf" target="_blank"><i class="fas fa-file-alt"></i> Resume</a>
-          <a class="btn-g" href="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Janeshwaran%20R%20CV.pdf" target="_blank"><i class="fas fa-file"></i> Full CV</a>
-        </div>
-      </div>
+<!-- CH NOVELS -->
+<div class="panel ch-panel" id="ch-nov">
+  <div class="ch-bg-letter" style="color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.04);">N</div>
+  <div class="ch-center">
+    <div class="ch-tag">Chapter 03</div>
+    <div class="ch-name">
+      <span class="line" id="cn1" style="transform:translateY(110%);display:block;">DARK</span>
+      <span class="line ol" id="cn2" style="transform:translateY(110%);display:block;">WORLDS</span>
+      <span class="line red" id="cn3" style="transform:translateY(110%);display:block;">WRITTEN</span>
     </div>
+    <div class="ch-sub">Five novels by <em style="font-style:italic;color:rgba(255,255,255,.5);">Mr. Darkpath</em> — forged from emotional ambiguity.</div>
   </div>
-</section>
+</div>
 
-<!-- ═══════════════════════════════════════════
-     PROJECTS PREVIEW
-══════════════════════════════════════════════ -->
-<section class="sec" id="projects">
-  <video class="sbv" data-parallax="0.25" autoplay loop muted playsinline>
-    <source src="https://files.catbox.moe/o6icxy.mp4" type="video/mp4">
-  </video>
-  <div class="sov"></div><div class="sgt"></div><div class="sgb"></div>
+<!-- NOVELS -->
+<div class="panel" id="p-novels">
+  <p class="slbl">Webnovels by Mr. Darkpath</p>
+  <h2 style="font-family:var(--fd);font-size:clamp(34px,5vw,60px);line-height:.9;color:var(--white);margin-bottom:28px;">COMPLETE COLLECTION</h2>
+  <div class="shelf" id="shelf">
+    <div class="si open"><span class="si-num">01</span><div class="si-accent"></div><img class="si-cover" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/Gods%20Betrayed%20Me%20So%20I%20Made%20Them%20As%20Sx%20Slaves.png?raw=true" alt=""><div class="si-ov"></div><span class="si-label">Gods Betrayed Me</span><div class="si-body"><p class="si-genre">Dark Revenge Fantasy</p><h3 class="si-title">Gods Betrayed Me So I Made Them As Sex Slaves</h3><p class="si-desc">Betrayal by the divine. A throne built above the gods.</p><a class="si-link" href="https://www.webnovel.com/book/31871358200404405" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div></div>
+    <div class="si"><span class="si-num">02</span><div class="si-accent"></div><img class="si-cover" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/The%20HERMITS%20HAVEN.png?raw=true" alt=""><div class="si-ov"></div><span class="si-label">Hermit's Haven</span><div class="si-body"><p class="si-genre">Post-Apocalyptic Thriller</p><h3 class="si-title">The Hermit's Haven</h3><p class="si-desc">In a world reduced to ash and silence, one man's fortress becomes the last thing worth protecting.</p><a class="si-link" href="https://www.webnovel.com/book/29761771700037905" target="_blank">Read Now</a></div></div>
+    <div class="si"><span class="si-num">03</span><div class="si-accent"></div><img class="si-cover" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/I%20Was%20Summoned%20By%20a%20God%20But%20I%20Tricked%20The%20God%20To%20Become%20a%20God.png?raw=true" alt=""><div class="si-ov"></div><span class="si-label">I Was Summoned</span><div class="si-body"><p class="si-genre">Dark Isekai Revenge</p><h3 class="si-title">I Was Summoned But I Tricked The God</h3><p class="si-desc">Summoned to serve. Chose to conquer.</p><a class="si-link" href="https://www.webnovel.com/book/29962599308510305" target="_blank">Read Now</a></div></div>
+    <div class="si"><span class="si-num">04</span><div class="si-accent"></div><img class="si-cover" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/THE%20WISH%20OF%20MALICE.png?raw=true" alt=""><div class="si-ov"></div><span class="si-label">Wish of Malice</span><div class="si-body"><p class="si-genre">Villain Protagonist Epic</p><h3 class="si-title">The Wish of Malice</h3><p class="si-desc">A villain's origin told without apology.</p><a class="si-link" href="https://www.webnovel.com/book/29761690700035805" target="_blank">Read Now</a></div></div>
+    <div class="si"><span class="si-num">05</span><div class="si-accent"></div><img class="si-cover" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/Formula%20Jet%20Racing.png?raw=true" alt=""><div class="si-ov"></div><span class="si-label">Formula Jet Racing</span><div class="si-body"><p class="si-genre">High-Octane Sky Racing</p><h3 class="si-title">Formula Jet Racing</h3><p class="si-desc">Speed, rivalry, and the sky as the only limit.</p><a class="si-link" href="https://www.webnovel.com/book/32853058600730605" target="_blank">Read Now</a></div></div>
+  </div>
+  <a class="btn-o" href="https://www.webnovel.com/profile/4327938398" target="_blank" style="margin-top:4px;"><i class="fas fa-book-open"></i> All Novels on Webnovel</a>
+</div>
 
-  <div class="si">
-    <p class="slbl rv">Chapter 02</p>
-    <h2 class="stitle rv d1">Projects</h2>
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div><div class="div-ghost">04</div></div>
 
-    <div class="proj-grid">
-      <div class="pc rv d1">
-        <img src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202026-03-04%20213419.png?raw=true" alt="The Last Choice">
-        <div class="pc-body">
-          <p class="pc-eng">Twine · Narrative</p>
-          <h3 class="pc-title">The Last Choice</h3>
-          <p class="pc-desc">A dark story-driven adventure where every decision echoes forever   werewolves, fractured realities, and a missing sister.</p>
-        </div>
-      </div>
-      <div class="pc rv d2">
-        <img src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/New%20Images/Screenshot%202025-11-22%20134919.png?raw=true" alt="DREAM">
-        <div class="pc-body">
-          <p class="pc-eng">Godot · Platformer</p>
-          <h3 class="pc-title">DREAM</h3>
-          <p class="pc-desc">A hardcore 2D pixel platformer   a young girl trapped inside a distorted dream world. Atmospheric, brutal, emotional.</p>
-        </div>
-      </div>
+<!-- CH STATEMENT -->
+<div class="panel ch-panel" id="ch-stmt" style="background:var(--canvas);">
+  <div class="ch-bg-letter" style="color:transparent;-webkit-text-stroke:1px rgba(42,31,20,.05);">S</div>
+  <div class="ch-center">
+    <div class="ch-tag" style="color:var(--umber);opacity:.5;">Chapter 04</div>
+    <div class="ch-name" style="color:var(--ink);">
+      <span class="line" id="cs1" style="transform:translateY(110%);display:block;">AUTHOR'S</span>
+      <span class="line" id="cs2" style="transform:translateY(110%);display:block;color:transparent;-webkit-text-stroke:2px var(--ink);">LENS</span>
     </div>
-    <div style="margin-top:32px;text-align:center;" class="rv d3">
-      <a class="btn-p" href="projects.html">View All Projects <i class="fas fa-arrow-right"></i></a>
+    <div class="ch-sub" style="color:rgba(42,31,20,.4);font-style:italic;">A statement of philosophy.</div>
+  </div>
+</div>
+
+<!-- STATEMENT 1 -->
+<div class="panel" id="p-statement">
+  <div class="stmt-left">
+    <p class="slbl dark">Author's Statement</p>
+    <h2 class="stmt-title"><span>HONEST</span><span class="ol">OVER</span><span class="red">PERFECT</span></h2>
+    <blockquote class="stmt-quote">"My goal is not to create perfect stories — but honest ones."<cite>— Janeshwaran R, Narrative Designer</cite></blockquote>
+    <div class="stmt-pills">
+      <span class="stmt-pill">01 Personal Lens</span><span class="stmt-pill">02 Writer's Note</span>
+      <span class="stmt-pill">03 Narrative Philosophy</span><span class="stmt-pill">04 Design Ethos</span>
+      <span class="stmt-pill">05 Creative Manifesto</span><span class="stmt-pill">06 The Origin</span>
     </div>
   </div>
-</section>
+  <div class="stmt-right">
+    <div class="sc"><p class="sc-num">01 · Personal Lens</p><div class="sc-bar"></div><h3 class="sc-head">WHO I AM</h3><p class="sc-body">Shaped by lived emotional contrast — family conflict, isolation, and connection. My stories embrace emotional ambiguity over certainty.</p></div>
+    <div class="sc"><p class="sc-num">02 · Writer's Note</p><div class="sc-bar"></div><h3 class="sc-head">WHY I WRITE</h3><p class="sc-body">I began writing to prevent my daydreams from disappearing. Writing is not an escape from thinking — it is an extension of it.</p></div>
+    <div class="sc"><p class="sc-num">03 · Narrative Philosophy</p><div class="sc-bar"></div><h3 class="sc-head">HOW I BUILD STORIES</h3><p class="sc-body">Stories are built from emotion first, structure second. A character is defined not by intent, but by what they choose when outcomes are uncertain.</p></div>
+    <div class="sc"><p class="sc-num">04 · Design Ethos</p><div class="sc-bar"></div><h3 class="sc-head">CONSEQUENCE-DRIVEN</h3><p class="sc-body">Choices must matter. When a path is taken, something else must be lost.<span class="sc-list">— Choice defines character<br>— Emotion drives mechanics<br>— Past, present, and future coexist</span></p></div>
+    <div class="sc"><p class="sc-num">05 · Creative Manifesto</p><div class="sc-bar"></div><h3 class="sc-head">HONEST OVER PERFECT</h3><p class="sc-body">I am not afraid of loss, contradiction, or darkness in storytelling. My goal is not to create perfect stories, but honest ones.</p></div>
+    <div class="sc"><p class="sc-num">06 · The Origin</p><div class="sc-bar"></div><h3 class="sc-head">AUTHOR'S STATEMENT</h3><p class="sc-body">My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast — family conflict, happiness, sadness, isolation, and connection.</p></div>
+  </div>
+</div>
 
-<!-- ═══════════════════════════════════════════
-     NOVELS PREVIEW
-══════════════════════════════════════════════ -->
-<section class="sec" id="novels">
-  <video class="sbv" data-parallax="0.2" autoplay loop muted playsinline>
-    <source src="https://files.catbox.moe/sl8158.mp4" type="video/mp4">
-  </video>
-  <div class="sov" style="background:rgba(6,6,8,.87);"></div><div class="sgt"></div><div class="sgb"></div>
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div><div class="div-ghost">4b</div></div>
 
-  <div class="si">
-    <p class="slbl rv" style="color:#8b5cf6;">Chapter 03</p>
-    <h2 class="stitle rv d1">Novels</h2>
-    <p class="rv d1" style="margin-top:8px;font-size:13px;letter-spacing:3px;color:var(--muted);">
-      by <span style="color:#8b5cf6;font-style:italic;">Mr. Darkpath</span>
-    </p>
+<!-- STATEMENT 2 -->
+<div class="panel" id="p-statement2">
+  <div class="stmt2-header">
+    <p class="slbl dark" style="margin-bottom:28px;">Full Statements</p>
+    <h2 class="stmt2-big"><span>THE</span><span class="ol">FULL</span><span class="oc">PICTURE</span></h2>
+    <p class="stmt2-tagline">Every belief, lens, and philosophy that shapes the way I build stories.</p>
+    <blockquote class="stmt2-sidebar-quote">"I am Janeshwaran. This is not a conclusion, but a structure."</blockquote>
+  </div>
+  <div class="stmt2-cards">
+    <div class="sc2"><p class="sc2-num">01 · Personal Lens</p><h3 class="sc2-head">Storytelling Perspective</h3><p class="sc2-body">I exist between loneliness and solitude. This inner contradiction strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p></div>
+    <div class="sc2"><p class="sc2-num">02 · Writer's Note</p><h3 class="sc2-head">From Daydream to Story</h3><p class="sc2-body">To prevent daydreams from disappearing, I began writing them as stories. Instead of grounding me, it expanded my imagination further — pushing me deeper into narrative exploration.</p></div>
+    <div class="sc2"><p class="sc2-num">03 · Narrative Philosophy</p><h3 class="sc2-head">Emotion Before Structure</h3><p class="sc2-body">I believe stories are built from emotion first and structure second. A character is defined not by intent, but by what they choose when outcomes are uncertain.</p></div>
+    <div class="sc2"><p class="sc2-num">04 · Design Ethos</p><h3 class="sc2-head">Consequence-Driven Design</h3><p class="sc2-body">My approach to narrative design is consequence-driven. Choices must matter, and meaning must emerge from their outcomes.</p><ul class="sc2-list"><li>Choice defines character</li><li>Emotion drives mechanics</li><li>Past, present, and future coexist</li></ul></div>
+    <div class="sc2"><p class="sc2-num">05 · Creative Manifesto</p><h3 class="sc2-head">Honest Over Perfect</h3><p class="sc2-body">I build worlds that include light and shadow — fun and brutality — because reality contains both. My goal is not to create perfect stories, but honest ones.</p></div>
+    <div class="sc2"><p class="sc2-num">Author's Statement</p><h3 class="sc2-head">Who Is Janeshwaran</h3><p class="sc2-body">My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p></div>
+    <div class="stmt2-closing"><p class="stmt2-closing-quote">"I am Janeshwaran. This is not a conclusion, but a structure — one that continues to evolve as my skills grow."</p><p class="stmt2-closing-cite">— Janeshwaran R · Narrative Designer · Author · Chennai</p></div>
+  </div>
+</div>
 
-    <div class="nov-row">
-      <div class="nc rv d1">
-        <div class="nc-cov-wrap"><img class="nc-cov" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/Gods%20Betrayed%20Me%20So%20I%20Made%20Them%20As%20Sx%20Slaves.png?raw=true" alt="Gods Betrayed Me"></div>
-        <div class="nc-body"><p class="nc-gen">Dark Revenge Fantasy</p><h3 class="nc-title">Gods Betrayed Me</h3><a class="nc-link" href="https://www.webnovel.com/book/31871358200404405" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
-      </div>
-      <div class="nc rv d2">
-        <div class="nc-cov-wrap"><img class="nc-cov" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/The%20HERMITS%20HAVEN.png?raw=true" alt="Hermit's Haven"></div>
-        <div class="nc-body"><p class="nc-gen">Post-Apocalyptic</p><h3 class="nc-title">The Hermit's Haven</h3><a class="nc-link" href="https://www.webnovel.com/book/29761771700037905" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
-      </div>
-      <div class="nc rv d3">
-        <div class="nc-cov-wrap"><img class="nc-cov" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/THE%20WISH%20OF%20MALICE.png?raw=true" alt="Wish of Malice"></div>
-        <div class="nc-body"><p class="nc-gen">Villain Protagonist</p><h3 class="nc-title">The Wish of Malice</h3><a class="nc-link" href="https://www.webnovel.com/book/29761690700035805" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
-      </div>
-      <div class="nc rv d4">
-        <div class="nc-cov-wrap"><img class="nc-cov" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/I%20Was%20Summoned%20By%20a%20God%20But%20I%20Tricked%20The%20God%20To%20Become%20a%20God.png?raw=true" alt="I Was Summoned"></div>
-        <div class="nc-body"><p class="nc-gen">Dark Isekai</p><h3 class="nc-title">I Was Summoned But I Tricked The God</h3><a class="nc-link" href="https://www.webnovel.com/book/29962599308510305" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
-      </div>
-      <div class="nc rv d5">
-        <div class="nc-cov-wrap"><img class="nc-cov" src="https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/Formula%20Jet%20Racing.png?raw=true" alt="Formula Jet Racing"></div>
-        <div class="nc-body"><p class="nc-gen">Sky Racing</p><h3 class="nc-title">Formula Jet Racing</h3><a class="nc-link" href="https://www.webnovel.com/book/32853058600730605" target="_blank">Read Now <i class="fas fa-arrow-right" style="font-size:9px;"></i></a></div>
-      </div>
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div><div class="div-ghost">05</div></div>
+
+<!-- CH CONTACT -->
+<div class="panel ch-panel" id="ch-con">
+  <div class="ch-bg-letter" style="color:transparent;-webkit-text-stroke:1px rgba(229,57,53,.05);">C</div>
+  <div class="ch-center">
+    <div class="ch-tag">Chapter 05</div>
+    <div class="ch-name">
+      <span class="line" id="cc1" style="transform:translateY(110%);display:block;">CON</span>
+      <span class="line red" id="cc2" style="transform:translateY(110%);display:block;">TACT</span>
     </div>
-    <div style="margin-top:32px;text-align:center;" class="rv">
-      <a class="btn-g" href="novels.html" style="display:inline-flex;align-items:center;gap:9px;">
-        <i class="fas fa-book-open"></i> View All Novels
-      </a>
+    <div class="ch-sub">Open to collaborations, freelance work, and conversations.</div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="panel" id="p-contact">
+  <div class="con-left">
+    <p class="slbl">Let's Talk</p>
+    <h2 class="con-title">LET'S<br>CREATE<br>SOMETHING<br><em>DARK.</em></h2>
+    <p class="con-sub">Open to collaborations, freelance work, and conversations about game narrative, 3D art, and world-building.</p>
+    <div class="socials">
+      <a class="sb" href="https://www.artstation.com/janeshobito283" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/></svg></a>
+      <a class="sb" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+      <a class="sb" href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
+      <a class="sb" href="mailto:Janeshwaranobito28@gmail.com"><i class="fas fa-envelope"></i></a>
     </div>
   </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     NARRATIVE DESIGNER — FULL STATEMENT
-══════════════════════════════════════════════ -->
-<section class="sec" id="statement">
-  <video class="sbv" data-parallax="0.2" autoplay loop muted playsinline>
-    <source src="https://files.catbox.moe/aky7yi.mp4" type="video/mp4">
-  </video>
-  <div class="sov" style="background:rgba(6,6,8,.88);"></div><div class="sgt"></div><div class="sgb"></div>
-
-  <div class="si">
-    <p class="slbl rv">Chapter 04</p>
-    <h2 class="stitle rv d1">Narrative Designer</h2>
-    <p class="rv d1" style="margin-top:8px;font-size:12px;letter-spacing:3px;color:var(--muted);">Author's Statement & Design Philosophy</p>
-
-    <!-- OPENING QUOTE BANNER -->
-    <div class="stmt-banner rv d2">
-      <blockquote>
-        "My goal is not to create <em>perfect</em> stories <br>but <em>honest</em> ones."
-      </blockquote>
-      <cite>— Janeshwaran R, Narrative Designer</cite>
-    </div>
-
-    <!-- 4-CARD PHILOSOPHY GRID -->
-    <div class="stmt-grid rv d2">
-      <div class="sc">
-        <p class="sc-num">01  Personal Lens</p>
-        <div class="sc-ic"><i class="fas fa-eye"></i></div>
-        <div class="sc-bar"></div>
-        <h3 class="sc-head">Who I Am</h3>
-        <p class="sc-body">Shaped by lived emotional contrast  family conflict, isolation, and connection. I exist between loneliness and solitude, and this inner contradiction is foundational to every character I build. My stories embrace emotional ambiguity over certainty.</p>
-      </div>
-      <div class="sc">
-        <p class="sc-num">02  Writer's Note</p>
-        <div class="sc-ic"><i class="fas fa-pen-nib"></i></div>
-        <div class="sc-bar"></div>
-        <h3 class="sc-head">Why I Write</h3>
-        <p class="sc-body">I began writing to prevent my daydreams from disappearing. Publishing them as novels expanded my imagination further rather than grounding me. Writing is not an escape from thinking  it is an extension of it.</p>
-      </div>
-      <div class="sc">
-        <p class="sc-num">03  Narrative Philosophy</p>
-        <div class="sc-ic"><i class="fas fa-theater-masks"></i></div>
-        <div class="sc-bar"></div>
-        <h3 class="sc-head">How I Build Stories</h3>
-        <p class="sc-body">Stories are built from emotion first, structure second. I am drawn to war films and biopics because they compress the full range of human emotion into moments of decision. A character is defined not by intent, but by what they choose when outcomes are uncertain.</p>
-      </div>
-      <div class="sc">
-        <p class="sc-num">04  Design Ethos</p>
-        <div class="sc-ic"><i class="fas fa-project-diagram"></i></div>
-        <div class="sc-bar"></div>
-        <h3 class="sc-head">Consequence-Driven</h3>
-        <p class="sc-body">Choices must matter. When a path is taken, something else must be lost.
-          <ul>
-            <li>Choice defines character</li>
-            <li>Emotion drives mechanics</li>
-            <li>Past, present, and future coexist in the structure</li>
-          </ul>
-        </p>
-      </div>
-    </div>
-
-    <!-- FULL STATEMENT TEXT -->
-    <div class="stmt-full rv d3">
-
-      <div class="stmt-section">
-        <p class="stmt-section-label">Author's Statement</p>
-        <h3 class="stmt-section-title">The Origin</h3>
-        <p>My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast  family conflict, happiness, sadness, isolation, and connection. I don't have a clean or singular reason for wanting to become a narrative designer; instead, my interest grew naturally from observing how people react, hide reactions, and learn to survive emotionally. Growing up, I reached a point where honest reactions became difficult, and I began to fake them. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p>
-      </div>
-
-      <div class="stmt-section">
-        <p class="stmt-section-label">Personal Lens</p>
-        <h3 class="stmt-section-title">Storytelling Perspective</h3>
-        <p>I exist between loneliness and solitude. I enjoy being social, yet often resist it. I experience frequent mood shifts and spend a significant amount of time daydreaming. Depending on my emotional state, these daydreams take the form of love stories, heroic arcs, villain narratives, or internal psychological conflicts  often with myself positioned as the central character. This inner contradiction — wanting connection while withdrawing from it  strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p>
-      </div>
-
-      <div class="stmt-section">
-        <p class="stmt-section-label">Writer's Note</p>
-        <h3 class="stmt-section-title">From Daydream to Story</h3>
-        <p>At one stage, I realized that my daydreams would disappear if left untouched. To prevent that loss, I began writing them as stories and publishing them as novels. The response was positive, but instead of grounding me, it expanded my imagination further  pushing me deeper into idea creation and narrative exploration. Writing, for me, is not an escape from thinking; it is an extension of it.</p>
-      </div>
-
-      <div class="stmt-section">
-        <p class="stmt-section-label">Narrative Philosophy</p>
-        <h3 class="stmt-section-title">Emotion Before Structure</h3>
-        <p>I believe stories are built from emotion first and structure second. Human beings naturally live in imagined worlds  some shared, some personal  and narrative exists to give those worlds form. I am particularly drawn to war films and biopics because they compress the full range of human emotion into moments of decision. Even when altered for entertainment, these stories reveal character through choice, pressure, and consequence. A character, to me, is defined not by intent, but by what they choose when outcomes are uncertain.</p>
-      </div>
-
-      <div class="stmt-section">
-        <p class="stmt-section-label">Design Ethos</p>
-        <h3 class="stmt-section-title">Consequence-Driven Design</h3>
-        <p>My approach to narrative design is consequence driven. Choices must matter, and meaning must emerge from their outcomes. Influenced by manhwas and branching narratives, I view life   and by extension story  as a system of decisions. When a choice is made, it must carry weight. When a path is taken, something else must be lost. I design narratives where:</p>
-        <ul>
-          <li>Choice defines character</li>
-          <li>Emotion drives mechanics</li>
-          <li>Past, present, and future coexist in the narrative structure</li>
-        </ul>
-      </div>
-
-      <div class="stmt-section">
-        <p class="stmt-section-label">Creative Manifesto</p>
-        <h3 class="stmt-section-title">Honest Over Perfect</h3>
-        <p>I am not afraid of loss, contradiction, or darkness in storytelling. I explore themes ranging from crime and moral decay to ambition, power, and desire. I build worlds that include light and shadow  fun and brutality  because reality contains both. My goal is not to create perfect stories, but honest ones. I aim to turn imagination into something tangible: not dreams that fade, but narratives that endure.</p>
-      </div>
-
-      <div class="closing-block">
-        <p>I am <em>Janeshwaran</em>. This is not a conclusion, but a <em>structure</em> —<br>one that continues to evolve as my skills grow.</p>
-      </div>
-
-    </div><!-- end stmt-full -->
+  <div class="con-right">
+    <a class="con-row" href="mailto:Janeshwaranobito28@gmail.com"><div class="con-ic"><i class="fas fa-envelope"></i></div><div><p class="con-lbl">Email</p><p class="con-val">Janeshwaranobito28@gmail.com</p></div></a>
+    <div class="con-row"><div class="con-ic"><i class="fas fa-phone"></i></div><div><p class="con-lbl">Phone</p><p class="con-val">+91 63799 89918</p></div></div>
+    <div class="con-row"><div class="con-ic"><i class="fas fa-map-marker-alt"></i></div><div><p class="con-lbl">Location</p><p class="con-val">Chennai, Tamil Nadu, India</p></div></div>
+    <a class="con-row" href="https://www.artstation.com/janeshobito283" target="_blank"><div class="con-ic"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/></svg></div><div><p class="con-lbl">ArtStation</p><p class="con-val">janeshobito283</p></div></a>
+    <a class="con-row" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><div class="con-ic"><i class="fab fa-linkedin-in"></i></div><div><p class="con-lbl">LinkedIn</p><p class="con-val">janeshwaran-r-a33729285</p></div></a>
+    <a class="con-row" href="https://www.webnovel.com/profile/4327938398" target="_blank"><div class="con-ic"><i class="fas fa-book-open"></i></div><div><p class="con-lbl">Webnovel</p><p class="con-val">Mr. Darkpath</p></div></a>
   </div>
-</section>
+</div>
 
-<!-- ═══════════════════════════════════════════
-     CONTACT
-══════════════════════════════════════════════ -->
-<section class="sec" id="contact">
-  <video class="sbv" data-parallax="0.2" autoplay loop muted playsinline>
-    <source src="https://github.com/Janeshobito/Janeshobito.github.io/blob/main/myFolder/campfire-watermarked_w7o6vg.mp4?raw=true" type="video/mp4">
-  </video>
-  <div class="sov" style="background:rgba(6,6,8,.86);"></div><div class="sgt"></div><div class="sgb"></div>
+<!-- DIVIDER -->
+<div class="panel div-panel"><div class="div-line"></div></div>
 
-  <div class="si">
-    <p class="slbl rv">Chapter 05</p>
+<!-- ★ OUTRO — TOPOGRAPHY FOOTER -->
+<div class="panel" id="p-outro">
 
-    <div class="con-layout">
-      <div>
-        <h2 class="con-head rv">Let's<br>Create<br><em>Something</em><br>Dark.</h2>
-        <p class="con-sub rv d1">Open to collaborations, freelance work, and conversations about game narrative, 3D art, and world-building.</p>
-        <div class="socials rv d2">
-          <!-- ArtStation -->
-          <a class="sb" href="https://www.artstation.com/janeshobito283" target="_blank" title="ArtStation">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/>
-            </svg>
-          </a>
-          <!-- LinkedIn -->
-          <a class="sb" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank" title="LinkedIn">
-            <i class="fab fa-linkedin-in"></i>
-          </a>
-          <!-- Webnovel — book icon since no brand icon exists -->
-          <a class="sb" href="https://www.webnovel.com/profile/4327938398" target="_blank" title="Webnovel">
-            <i class="fas fa-book-open"></i>
-          </a>
-          <!-- Email -->
-          <a class="sb" href="mailto:janeshwaranobito28@gmail.com" title="Email">
-            <i class="fas fa-envelope"></i>
-          </a>
-        </div>
-      </div>
-
-      <div class="con-list">
-        <a class="con-row rv d1" href="mailto:janeshwaranobito28@gmail.com">
-          <div class="con-ic"><i class="fas fa-envelope"></i></div>
-          <div><p class="con-lbl">Email</p><p class="con-val">janeshwaranobito28@gmail.com</p></div>
-        </a>
-        <div class="con-row rv d2">
-          <div class="con-ic"><i class="fas fa-phone"></i></div>
-          <div><p class="con-lbl">Phone</p><p class="con-val">+91 63799 89918</p></div>
-        </div>
-        <div class="con-row rv d3">
-          <div class="con-ic"><i class="fas fa-map-marker-alt"></i></div>
-          <div><p class="con-lbl">Location</p><p class="con-val">Chennai, Tamil Nadu, India</p></div>
-        </div>
-        <a class="con-row rv d4" href="https://www.artstation.com/janeshobito283" target="_blank">
-          <div class="con-ic">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.164-1.333H9.419L21.598 22.02l1.92-3.324a2.39 2.39 0 0 0 .482-1.312zm-11.52-3.185L7.837 7.938 4.094 14.563z"/>
-            </svg>
-          </div>
-          <div><p class="con-lbl">ArtStation</p><p class="con-val">janeshobito283</p></div>
-        </a>
-        <a class="con-row rv d5" href="https://www.webnovel.com/profile/4327938398" target="_blank">
-          <div class="con-ic"><i class="fas fa-book-open"></i></div>
-          <div><p class="con-lbl">Webnovel</p><p class="con-val">Mr. Darkpath — Profile</p></div>
-        </a>
-        <a class="con-row rv d5" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank">
-          <div class="con-ic"><i class="fab fa-linkedin-in"></i></div>
-          <div><p class="con-lbl">LinkedIn</p><p class="con-val">janeshwaran-r-a33729285</p></div>
-        </a>
-      </div>
-    </div>
+  <!-- Topography layer -->
+  <div id="topo-inner">
+    <svg id="topo-canvas" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"></svg>
   </div>
-</section>
 
-<footer>
-  <span>©Janeshwaran R &nbsp;·&nbsp; <span style="color:var(--red)">Mr. Darkpath</span></span>
-  <a href="#">↑ Back to top</a>
-</footer>
+  <!-- Elevation labels -->
+  <span class="topo-label" style="left:8%;top:18%;">2840m</span>
+  <span class="topo-label" style="right:12%;top:25%;">3120m</span>
+  <span class="topo-label" style="left:20%;bottom:22%;">1960m</span>
+  <span class="topo-label" style="right:8%;bottom:30%;">2580m</span>
+  <span class="topo-label" style="left:50%;top:14%;">3400m</span>
 
-<!-- ═══════════════════════════════════════════
-     JS
-══════════════════════════════════════════════ -->
+  <!-- Ambient glow -->
+  <div class="outro-glow"></div>
+
+  <!-- Concentric circles -->
+  <div class="outro-circles">
+    <div class="oc"></div><div class="oc"></div><div class="oc"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="outro-ey">Mr. Darkpath · Game Designer · Narrative Architect</div>
+  <div class="outro-hl">
+    <div class="line"><span id="oo1">NEVER STOP</span></div>
+    <div class="line ol"><span id="oo2">BUILDING</span></div>
+    <div class="line red"><span id="oo3">WORLDS.</span></div>
+  </div>
+  <p class="outro-sub">The architecture of dark fantasy — shared through games, novels, and art.<br>Every world built is a consequence of a choice made.</p>
+  <div class="outro-btns">
+    <button class="btn-o" onclick="goStart()" style="cursor:none;">↑ Start Over</button>
+  </div>
+  <p class="outro-credit">© 2025 Janeshwaran R · Mr. Darkpath · Chennai</p>
+</div>
+
+</div><!-- /scroll-track -->
+</div><!-- /scroll-container -->
+
+<!-- MODALS -->
+<div id="beatM" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>THE LAST CHOICE</h2><p>Narrative Beat Sheet</p><button class="modal-x" onclick="closeM('beatM')">×</button></div><div class="modal-body"><table class="bst"><thead><tr><th>Scene</th><th>Character</th><th>Dialogue / Action</th><th>Emotion</th><th>SFX / Visual</th></tr></thead><tbody><tr><td>AnswerCall</td><td>Ruby</td><td>"David! Where are you?"</td><td>Panicked</td><td>Phone ringing</td></tr><tr><td>AnswerCall</td><td>David</td><td>"I am at New York City."</td><td>Calm</td><td>High-angle NYC</td></tr><tr><td>Check the Room</td><td>David</td><td>"Ruby...?"</td><td>Terror</td><td>Fluorescent flicker</td></tr><tr><td>FightWerewolf</td><td>David</td><td>"I am sorry, Ruby..."</td><td>Grief</td><td>Slow fade to black</td></tr><tr><td>Who are you</td><td>God</td><td>"I am God."</td><td>Ethereal</td><td>—</td></tr><tr><td>Be the Hero</td><td>God</td><td>"Now, you must level up."</td><td>Commanding</td><td>Digital Ping</td></tr></tbody></table></div></div></div>
+<div id="trailerM" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>WRATH OF THE NIGHT</h2><p>Official Trailer</p><button class="modal-x" onclick="closeM('trailerM')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Wrath%20of%20the%20Night%20Trailer.mp4" type="video/mp4"></video></div></div></div>
+<div id="pitchM" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>WRATH OF THE NIGHT</h2><p>Game Pitch PPT</p><button class="modal-x" onclick="closeM('pitchM')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/Video%20Project.mp4" type="video/mp4"></video></div></div></div>
+<div id="pixelM" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>PIXEL HORSE</h2><p>AI Generated Game Trailer</p><button class="modal-x" onclick="closeM('pixelM')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Pixel_Horse_Biome_Transition_Video.mp4" type="video/mp4"></video></div></div></div>
+<div id="desireM" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>THE LAST DESIRE</h2><p>Novel Launch Trailer</p><button class="modal-x" onclick="closeM('desireM')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%2045.mp4" type="video/mp4"></video></div></div></div>
+<div id="beastM" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>BEAST REBIRTH</h2><p>Novel Trailer</p><button class="modal-x" onclick="closeM('beastM')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Cinematic_Manhwa_Intro_Prompt.mp4" type="video/mp4"></video></div></div></div>
+<div id="f1M1" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>F1 JET</h2><p>Chapter 8 — Video 1</p><button class="modal-x" onclick="closeM('f1M1')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%206.mp4" type="video/mp4"></video></div></div></div>
+<div id="f1M2" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>F1 JET</h2><p>Chapter 8 — Video 2</p><button class="modal-x" onclick="closeM('f1M2')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/Video%20Project%203.mp4" type="video/mp4"></video></div></div></div>
+<div id="f1M3" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>F1 JET</h2><p>Chapter 8 — Video 3</p><button class="modal-x" onclick="closeM('f1M3')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/video%201.mp4" type="video/mp4"></video></div></div></div>
+<div id="hillM1" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 1</p><button class="modal-x" onclick="closeM('hillM1')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/86c28cfa-0a27-44da-a736-341c8bad23fa_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+<div id="hillM2" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 2</p><button class="modal-x" onclick="closeM('hillM2')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/c6c8346c-7069-42c1-8776-f55fc010b8f0_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+<div id="hillM3" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 3</p><button class="modal-x" onclick="closeM('hillM3')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/fe4305d2-94ab-4d85-8b7b-04252903bb22_fullscreen.mp4" type="video/mp4"></video></div></div></div>
+
 <script>
-/* ── ENTRANCE ── */
-(function(){
-  const pctEl = document.getElementById('intro-pct');
-  let n = 0;
-  const tick = setInterval(() => {
-    n = Math.min(n + Math.ceil(Math.random() * 9), 100);
-    if (pctEl) pctEl.textContent = n + '%';
-    if (n >= 100) clearInterval(tick);
-  }, 28);
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('intro').classList.add('gone');
-      document.body.classList.add('entered');
-    }, 2500);
-  });
-})();
-
-/* ── CURSOR ── */
-const cur = document.getElementById('cur');
-const ring = document.getElementById('cur-ring');
+/* ═══════════════════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════════════════ */
+const curEl  = document.getElementById('cur');
+const ringEl = document.getElementById('cur-ring');
 let mx=0, my=0, rx=0, ry=0;
 document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
 (function loop(){
-  rx += (mx-rx)*.1; ry += (my-ry)*.1;
-  cur.style.left  = mx+'px'; cur.style.top  = my+'px';
-  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  curEl.style.left=mx+'px'; curEl.style.top=my+'px';
+  rx+=(mx-rx)*.11; ry+=(my-ry)*.11;
+  ringEl.style.left=rx+'px'; ringEl.style.top=ry+'px';
   requestAnimationFrame(loop);
 })();
-document.querySelectorAll('a,button,.pc,.nc,.sc,.tag').forEach(el => {
-  el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
-  el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
+document.querySelectorAll('a,button,.pc,.si,.tag,.ptab,.sc').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
 });
 
-/* ── NAV scroll ── */
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('bg', window.scrollY > 50);
-}, { passive:true });
+/* ═══════════════════════════════════════════════════
+   ★ NEW ENTRANCE — INK CURTAIN SPLIT SEQUENCE
+═══════════════════════════════════════════════════ */
+(function(){
+  const preloader   = document.getElementById('preloader');
+  const curtainTop  = document.getElementById('pl-top');
+  const curtainBot  = document.getElementById('pl-bot');
+  const fil1        = document.getElementById('fil1');
+  const fil2        = document.getElementById('fil2');
+  const nameBlock   = document.getElementById('pl-name-block');
+  const roleText    = document.getElementById('pl-role');
+  const progWrap    = document.getElementById('pl-prog-wrap');
+  const progBar     = document.getElementById('pl-prog');
+  const pctText     = document.getElementById('pl-pct');
+  const inkDrop     = document.getElementById('ink-drop');
 
-/* ── SCROLL REVEAL ── */
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('up'); });
-}, { threshold:0.11 });
-document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  // Progress counter
+  let pct = 0;
+  const pTick = setInterval(()=>{
+    pct = Math.min(pct + Math.ceil(Math.random()*8)+1, 100);
+    progBar.style.width = pct+'%';
+    pctText.textContent = pct+'%';
+    if(pct >= 100) clearInterval(pTick);
+  }, 28);
 
-/* ── ACTIVE NAV ── */
-const secs = document.querySelectorAll('section[id]');
-const nls  = document.querySelectorAll('.nl:not(.cta)');
-window.addEventListener('scroll', () => {
-  let cur = '';
-  secs.forEach(s => { if (window.scrollY >= s.offsetTop - 140) cur = s.id; });
-  nls.forEach(l => {
-    const active = l.getAttribute('href') === '#'+cur;
-    l.classList.toggle('act', active);
+  // PHASE 1 (0ms): Curtains visible, all content hidden
+  curtainTop.style.transition = 'none';
+  curtainBot.style.transition = 'none';
+
+  // PHASE 2 (300ms): Filament lines extend across center stage
+  setTimeout(()=>{
+    fil1.style.transition = 'transform 0.7s cubic-bezier(.77,0,.175,1)';
+    fil2.style.transition = 'transform 0.7s cubic-bezier(.77,0,.175,1) 0.08s';
+    fil1.style.transform = 'scaleX(1)';
+    fil2.style.transform = 'scaleX(1)';
+  }, 300);
+
+  // PHASE 3 (600ms): Ink drop expands
+  setTimeout(()=>{
+    inkDrop.style.transition = 'width 1.2s ease, height 1.2s ease, opacity 1.2s ease';
+    inkDrop.style.width  = '500px';
+    inkDrop.style.height = '180px';
+    inkDrop.style.opacity= '1';
+  }, 550);
+
+  // PHASE 4 (700ms): Name clips in — the reveal wipe
+  setTimeout(()=>{
+    nameBlock.style.transition = 'clip-path 0.85s cubic-bezier(.77,0,.175,1)';
+    nameBlock.style.clipPath   = 'inset(0 0% 0 0%)';
+  }, 700);
+
+  // PHASE 5 (900ms): Role & progress fade in
+  setTimeout(()=>{
+    progWrap.style.transition = 'opacity .5s ease';
+    progWrap.style.opacity    = '1';
+    pctText.style.transition  = 'opacity .5s ease';
+    pctText.style.opacity     = '1';
+    roleText.style.transition = 'opacity .6s ease';
+    roleText.style.opacity    = '1';
+  }, 900);
+
+  // PHASE 6 (load complete + 2.2s): Filaments flicker then curtains SPLIT APART
+  window.addEventListener('load', ()=>{
+    setTimeout(()=>{
+      // Flicker the filaments
+      fil1.style.transition = 'opacity 0.08s ease';
+      fil2.style.transition = 'opacity 0.08s ease';
+      let f = 0;
+      const flicker = setInterval(()=>{
+        f++;
+        const vis = (f % 2 === 0) ? '1' : '0.2';
+        fil1.style.opacity = vis;
+        fil2.style.opacity = vis;
+        if(f >= 6) {
+          clearInterval(flicker);
+          fil1.style.opacity = '1';
+          fil2.style.opacity = '1';
+        }
+      }, 80);
+
+      // Curtains split — top goes UP, bottom goes DOWN
+      setTimeout(()=>{
+        curtainTop.style.transition = 'transform 0.85s cubic-bezier(.77,0,.175,1)';
+        curtainBot.style.transition = 'transform 0.85s cubic-bezier(.77,0,.175,1) 0.04s';
+        curtainTop.style.transform  = 'translateY(-102%)';
+        curtainBot.style.transform  = 'translateY(102%)';
+
+        // Fade out remaining preloader UI
+        setTimeout(()=>{
+          nameBlock.style.transition = 'opacity 0.5s ease';
+          roleText.style.transition  = 'opacity 0.5s ease';
+          progWrap.style.transition  = 'opacity 0.4s ease';
+          pctText.style.transition   = 'opacity 0.4s ease';
+          fil1.closest('.pl-filament').style.transition = 'opacity 0.4s ease';
+          fil2.closest('.pl-filament').style.transition = 'opacity 0.4s ease';
+          nameBlock.style.opacity = '0';
+          roleText.style.opacity  = '0';
+          progWrap.style.opacity  = '0';
+          pctText.style.opacity   = '0';
+          fil1.closest('.pl-filament').style.opacity = '0';
+          fil2.closest('.pl-filament').style.opacity = '0';
+        }, 400);
+
+        // Remove preloader and start hero
+        setTimeout(()=>{
+          preloader.style.pointerEvents = 'none';
+          document.body.classList.add('entered');
+          heroAnim();
+        }, 920);
+
+      }, 600);
+
+    }, 1800);
   });
-}, { passive:true });
+})();
 
-/* ── PARALLAX ── */
-const parallaxEls = document.querySelectorAll('[data-parallax]');
-function doParallax(){
-  parallaxEls.forEach(el => {
-    const rect   = el.parentElement.getBoundingClientRect();
-    const speed  = parseFloat(el.dataset.parallax);
-    const offset = -(rect.top * speed);
-    el.style.transform = `translateY(${offset}px)`;
+/* ═══════════════════════════════════════════════════
+   ★ TOPOGRAPHY MAP — FOOTER REVEAL
+   Procedurally generates organic contour lines on the
+   #p-outro SVG canvas, then draws them path-by-path
+   using stroke-dashoffset animation when the panel
+   scrolls into view.
+═══════════════════════════════════════════════════ */
+(function(){
+  const svg    = document.getElementById('topo-canvas');
+  const outro  = document.getElementById('p-outro');
+  const inner  = document.getElementById('topo-inner');
+  let generated = false;
+  let revealed  = false;
+
+  // ── Noise helper (simplex-like via sin/cos hash) ──
+  function noise(x, y, seed){
+    const s = Math.sin(x*127.1 + y*311.7 + seed) * 43758.5453;
+    return s - Math.floor(s);
+  }
+  function smoothNoise(x, y, seed){
+    const ix = Math.floor(x), iy = Math.floor(y);
+    const fx = x-ix, fy = y-iy;
+    const ux = fx*fx*(3-2*fx), uy = fy*fy*(3-2*fy);
+    const a = noise(ix,   iy,   seed);
+    const b = noise(ix+1, iy,   seed);
+    const c = noise(ix,   iy+1, seed);
+    const d = noise(ix+1, iy+1, seed);
+    return a + (b-a)*ux + (c-a)*uy + (d-b)*ux*uy + (b+c-a-d)*ux*uy;
+  }
+  function fbm(x, y, octaves, seed){
+    let v=0, a=0.5, f=1;
+    for(let i=0;i<octaves;i++){
+      v += a * smoothNoise(x*f, y*f, seed+i*37);
+      a *= 0.5; f *= 2.1;
+    }
+    return v;
+  }
+
+  // ── Marching squares — isolines ──
+  function lerp(a, b, t){ return a + (b-a)*t; }
+
+  function generateTopo(){
+    const W = outro.offsetWidth  || window.innerWidth;
+    const H = outro.offsetHeight || window.innerHeight;
+
+    svg.setAttribute('width',  W);
+    svg.setAttribute('height', H);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = '';
+
+    const SEED   = 42;
+    const COLS   = 160;
+    const ROWS   = 90;
+    const CW     = W/COLS;
+    const CH     = H/ROWS;
+
+    // Build height field
+    const field = [];
+    for(let r=0;r<=ROWS;r++){
+      field[r] = [];
+      for(let c=0;c<=COLS;c++){
+        const nx = c/COLS * 3.2;
+        const ny = r/ROWS * 2.0;
+        // Multi-center mountain topology
+        const h1 = fbm(nx + 0.2, ny + 0.3, 5, SEED);
+        const h2 = fbm(nx * 1.3 - 0.5, ny * 1.1 + 0.8, 4, SEED+100);
+        // Blend with distance falloff from two "peaks"
+        const d1 = Math.sqrt((nx-1.2)**2 + (ny-0.8)**2);
+        const d2 = Math.sqrt((nx-2.5)**2 + (ny-1.4)**2);
+        const p1 = Math.max(0, 1 - d1 * 0.75);
+        const p2 = Math.max(0, 1 - d2 * 0.8);
+        field[r][c] = h1 * 0.5 + h2 * 0.35 + p1 * 0.5 + p2 * 0.4;
+      }
+    }
+
+    // Normalize
+    let mn=Infinity, mx=-Infinity;
+    for(let r=0;r<=ROWS;r++) for(let c=0;c<=COLS;c++){
+      if(field[r][c]<mn) mn=field[r][c];
+      if(field[r][c]>mx) mx=field[r][c];
+    }
+    for(let r=0;r<=ROWS;r++) for(let c=0;c<=COLS;c++){
+      field[r][c] = (field[r][c]-mn)/(mx-mn);
+    }
+
+    // Contour levels
+    const LEVELS = 22;
+    const paths  = [];
+
+    for(let lvl=0; lvl<LEVELS; lvl++){
+      const iso    = 0.12 + (lvl / LEVELS) * 0.78;
+      // Visual styling: higher = slightly brighter
+      const bright = 0.10 + (lvl/LEVELS)*0.22;
+      const alpha  = bright.toFixed(3);
+      const sw     = (lvl % 5 === 0) ? 0.9 : 0.45; // index lines thicker
+
+      let pts = [];
+
+      for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+          const v00 = field[r][c];
+          const v10 = field[r][c+1];
+          const v01 = field[r+1][c];
+          const v11 = field[r+1][c+1];
+
+          const x0 = c*CW, x1=(c+1)*CW;
+          const y0 = r*CH, y1=(r+1)*CH;
+
+          // Marching squares case
+          const b = (v00>=iso?8:0)|(v10>=iso?4:0)|(v11>=iso?2:0)|(v01>=iso?1:0);
+
+          function ex(va,vb,xa,xb){ return xa + (xb-xa)*(iso-va)/(vb-va); }
+          function ey(va,vb,ya,yb){ return ya + (yb-ya)*(iso-va)/(vb-va); }
+
+          // top edge, right edge, bottom edge, left edge midpoints
+          const t = [ex(v00,v10,x0,x1), y0];
+          const ri= [x1, ey(v10,v11,y0,y1)];
+          const bo= [ex(v01,v11,x0,x1), y1];
+          const le= [x0, ey(v00,v01,y0,y1)];
+
+          let segs = [];
+          if(b===1||b===14) segs=[[le,bo]];
+          else if(b===2||b===13) segs=[[bo,ri]];
+          else if(b===3||b===12) segs=[[le,ri]];
+          else if(b===4||b===11) segs=[[t,ri]];
+          else if(b===5) segs=[[t,le],[bo,ri]];
+          else if(b===6||b===9) segs=[[t,bo]];
+          else if(b===7||b===8) segs=[[t,le]];
+          else if(b===10) segs=[[t,ri],[le,bo]];
+
+          segs.forEach(([a,bb])=>{
+            pts.push([a,bb]);
+          });
+        }
+      }
+
+      if(pts.length === 0) continue;
+
+      // Build a single long path from segments
+      let d = '';
+      pts.forEach(([a,b])=>{
+        d += `M${a[0].toFixed(1)},${a[1].toFixed(1)} L${b[0].toFixed(1)},${b[1].toFixed(1)} `;
+      });
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', `rgba(193,127,58,${alpha})`);
+      path.setAttribute('stroke-width', sw);
+      path.setAttribute('stroke-linecap', 'round');
+      // stroke-dashoffset animation setup
+      const totalLen = (pts.length * 2 * Math.max(CW,CH)) || 1000;
+      path.setAttribute('stroke-dasharray', totalLen);
+      path.setAttribute('stroke-dashoffset', totalLen);
+      path.style.transition = 'none';
+      svg.appendChild(path);
+      paths.push({ el:path, len:totalLen, delay: lvl * 55 + Math.random()*40 });
+    }
+
+    return paths;
+  }
+
+  function revealPaths(paths){
+    paths.forEach(({el, len, delay})=>{
+      setTimeout(()=>{
+        el.style.transition = `stroke-dashoffset ${0.9 + Math.random()*0.5}s cubic-bezier(.215,.61,.355,1)`;
+        el.setAttribute('stroke-dashoffset', '0');
+      }, delay);
+    });
+  }
+
+  // Mouse parallax on topo inner
+  document.addEventListener('mousemove', e=>{
+    const px = (e.clientX / window.innerWidth  - 0.5) * 18;
+    const py = (e.clientY / window.innerHeight - 0.5) * 10;
+    inner.style.transform = `translate(${px}px, ${py}px)`;
   });
+
+  // Poll for outro panel visibility (horizontal scroll)
+  let paths = null;
+  const checkVisible = setInterval(()=>{
+    const r = outro.getBoundingClientRect();
+    if(r.left < window.innerWidth * 0.75 && r.right > 0){
+      if(!generated){
+        generated = true;
+        paths = generateTopo();
+      }
+      if(!revealed){
+        revealed = true;
+        outro.classList.add('topo-active');
+        // Slight delay before path drawing starts
+        setTimeout(()=>revealPaths(paths), 300);
+      }
+      clearInterval(checkVisible);
+    }
+  }, 80);
+
+})();
+
+/* ═══════════════════════════════════════════════════
+   HORIZONTAL SCROLL ENGINE
+═══════════════════════════════════════════════════ */
+const track    = document.getElementById('scroll-track');
+const progress = document.getElementById('progress');
+const hint     = document.getElementById('scroll-hint');
+let targetX=0, currentX=0, maxX=0;
+let velocity=0;
+
+function calcMax(){ maxX = track.scrollWidth - window.innerWidth; }
+calcMax();
+window.addEventListener('resize', calcMax);
+
+document.addEventListener('wheel', e=>{
+  e.preventDefault();
+  velocity += e.deltaY * 0.55;
+  velocity = Math.max(-600, Math.min(600, velocity));
+}, { passive:false });
+
+let tStartX=0, tStartY=0;
+document.addEventListener('touchstart', e=>{ tStartX=e.touches[0].clientX; tStartY=e.touches[0].clientY; });
+document.addEventListener('touchmove', e=>{
+  const dx = tStartX-e.touches[0].clientX;
+  const dy = tStartY-e.touches[0].clientY;
+  if(Math.abs(dx)>Math.abs(dy)){
+    e.preventDefault();
+    velocity += dx * 1.4;
+    tStartX=e.touches[0].clientX; tStartY=e.touches[0].clientY;
+  }
+}, { passive:false });
+
+document.addEventListener('keydown', e=>{
+  const s = window.innerWidth * .78;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') targetX = Math.min(maxX, targetX+s);
+  if(e.key==='ArrowLeft' ||e.key==='ArrowUp')   targetX = Math.max(0, targetX-s);
+});
+
+function goStart(){ targetX=0; velocity=0; }
+
+const sections = [
+  document.getElementById('p-hero'),
+  document.getElementById('ch-about'),
+  document.getElementById('ch-proj'),
+  document.getElementById('ch-nov'),
+  document.getElementById('ch-stmt'),
+  document.getElementById('ch-con'),
+  document.getElementById('p-outro'),
+];
+const secNums = ['01','02','03','04','05','06','07','08'];
+const navAs    = document.querySelectorAll('.nav-links a');
+const curNumEl = document.getElementById('cur-num');
+
+navAs.forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const si = parseInt(a.dataset.s);
+    const targets = [
+      document.getElementById('p-hero'),
+      document.getElementById('ch-about'),
+      document.getElementById('ch-proj'),
+      document.getElementById('ch-nov'),
+      document.getElementById('ch-stmt'),
+      document.getElementById('ch-con'),
+    ];
+    if(targets[si]){ const r=targets[si].getBoundingClientRect(); targetX=currentX+r.left; velocity=0; }
+  });
+});
+
+document.querySelectorAll('.h-ch').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    const t = parseInt(item.dataset.target);
+    const map = [null,
+      document.getElementById('ch-about'),
+      document.getElementById('ch-proj'),
+      document.getElementById('ch-nov'),
+      document.getElementById('ch-stmt'),
+      document.getElementById('ch-con'),
+    ];
+    if(map[t]){ const r=map[t].getBoundingClientRect(); targetX=currentX+r.left; velocity=0; }
+  });
+});
+
+(function tick(){
+  if(Math.abs(velocity) > 0.5){
+    targetX += velocity;
+    targetX  = Math.max(0, Math.min(maxX, targetX));
+    velocity *= 0.78;
+  } else { velocity = 0; }
+
+  const lerpF = 0.072;
+  currentX += (targetX - currentX) * lerpF;
+  if(Math.abs(currentX - targetX) < 0.08) currentX = targetX;
+
+  track.style.transform = `translateX(${-currentX}px)`;
+  progress.style.transform = `scaleX(${maxX>0?currentX/maxX:0})`;
+  hint.classList.toggle('hidden', currentX>120);
+
+  let active=0;
+  sections.forEach((s,i)=>{
+    if(!s) return;
+    const r=s.getBoundingClientRect();
+    if(r.left < window.innerWidth*.45) active=i;
+  });
+  curNumEl.textContent = secNums[active] || '01';
+  navAs.forEach(a=>{
+    const si=parseInt(a.dataset.s);
+    const match=(si===0&&active<=1)||(si===1&&active<=2&&active>=1)||(si===2&&active<=3&&active>=2)||
+                 (si===3&&active<=4&&active>=3)||(si===4&&active<=5&&active>=4)||(si===5&&active>=5);
+    a.classList.toggle('active', match);
+  });
+
+  document.querySelectorAll('.ch-bg-letter').forEach(el=>{
+    const r=el.closest('.panel').getBoundingClientRect();
+    el.style.transform=`translateX(${(0.5-r.left/window.innerWidth)*65}px)`;
+  });
+
+  requestAnimationFrame(tick);
+})();
+
+/* ═══════════════════════════════════════════════════
+   HERO ENTRANCE
+═══════════════════════════════════════════════════ */
+function heroAnim(){
+  const tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+  tl.to(['#hn1','#hn2','#hn3'], { y:0, duration:1.05, stagger:.09 }, 0);
+  tl.to('#h-ey',   { opacity:1, duration:.8 }, .3);
+  tl.to('#h-role', { opacity:1, duration:.7 }, .6);
+  tl.to('#h-desc', { opacity:1, duration:.7 }, .72);
+  tl.to('#h-ctas', { opacity:1, duration:.6 }, .86);
+  tl.to('#h-chapters', { opacity:1, duration:.7 }, 1.0);
 }
-window.addEventListener('scroll', doParallax, { passive:true });
-doParallax();
+
+/* ═══════════════════════════════════════════════════
+   CHAPTER REVEALS
+═══════════════════════════════════════════════════ */
+function watchAndAnimate(elId, targets){
+  const el = document.getElementById(elId);
+  if(!el || !targets || !targets.length) return;
+  let done=false;
+  const iv = setInterval(()=>{
+    const r=el.getBoundingClientRect();
+    if(r.left < window.innerWidth*.6 && r.right>0 && !done){
+      done=true; clearInterval(iv);
+      gsap.to(targets, { y:0, duration:1, stagger:.1, ease:'power3.out' });
+    }
+  }, 80);
+}
+watchAndAnimate('ch-about', ['#ca1','#ca2']);
+watchAndAnimate('ch-proj',  ['#cp1','#cp2']);
+watchAndAnimate('ch-nov',   ['#cn1','#cn2','#cn3']);
+watchAndAnimate('ch-stmt',  ['#cs1','#cs2']);
+watchAndAnimate('ch-con',   ['#cc1','#cc2']);
+
+// Outro word reveal
+(function(){
+  const outro = document.getElementById('p-outro');
+  if(!outro) return;
+  const ey=outro.querySelector('.outro-ey'), sub=outro.querySelector('.outro-sub'),
+        btns=outro.querySelector('.outro-btns'), cred=outro.querySelector('.outro-credit');
+  if(ey){ ey.style.opacity='0'; ey.style.transform='translateY(20px)'; }
+  if(sub){ sub.style.opacity='0'; sub.style.transform='translateY(18px)'; }
+  if(btns){ btns.style.opacity='0'; btns.style.transform='translateY(14px)'; }
+  if(cred){ cred.style.opacity='0'; }
+  ['#oo1','#oo2','#oo3'].forEach(id=>{ const e=document.querySelector(id); if(e) e.style.transform='translateY(110%)'; });
+  let done=false;
+  const iv=setInterval(()=>{
+    const r=outro.getBoundingClientRect();
+    if(r.left<window.innerWidth*.65&&r.right>0&&!done){
+      done=true; clearInterval(iv);
+      const tl=gsap.timeline({defaults:{ease:'power4.out'}});
+      if(ey) tl.to(ey,{opacity:1,y:0,duration:.7},0);
+      tl.to('#oo1',{y:0,duration:1.1},0.15);
+      tl.to('#oo2',{y:0,duration:1.1},0.32);
+      tl.to('#oo3',{y:0,duration:1.1},0.49);
+      if(sub)  tl.to(sub, {opacity:1,y:0,duration:.8},0.75);
+      if(btns) tl.to(btns,{opacity:1,y:0,duration:.7},0.92);
+      if(cred) tl.to(cred,{opacity:1,duration:.6},1.1);
+    }
+  }, 80);
+})();
+
+/* ═══════════════════════════════════════════════════
+   NOVELS SHELF
+═══════════════════════════════════════════════════ */
+const shelfItems = document.querySelectorAll('.si');
+shelfItems.forEach(item=>{
+  item.addEventListener('mouseenter',()=>{
+    shelfItems.forEach(i=>i.classList.remove('open'));
+    item.classList.add('open');
+  });
+});
+document.getElementById('shelf').addEventListener('mouseleave',()=>{
+  if(![...shelfItems].some(i=>i.classList.contains('open')))
+    shelfItems[0].classList.add('open');
+});
+
+/* ═══════════════════════════════════════════════════
+   PROJECT TABS
+═══════════════════════════════════════════════════ */
+const ptabs = document.querySelectorAll('.ptab');
+const catMap = { games:'cat-games', breakdowns:'cat-breakdowns', concepts:'cat-concepts', ai:'cat-ai' };
+ptabs.forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    ptabs.forEach(t=>t.classList.remove('on'));
+    tab.classList.add('on');
+    Object.entries(catMap).forEach(([k,id])=>{
+      const el=document.getElementById(id);
+      el.classList.toggle('on', k===tab.dataset.cat);
+    });
+    setTimeout(calcMax, 100);
+  });
+});
+
+/* ═══════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════ */
+function openM(id){ document.getElementById(id).classList.add('open'); }
+function closeM(id){
+  const m=document.getElementById(id); m.classList.remove('open');
+  const v=m.querySelector('video'); if(v) v.pause();
+}
+</script>
+
+<!-- PAINT REVEAL SYSTEM -->
+<style>
+#pb-ring {
+  position:fixed; border-radius:50%;
+  border:1.5px solid rgba(193,127,58,0.6);
+  pointer-events:none; z-index:99997;
+  transform:translate(-50%,-50%);
+  width:220px; height:220px;
+  mix-blend-mode: screen;
+}
+</style>
+<script>
+(function(){
+'use strict';
+var IMGS = {
+  'p-hero':      'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/index.png?raw=true',
+  'ch-about':    'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/Home.avif?raw=true',
+  'p-about':     'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/Home.avif?raw=true',
+  'ch-proj':     'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/projects.jpg?raw=true',
+  'p-projects':  'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/projects.jpg?raw=true',
+  'ch-nov':      'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/novels.png?raw=true',
+  'p-novels':    'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/novels.png?raw=true',
+  'ch-stmt':     'https://github.com/Janeshobito/janeshobito.github.io/blob/main/Images/statement.webp?raw=true',
+  'ch-con':      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1800&q=85',
+  'p-contact':   'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1800&q=85',
+};
+var BRUSH=120, FEATHER=0.60, FADE=0.013;
+var gx=-9999, gy=-9999;
+var ring=document.getElementById('pb-ring');
+document.addEventListener('mousemove',function(e){ gx=e.clientX; gy=e.clientY; ring.style.left=gx+'px'; ring.style.top=gy+'px'; },{passive:true});
+
+Object.keys(IMGS).forEach(function(id){
+  var panel=document.getElementById(id); if(!panel) return;
+  var url=IMGS[id];
+  panel.style.position='relative'; panel.style.overflow='hidden';
+  var ci=new Image(); ci.className='pb-color'; ci.src=url; ci.alt='';
+  panel.insertBefore(ci,panel.firstChild);
+  var cv=document.createElement('canvas'); cv.className='pb-canvas';
+  panel.insertBefore(cv,ci.nextSibling);
+  var ctx=cv.getContext('2d');
+  var vig=document.createElement('div'); vig.className='pb-vig';
+  panel.insertBefore(vig,cv.nextSibling);
+  function sync(){
+    var w=panel.offsetWidth||1, h=panel.offsetHeight||1;
+    if(cv.width===w&&cv.height===h) return;
+    cv.width=w; cv.height=h;
+    ctx.fillStyle='rgba(18,12,8,0.88)'; ctx.fillRect(0,0,w,h);
+  }
+  sync(); window.addEventListener('resize',sync);
+  function tick(){
+    requestAnimationFrame(tick);
+    var rect=panel.getBoundingClientRect();
+    var lx=gx-rect.left, ly=gy-rect.top;
+    var inside=lx>=-BRUSH&&lx<=rect.width+BRUSH&&ly>=-BRUSH&&ly<=rect.height+BRUSH;
+    var w=cv.width, h=cv.height;
+    if(FADE>0){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle='rgba(18,12,8,'+FADE+')'; ctx.fillRect(0,0,w,h); }
+    if(inside){
+      ctx.globalCompositeOperation='destination-out';
+      var g=ctx.createRadialGradient(lx,ly,0,lx,ly,BRUSH);
+      g.addColorStop(0,'rgba(0,0,0,0.98)'); g.addColorStop(FEATHER*0.4,'rgba(0,0,0,0.85)');
+      g.addColorStop(FEATHER,'rgba(0,0,0,0.30)'); g.addColorStop(FEATHER+0.2,'rgba(0,0,0,0.05)');
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(lx,ly,BRUSH,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+      var gc=ctx.createRadialGradient(lx,ly,0,lx,ly,BRUSH*0.22);
+      gc.addColorStop(0,'rgba(0,0,0,1)'); gc.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(lx,ly,BRUSH*0.22,0,Math.PI*2); ctx.fillStyle=gc; ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+    }
+  }
+  tick();
+});
+})();
 </script>
 </body>
 </html>
