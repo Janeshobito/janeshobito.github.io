@@ -39,6 +39,31 @@ body {
   width: 100vw; height: 100vh;
 }
 
+
+/* ═══════════════════════════════════════════════
+   HERO VIDEO BG
+═══════════════════════════════════════════════ */
+#hero-video {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  z-index:0;
+  opacity:0;
+  transition:opacity 1.2s ease 2.8s;
+  pointer-events:none;
+}
+body.entered #hero-video { opacity:1; }
+#hero-video-overlay {
+  position:absolute; inset:0; z-index:1;
+  pointer-events:none;
+  background: linear-gradient(
+    to right,
+    rgba(7,7,10,0.92) 0%,
+    rgba(7,7,10,0.75) 40%,
+    rgba(7,7,10,0.45) 70%,
+    rgba(7,7,10,0.65) 100%
+  );
+}
 /* ═══════════════════════════════════════════════
    CURSOR
 ═══════════════════════════════════════════════ */
@@ -639,7 +664,7 @@ body.entered #scroll-hint { opacity:1; }
    PANEL — STATEMENT
 ═══════════════════════════════════════════════ */
 #p-statement {
-  width:100vw; background:var(--white);
+  width:130vw; background:var(--white);
   display:flex; align-items:center;
   padding:0 7vw; gap:6vw;
 }
@@ -662,10 +687,10 @@ body.entered #scroll-hint { opacity:1; }
   max-width:460px;
 }
 
-.stmt-right { flex:1; border:1px solid rgba(0,0,0,.1); border-radius:2px; overflow:hidden; }
+.stmt-right { flex:1.4; border:1px solid rgba(0,0,0,.1); border-radius:2px; overflow-y:auto; max-height:82vh; }
 
 .sc {
-  padding:26px 30px;
+  padding:14px 22px;
   border-bottom:1px solid rgba(0,0,0,.07);
   transition:background .3s; cursor:default;
 }
@@ -679,8 +704,41 @@ body.entered #scroll-hint { opacity:1; }
   transition:transform .5s ease .1s;
 }
 .sc:hover .sc-bar { transform:scaleX(1); }
-.sc-head { font-family:var(--fo); font-size:17px; font-weight:600; letter-spacing:1px; color:var(--bg); margin-bottom:9px; }
-.sc-body { font-size:13px; line-height:1.8; color:rgba(0,0,0,.5); }
+.sc-head { font-family:var(--fo); font-size:14px; font-weight:600; letter-spacing:1px; color:var(--bg); margin-bottom:5px; }
+.sc-body { font-size:11.5px; line-height:1.7; color:rgba(0,0,0,.5); }
+
+
+/* ═══════════════════════════════════════════════
+   STATEMENT NAVIGATOR PANEL
+═══════════════════════════════════════════════ */
+#p-statement-full {
+  width:100vw; background:var(--white);
+  display:flex; align-items:stretch; padding:0; overflow:hidden;
+}
+.sn-accent { width:4px; background:var(--red); flex-shrink:0; }
+.sn-wrap { flex:1; display:flex; flex-direction:column; padding:52px 7vw 40px 6vw; position:relative; }
+.sn-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:36px; flex-shrink:0; }
+.sn-label { font-size:9px; letter-spacing:.35em; text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:12px; }
+.sn-label::before { content:''; width:22px; height:1px; background:var(--red); }
+.sn-counter { font-family:var(--fo); font-size:13px; letter-spacing:3px; color:rgba(0,0,0,.25); }
+.sn-counter span { color:var(--red); font-size:26px; font-weight:700; vertical-align:middle; }
+.sn-viewport { flex:1; position:relative; overflow:hidden; }
+.sn-slides { display:flex; flex-direction:column; transition:transform .55s cubic-bezier(.77,0,.175,1); height:100%; }
+.sn-slide { min-height:100%; flex-shrink:0; display:flex; flex-direction:column; justify-content:center; padding:0 0 8px 0; }
+.sn-num { font-size:9px; letter-spacing:.38em; text-transform:uppercase; color:rgba(0,0,0,.28); margin-bottom:10px; }
+.sn-bar { width:28px; height:2px; background:var(--red); margin-bottom:16px; transform:scaleX(0); transform-origin:left; transition:transform .6s ease .1s; }
+.sn-slide.active .sn-bar { transform:scaleX(1); }
+.sn-title { font-family:var(--fo); font-size:clamp(18px,2.4vw,28px); font-weight:600; letter-spacing:2px; color:var(--bg); margin-bottom:18px; line-height:1.1; }
+.sn-body { font-size:clamp(12px,1.1vw,14.5px); line-height:1.88; color:rgba(0,0,0,.55); max-width:780px; }
+.sn-pull { font-family:var(--fs); font-style:italic; font-size:clamp(13px,1.3vw,16px); line-height:1.7; color:rgba(0,0,0,.35); border-left:2px solid rgba(229,57,53,.4); padding-left:16px; margin-top:20px; max-width:560px; }
+.sn-nav { display:flex; flex-direction:column; gap:8px; position:absolute; right:5vw; top:50%; transform:translateY(-50%); z-index:10; }
+.sn-btn { width:44px; height:44px; border-radius:2px; background:transparent; border:1px solid rgba(0,0,0,.15); display:flex; align-items:center; justify-content:center; cursor:none; transition:background .3s, border-color .3s, transform .2s; color:rgba(0,0,0,.4); }
+.sn-btn:hover { background:var(--red); border-color:var(--red); color:#fff; transform:scale(1.08); }
+.sn-btn:disabled { opacity:0.2; pointer-events:none; }
+.sn-btn svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; }
+.sn-dots { display:flex; gap:7px; margin-top:28px; flex-shrink:0; }
+.sn-dot { width:6px; height:6px; border-radius:50%; background:rgba(0,0,0,.15); transition:background .3s, transform .3s; }
+.sn-dot.on { background:var(--red); transform:scale(1.4); }
 
 /* ═══════════════════════════════════════════════
    PANEL — CONTACT
@@ -868,6 +926,9 @@ body.entered #scroll-hint { opacity:1; }
 ════════════════════ -->
 <div class="panel" id="p-hero">
 
+  <video id="hero-video" autoplay muted loop playsinline><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/myFolder/video0001-0300.mp4" type="video/mp4"></video>
+  <div id="hero-video-overlay"></div>
+
   <p class="h-eyebrow" id="h-ey">Game Designer · Narrative Architect · 3D Artist · Author</p>
 
   <div class="h-name">
@@ -884,8 +945,7 @@ body.entered #scroll-hint { opacity:1; }
   </p>
 
   <div class="h-ctas" id="h-ctas">
-    <a class="btn-r" href="https://janeshobito.github.io/" target="_blank"><i class="fas fa-gamepad"></i> Live Portfolio</a>
-    <a class="btn-o" href="https://www.artstation.com/janeshobito283" target="_blank">ArtStation</a>
+    <button class="btn-r" id="explore-btn" type="button" style="cursor:none;"><i class="fas fa-arrow-right"></i> Explore More</button>
   </div>
 
   <div class="h-chapters" id="h-chapters">
@@ -1290,29 +1350,109 @@ body.entered #scroll-hint { opacity:1; }
 
   <div class="stmt-right">
     <div class="sc">
+      <p class="sc-num">Author's Statement · The Origin</p>
+      <div class="sc-bar"></div>
+      <h3 class="sc-head">WHO IS JANESHWARAN</h3>
+      <p class="sc-body">My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast — family conflict, happiness, sadness, isolation, and connection. I don't have a clean or singular reason for wanting to become a narrative designer; instead, my interest grew naturally from observing how people react, hide reactions, and learn to survive emotionally. Growing up, I reached a point where honest reactions became difficult, and I began to fake them. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p>
+    </div>
+    <div class="sc">
       <p class="sc-num">01 · Personal Lens</p>
       <div class="sc-bar"></div>
-      <h3 class="sc-head">WHO I AM</h3>
-      <p class="sc-body">Shaped by lived emotional contrast — family conflict, isolation, and connection. I exist between loneliness and solitude. This inner contradiction is foundational to every character I build. My stories embrace emotional ambiguity over certainty.</p>
+      <h3 class="sc-head">STORYTELLING PERSPECTIVE</h3>
+      <p class="sc-body">I exist between loneliness and solitude. I enjoy being social, yet often resist it. I experience frequent mood shifts and spend a significant amount of time daydreaming. Depending on my emotional state, these daydreams take the form of love stories, heroic arcs, villain narratives, or internal psychological conflicts — often with myself positioned as the central character. This inner contradiction — wanting connection while withdrawing from it — strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p>
     </div>
     <div class="sc">
       <p class="sc-num">02 · Writer's Note</p>
       <div class="sc-bar"></div>
-      <h3 class="sc-head">WHY I WRITE</h3>
-      <p class="sc-body">I began writing to prevent my daydreams from disappearing. Publishing them as novels expanded my imagination further. Writing is not an escape from thinking — it is an extension of it.</p>
+      <h3 class="sc-head">FROM DAYDREAM TO STORY</h3>
+      <p class="sc-body">At one stage, I realized that my daydreams would disappear if left untouched. To prevent that loss, I began writing them as stories and publishing them as novels. The response was positive, but instead of grounding me, it expanded my imagination further — pushing me deeper into idea creation and narrative exploration. Writing, for me, is not an escape from thinking; it is an extension of it.</p>
     </div>
     <div class="sc">
       <p class="sc-num">03 · Narrative Philosophy</p>
       <div class="sc-bar"></div>
       <h3 class="sc-head">EMOTION BEFORE STRUCTURE</h3>
-      <p class="sc-body">Stories are built from emotion first and structure second. A character is defined not by intent, but by what they choose when outcomes are uncertain. I am drawn to war films and biopics — they compress the full range of human emotion into moments of decision.</p>
+      <p class="sc-body">I believe stories are built from emotion first and structure second. Human beings naturally live in imagined worlds — some shared, some personal — and narrative exists to give those worlds form. I am particularly drawn to war films and biopics because they compress the full range of human emotion into moments of decision. Even when altered for entertainment, these stories reveal character through choice, pressure, and consequence. A character, to me, is defined not by intent, but by what they choose when outcomes are uncertain.</p>
     </div>
     <div class="sc">
       <p class="sc-num">04 · Design Ethos</p>
       <div class="sc-bar"></div>
       <h3 class="sc-head">CONSEQUENCE-DRIVEN DESIGN</h3>
-      <p class="sc-body">Choices must matter. When a path is taken, something else must be lost. Choice defines character. Emotion drives mechanics. Past, present, and future coexist in the narrative structure.</p>
+      <p class="sc-body">My approach to narrative design is consequence-driven. Choices must matter, and meaning must emerge from their outcomes. Influenced by manhwas and branching narratives, I view life — and by extension story — as a system of decisions. When a choice is made, it must carry weight. When a path is taken, something else must be lost. Choice defines character. Emotion drives mechanics. Past, present, and future coexist in the narrative structure.</p>
     </div>
+    <div class="sc">
+      <p class="sc-num">05 · Creative Manifesto</p>
+      <div class="sc-bar"></div>
+      <h3 class="sc-head">HONEST OVER PERFECT</h3>
+      <p class="sc-body">I am not afraid of loss, contradiction, or darkness in storytelling. I explore themes ranging from crime and moral decay to ambition, power, and desire. I build worlds that include light and shadow — fun and brutality — because reality contains both. My goal is not to create perfect stories, but honest ones. I aim to turn imagination into something tangible: not dreams that fade, but narratives that endure. I am Janeshwaran. This is not a conclusion, but a structure — one that continues to evolve as my skills grow.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════
+     PANEL — STATEMENT NAVIGATOR
+════════════════════ -->
+<div class="panel" id="p-statement-full">
+  <div class="sn-accent"></div>
+  <div class="sn-wrap">
+    <div class="sn-header">
+      <p class="sn-label">Author's Statements &amp; Design Philosophy</p>
+      <p class="sn-counter"><span id="sn-cur">1</span>&nbsp;/&nbsp;6</p>
+    </div>
+    <div class="sn-viewport">
+      <div class="sn-slides" id="sn-slides">
+        <div class="sn-slide active">
+          <p class="sn-num">Author's Statement · The Origin</p>
+          <div class="sn-bar"></div>
+          <h3 class="sn-title">WHO IS JANESHWARAN</h3>
+          <p class="sn-body">My name is Janeshwaran. I am a narrative-driven creator shaped by lived emotional contrast — family conflict, happiness, sadness, isolation, and connection. I don't have a clean or singular reason for wanting to become a narrative designer; instead, my interest grew naturally from observing how people react, hide reactions, and learn to survive emotionally. Growing up, I reached a point where honest reactions became difficult, and I began to fake them. That experience of dissonance between what is felt and what is shown became foundational to how I think about characters, psychology, and story.</p>
+          <p class="sn-pull">"The dissonance between what is felt and what is shown became foundational to how I think about characters."</p>
+        </div>
+        <div class="sn-slide">
+          <p class="sn-num">01 · Personal Lens</p>
+          <div class="sn-bar"></div>
+          <h3 class="sn-title">STORYTELLING PERSPECTIVE</h3>
+          <p class="sn-body">I exist between loneliness and solitude. I enjoy being social, yet often resist it. I experience frequent mood shifts and spend a significant amount of time daydreaming. Depending on my emotional state, these daydreams take the form of love stories, heroic arcs, villain narratives, or internal psychological conflicts — often with myself positioned as the central character. This inner contradiction — wanting connection while withdrawing from it — strongly influences the characters I create. My stories are shaped by emotional ambiguity rather than certainty.</p>
+          <p class="sn-pull">"I exist between loneliness and solitude — this inner contradiction is foundational to every character I build."</p>
+        </div>
+        <div class="sn-slide">
+          <p class="sn-num">02 · Writer's Note</p>
+          <div class="sn-bar"></div>
+          <h3 class="sn-title">FROM DAYDREAM TO STORY</h3>
+          <p class="sn-body">At one stage, I realized that my daydreams would disappear if left untouched. To prevent that loss, I began writing them as stories and publishing them as novels. The response was positive, but instead of grounding me, it expanded my imagination further — pushing me deeper into idea creation and narrative exploration. Writing, for me, is not an escape from thinking; it is an extension of it.</p>
+          <p class="sn-pull">"Writing is not an escape from thinking — it is an extension of it."</p>
+        </div>
+        <div class="sn-slide">
+          <p class="sn-num">03 · Narrative Philosophy</p>
+          <div class="sn-bar"></div>
+          <h3 class="sn-title">EMOTION BEFORE STRUCTURE</h3>
+          <p class="sn-body">I believe stories are built from emotion first and structure second. Human beings naturally live in imagined worlds — some shared, some personal — and narrative exists to give those worlds form. I am particularly drawn to war films and biopics because they compress the full range of human emotion into moments of decision. Even when altered for entertainment, these stories reveal character through choice, pressure, and consequence. A character, to me, is defined not by intent, but by what they choose when outcomes are uncertain.</p>
+          <p class="sn-pull">"A character is defined not by intent, but by what they choose when outcomes are uncertain."</p>
+        </div>
+        <div class="sn-slide">
+          <p class="sn-num">04 · Design Ethos</p>
+          <div class="sn-bar"></div>
+          <h3 class="sn-title">CONSEQUENCE-DRIVEN DESIGN</h3>
+          <p class="sn-body">My approach to narrative design is consequence-driven. Choices must matter, and meaning must emerge from their outcomes. Influenced by manhwas and branching narratives, I view life — and by extension story — as a system of decisions. When a choice is made, it must carry weight. When a path is taken, something else must be lost. Choice defines character. Emotion drives mechanics. Past, present, and future coexist in the narrative structure.</p>
+          <p class="sn-pull">"When a path is taken, something else must be lost."</p>
+        </div>
+        <div class="sn-slide">
+          <p class="sn-num">05 · Creative Manifesto</p>
+          <div class="sn-bar"></div>
+          <h3 class="sn-title">HONEST OVER PERFECT</h3>
+          <p class="sn-body">I am not afraid of loss, contradiction, or darkness in storytelling. I explore themes ranging from crime and moral decay to ambition, power, and desire. I build worlds that include light and shadow — fun and brutality — because reality contains both. My goal is not to create perfect stories, but honest ones. I aim to turn imagination into something tangible: not dreams that fade, but narratives that endure. I am Janeshwaran. This is not a conclusion, but a structure — one that continues to evolve as my skills grow.</p>
+          <p class="sn-pull">"My goal is not to create perfect stories — but honest ones."</p>
+        </div>
+      </div>
+    </div>
+    <div class="sn-dots" id="sn-dots">
+      <div class="sn-dot on"></div><div class="sn-dot"></div><div class="sn-dot"></div>
+      <div class="sn-dot"></div><div class="sn-dot"></div><div class="sn-dot"></div>
+    </div>
+  </div>
+  <div class="sn-nav">
+    <button class="sn-btn" id="sn-up" disabled title="Previous"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+    <button class="sn-btn" id="sn-dn" title="Next"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
   </div>
 </div>
 
@@ -1348,14 +1488,14 @@ body.entered #scroll-hint { opacity:1; }
       </a>
       <a class="sb" href="https://www.linkedin.com/in/janeshwaran-r-a33729285/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
       <a class="sb" href="https://www.webnovel.com/profile/4327938398" target="_blank"><i class="fas fa-book-open"></i></a>
-      <a class="sb" href="mailto:janeshwaranobito28@gmail.com"><i class="fas fa-envelope"></i></a>
+      <a class="sb" href="/cdn-cgi/l/email-protection#d3b9b2bdb6a0bba4b2a1b2bdbcb1baa7bce1eb93b4beb2babffdb0bcbe"><i class="fas fa-envelope"></i></a>
     </div>
   </div>
 
   <div class="con-right">
-    <a class="con-row" href="mailto:janeshwaranobito28@gmail.com">
+    <a class="con-row" href="/cdn-cgi/l/email-protection#1379727d76607b647261727d7c717a677c212b53747e727a7f3d707c7e">
       <div class="con-ic"><i class="fas fa-envelope"></i></div>
-      <div><p class="con-lbl">Email</p><p class="con-val">janeshwaranobito28@gmail.com</p></div>
+      <div><p class="con-lbl">Email</p><p class="con-val"><span class="__cf_email__" data-cfemail="ec868d82899f849b8d9e8d82838e859883ded4ac8b818d8580c28f8381">[email&#160;protected]</span></p></div>
     </a>
     <div class="con-row">
       <div class="con-ic"><i class="fas fa-phone"></i></div>
@@ -1398,7 +1538,6 @@ body.entered #scroll-hint { opacity:1; }
   </div>
   <p class="outro-sub">The architecture of dark fantasy — shared through games, novels, and art.<br>Every world built is a consequence of a choice made.</p>
   <div class="outro-btns">
-    <a class="btn-r" href="https://janeshobito.github.io/" target="_blank">Visit Portfolio <i class="fas fa-external-link-alt" style="font-size:9px;"></i></a>
     <button class="btn-o" onclick="goStart()" style="cursor:none;">↑ Start Over</button>
   </div>
   <p class="outro-credit">© 2025 Janeshwaran R · Mr. Darkpath · Chennai</p>
@@ -1425,7 +1564,7 @@ body.entered #scroll-hint { opacity:1; }
 <div id="hillM2" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 2</p><button class="modal-x" onclick="closeM('hillM2')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/c6c8346c-7069-42c1-8776-f55fc010b8f0_fullscreen.mp4" type="video/mp4"></video></div></div></div>
 <div id="hillM3" class="modal"><div class="modal-box"><div class="modal-hdr"><h2>HILL SIDE</h2><p>Nature View 3</p><button class="modal-x" onclick="closeM('hillM3')">×</button></div><div class="modal-vid"><video controls><source src="https://raw.githubusercontent.com/Janeshobito/janeshobito.github.io/main/folder/fe4305d2-94ab-4d85-8b7b-04252903bb22_fullscreen.mp4" type="video/mp4"></video></div></div></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ══════════════════════════════════════════
    CURSOR
 ══════════════════════════════════════════ */
@@ -1671,14 +1810,58 @@ function closeM(id){
   const v=m.querySelector('video'); if(v) v.pause();
 }
 document.querySelectorAll('.modal').forEach(m=>{
-  m.addEventListener('click', e=>{
-    if(e.target===m){ closeM(m.id); }
-  });
+  m.addEventListener('click', e=>{ if(e.target===m){ closeM(m.id); } });
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape')
     document.querySelectorAll('.modal.open').forEach(m=>closeM(m.id));
 });
+// Explore More button
+document.getElementById('explore-btn').addEventListener('click', function(){
+  var t = document.getElementById('ch-about');
+  if(t){ targetX = currentX + t.getBoundingClientRect().left; }
+});
+
+/* ══════════════════════════════════════════
+   STATEMENT NAVIGATOR
+══════════════════════════════════════════ */
+(function(){
+  var slides  = document.querySelectorAll('.sn-slide');
+  var dots    = document.querySelectorAll('.sn-dot');
+  var track   = document.getElementById('sn-slides');
+  var btnUp   = document.getElementById('sn-up');
+  var btnDn   = document.getElementById('sn-dn');
+  var curEl   = document.getElementById('sn-cur');
+  var total   = slides.length;
+  var cur     = 0;
+  function goTo(n){
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('on');
+    cur = Math.max(0, Math.min(total-1, n));
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('on');
+    track.style.transform = 'translateY(-'+(cur*100)+'%)';
+    curEl.textContent = cur+1;
+    btnUp.disabled = cur===0;
+    btnDn.disabled = cur===total-1;
+  }
+  btnUp.addEventListener('click', function(){ goTo(cur-1); });
+  btnDn.addEventListener('click', function(){ goTo(cur+1); });
+  document.addEventListener('keydown', function(e){
+    var panel = document.getElementById('p-statement-full');
+    if(!panel) return;
+    var r = panel.getBoundingClientRect();
+    if(r.left < window.innerWidth*0.6 && r.right > 0){
+      if(e.key==='ArrowUp'){ e.stopPropagation(); goTo(cur-1); }
+      if(e.key==='ArrowDown'){ e.stopPropagation(); goTo(cur+1); }
+    }
+  }, true);
+  [btnUp,btnDn].forEach(function(b){
+    b.addEventListener('mouseenter',function(){ document.body.classList.add('hov'); });
+    b.addEventListener('mouseleave',function(){ document.body.classList.remove('hov'); });
+  });
+})();
+
 </script>
 </body>
 </html>
